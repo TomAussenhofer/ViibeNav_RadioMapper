@@ -1,6 +1,12 @@
 <resources>
-    <string name="app_name">ViibeNav - RadioMapper</string>
+    <string name="app_name">RadioMapper</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="add_info">Hinzufügen</string>
+    <string name="cancel_info">Abbrechen</string>
+    <string name="person_name">Person</string>
+    <string name="room_name">Raumname</string>
+    <string name="environment">Umgebung</string>
+    <string name="set">Einstellen</string>
 </resources>
