@@ -6,6 +6,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,7 +23,7 @@ import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
 import de.beacon.tom.viibenav_radiomapper.model.fragment.SettingsDialog;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SensorEventListener {
 
 
     Application applicationUI;
@@ -42,6 +45,7 @@ public class MainActivity extends Activity {
 
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothScan = new BluetoothScan(applicationUI,manager.getAdapter());
+
     }
 
 
@@ -85,6 +89,15 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    public void onSensorChanged(SensorEvent event) {
+        applicationUI.onSensorChangedOperation(event);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -106,10 +119,11 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
+        applicationUI.onResumeOperation(this);
+
         // Turn Off WiFi signals on activity start as it mitigates position estimation
         if(Connector.getConnector().WiFiEnabled())
             Connector.getConnector().disableWiFi();
-
 
         /*
          * We need to enforce that Bluetooth is first enabled, and take the
@@ -142,10 +156,11 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
 
+        applicationUI.onPauseOperation(this);
+
         // When application is paused turn on WiFi again
         if(!Connector.getConnector().WiFiEnabled())
             Connector.getConnector().enableWiFi();
-
     }
 
     public Application getApplicationUI() {

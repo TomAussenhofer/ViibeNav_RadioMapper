@@ -2,6 +2,7 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.hardware.SensorEvent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -15,6 +16,7 @@ import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.AddInfo;
 import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
+import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
 import de.beacon.tom.viibenav_radiomapper.model.fragment.AddInfoDialog;
 
 
@@ -24,6 +26,7 @@ import de.beacon.tom.viibenav_radiomapper.model.fragment.AddInfoDialog;
 public class Application{
 
     public MainActivity main;
+    private SensorHelper sensorHelper;
 
     /*
     GUI elements
@@ -42,6 +45,7 @@ public class Application{
 
     // Layer 1
     TextView totalAnchor,lastX,lastY,lastEtage;
+
     // Layer 2
     TextView anzahlBeaconView,tempRSSIsView;
 
@@ -59,6 +63,7 @@ public class Application{
         // initialize GUI elemnts
         initGUI();
         initHandler();
+
     }
 
     private void initGUI(){
@@ -71,7 +76,6 @@ public class Application{
         // Layer 2
         anzahlBeaconView = (TextView) main.findViewById(R.id.anzahlBeaconFeld);
         tempRSSIsView = (TextView) main.findViewById(R.id.tempRSSIFeld);
-
 
         addInfo = new AddInfo();
         layer3 = new Layer3(main);
@@ -104,6 +108,10 @@ public class Application{
     public void startMeasurement(View view){
         calcMediansHandler.sendEmptyMessage(0);
     }
+
+    public void onSensorChangedOperation(SensorEvent event){sensorHelper.onSensorChangedOperation(event);}
+    public void onResumeOperation(MainActivity n){}
+    public void onPauseOperation(MainActivity n){}
 
     public void updateLayer1(){
         totalAnchor.setText("" + RadioMap.size());

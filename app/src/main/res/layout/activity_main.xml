@@ -266,11 +266,38 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:weightSum="1">
 
             <RelativeLayout
-                android:layout_width="130dp"
-                android:layout_height="match_parent"></RelativeLayout>
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/degreeEditText"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/arrowImageView"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@mipmap/arrow2_gelb"
+                    android:layout_alignParentBottom="true"
+                    android:padding="20dp" />
+            </RelativeLayout>
         </LinearLayout>
 
     </LinearLayout>
