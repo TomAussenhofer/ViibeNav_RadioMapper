@@ -64,6 +64,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_PERSON_NAME = "personname";
     public static final String COLUMN_ROOM_NAME = "roomname";
     public static final String COLUMN_ENVIRONMENT = "environment";
+    public static final String COLUMN_CATEGORY = "category";
 
     private static DBHandler singleton;
 
@@ -131,7 +132,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 "'"+ INFO_COLUMN_ID +"'"+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "'"+ COLUMN_PERSON_NAME +"'"+ " TEXT, "+
                 "'"+ COLUMN_ROOM_NAME +"'"+ " TEXT, "+
-                "'"+ COLUMN_ENVIRONMENT +"'"+ " TEXT "+
+                "'"+ COLUMN_ENVIRONMENT +"'"+ " TEXT, "+
+                "'"+ COLUMN_CATEGORY+"'"+ " TEXT "+
                 ");";
         db.execSQL(query4);
 
@@ -208,6 +210,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 valuesAddInfo.put(COLUMN_ROOM_NAME, addInfo.getRoom_name());
             if(addInfo.hasEnvironmentInfo())
                 valuesAddInfo.put(COLUMN_ENVIRONMENT, addInfo.getEnvironment());
+            if(addInfo.hasCategoryInfo())
+                valuesAddInfo.put(COLUMN_CATEGORY, addInfo.getCategory());
 
             db.insertOrThrow(TABLE_INFO, null, valuesAddInfo);
 
@@ -452,17 +456,19 @@ public class DBHandler extends SQLiteOpenHelper {
         String person_name = "";
         String room_name = "";
         String environment = "";
+        String category = "";
 
         while(!c.isAfterLast()){
             id = c.getInt(c.getColumnIndex(INFO_COLUMN_ID));
             person_name = c.getString(c.getColumnIndex(COLUMN_PERSON_NAME));
             room_name = c.getString(c.getColumnIndex(COLUMN_ROOM_NAME));
             environment = c.getString(c.getColumnIndex(COLUMN_ENVIRONMENT));
-            res.add(new InfoDBModel(id,person_name,room_name,environment));
+            category = c.getString(c.getColumnIndex(COLUMN_CATEGORY));
+            res.add(new InfoDBModel(id,person_name,room_name,environment,category));
             c.moveToNext();
         }
 
-        Log.d(TAG, "DONE FETCHING INFOLIST " + res.size());
+        Log.d(TAG,"DONE FETCHING INFOLIST "+res.size());
         db.close();
         InfoDBModel.setAllInfo(res);
     }

@@ -9,4 +9,5 @@
     <string name="room_name">Raumname</string>
     <string name="environment">Umgebung</string>
     <string name="set">Einstellen</string>
+    <string name="category">Kategorie</string>
 </resources>

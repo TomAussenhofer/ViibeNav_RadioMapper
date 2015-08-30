@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="FP_AMT_THRESH"
-        android:id="@+id/textView6"
+        android:id="@+id/textView60"
         android:gravity="center_horizontal"
         android:layout_marginLeft="10dp" />
 
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="OF_AMT_THRESH"
-        android:id="@+id/textView6"
+        android:id="@+id/textView61"
         android:layout_marginLeft="10dp" />
 
     <EditText
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="FSPL - const(&apos;n&apos;)"
-        android:id="@+id/textView6"
+        android:id="@+id/textView62"
         android:layout_marginLeft="10dp" />
 
     <EditText

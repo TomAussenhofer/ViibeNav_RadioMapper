@@ -30,11 +30,13 @@ public class CustomListInfoAdapter extends ArrayAdapter<InfoDBModel> {
         TextView person_name = (TextView) customView.findViewById(R.id.dbInfoPersonName);
         TextView room_name = (TextView) customView.findViewById(R.id.dbInfoRoomName);
         TextView environment = (TextView) customView.findViewById(R.id.dbInfoEnvironment);
+        TextView category = (TextView) customView.findViewById(R.id.dbInfoCategory);
 
         id.setText(""+ tmp.getId());
         person_name.setText("" + tmp.getPerson_name());
         room_name.setText(""+tmp.getRoom_name());
         environment.setText(""+tmp.getEnvironment());
+        category.setText(""+tmp.getCategory());
 
 
         return customView;

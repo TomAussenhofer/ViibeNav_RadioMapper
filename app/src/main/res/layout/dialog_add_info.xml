@@ -1,13 +1,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <ImageView
+    android:layout_height="wrap_content"
+    android:id="@+id/dialog_add_info"
+    android:weightSum="1">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:scaleType="center"
-        android:background="#FFFFBB33"
-        android:contentDescription="@string/app_name" />
+        android:layout_height="match_parent"
+        android:background="#ffbb34"
+        android:layout_weight="0.46" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Settings"
+            android:id="@+id/textView6"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ffffff"
+            android:padding="10dp" />
+    </RelativeLayout>
+
+    <de.beacon.tom.viibenav_radiomapper.model.widget.InstantAutoComplete
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/category"
+        android:text=""
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp">
+    </de.beacon.tom.viibenav_radiomapper.model.widget.InstantAutoComplete>
+
     <EditText
         android:id="@+id/person_name"
         android:singleLine="true"
@@ -23,10 +53,10 @@
         android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="4dp"
         android:fontFamily="sans-serif"
         android:hint="@string/room_name"/>
     <EditText
@@ -34,10 +64,11 @@
         android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="4dp"
         android:fontFamily="sans-serif"
         android:hint="@string/environment"/>
+
 </LinearLayout>

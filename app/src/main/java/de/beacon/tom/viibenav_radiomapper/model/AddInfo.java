@@ -10,17 +10,20 @@ public class AddInfo {
     private String person_name;
     private String room_name;
     private String environment;
+    private String category;
 
-    public AddInfo(String person_name, String room_name, String environment) {
+    public AddInfo(String person_name, String room_name, String environment, String category) {
         this.person_name = person_name;
         this.room_name = room_name;
         this.environment = environment;
+        this.category = category;
     }
 
     public AddInfo() {
         person_name = "";
         room_name = "";
         environment = "";
+        category = "";
     }
 
     public boolean hasAddInfo(){
@@ -35,7 +38,9 @@ public class AddInfo {
     public boolean hasPersonInfo(){
         return !person_name.isEmpty();
     }
-
+    public boolean hasCategoryInfo(){
+        return !category.isEmpty();
+    }
     public boolean hasEnvironmentInfo(){
         return !environment.isEmpty();
     }
@@ -47,6 +52,7 @@ public class AddInfo {
         person_name = "";
         room_name = "";
         environment = "";
+        category = "";
     }
 
     public String getPerson_name() {
@@ -59,6 +65,14 @@ public class AddInfo {
 
     public String getEnvironment() {
         return environment;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public void setPerson_name(String person_name) {

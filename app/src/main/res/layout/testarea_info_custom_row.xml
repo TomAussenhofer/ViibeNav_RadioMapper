@@ -19,7 +19,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="ID"
                 android:layout_weight="1"
-                android:id="@+id/dbInfoID" />
+                android:id="@+id/dbInfoID"
+                android:layout_marginLeft="5dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -44,6 +45,15 @@
                 android:text="Environment"
                 android:layout_weight="1"
                 android:id="@+id/dbInfoEnvironment" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Category"
+                android:id="@+id/dbInfoCategory"
+                android:layout_column="11"
+                android:layout_marginRight="5dp" />
         </TableRow>
     </TableLayout>
 </LinearLayout>
