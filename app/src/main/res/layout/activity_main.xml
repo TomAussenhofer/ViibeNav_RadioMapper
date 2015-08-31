@@ -176,7 +176,7 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:layout_width="241dp"
                 android:layout_height="match_parent"
                 android:id="@+id/rl20">
 
@@ -184,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Beacons im Umkreis:"
+                    android:text="Beacon im Umkreis:"
                     android:textColor="#000000"
                     android:id="@+id/textView3"
                     android:layout_alignParentTop="true"
@@ -261,6 +261,12 @@
                 </LinearLayout>
 
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/border_left"
+                android:background="@layout/border_left"></RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -277,10 +283,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/degreeEditText"
+                    android:id="@+id/degreeTV"
                     android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true" />
+                    android:text="Ausr.:" />
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -298,6 +306,7 @@
                     android:layout_alignParentBottom="true"
                     android:padding="20dp" />
             </RelativeLayout>
+
         </LinearLayout>
 
     </LinearLayout>

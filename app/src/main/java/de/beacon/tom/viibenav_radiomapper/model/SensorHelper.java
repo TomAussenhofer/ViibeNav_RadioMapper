@@ -4,7 +4,6 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -29,9 +28,10 @@ public class SensorHelper {
     float[] mOrientation = new float[3];
     float mCurrentDegree = 0f;
 
-    private int grad = 0;
-    private ImageView arrowImage;
-    private TextView degreeText;
+    int meter = 0;
+    int grad = 0;
+    TextView degreeTV;
+    ImageView arrowImage;
 
     private boolean calcInProgress = false;
     private long startTime = 0;
@@ -43,33 +43,23 @@ public class SensorHelper {
      * Ausrichtung des Smartphones zum Nordpol
      */
     private static int orientation = 0;
+
     public static int getOrientation() {
         return orientation;
     }
 
-
-    private static SensorHelper singleton;
-
-    public SensorHelper(Context c, ImageView arrowImage, TextView degreeText) {
+    public SensorHelper(Context c, ImageView arrowImage, TextView degreeTV) {
         mSensorManager = (SensorManager) c.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
         this.arrowImage = arrowImage;
-        this.degreeText = degreeText;
-
+        this.degreeTV = degreeTV;
+        meter = 0;
         grad = 0;
+        String text =  grad + "\u00B0";
+        this.degreeTV.setText(text);
     }
-
-//    public static SensorHelper createSensorHelper(Context c, ImageView arrowImage, TextView degreeText){
-//        // Avoid possible errors with multiple threads accessing this method -> synchronized
-//        synchronized(SensorHelper.class) {
-//            if (singleton == null) {
-//                singleton = new SensorHelper(c, arrowImage, degreeText);
-//            }
-//        }
-//        return singleton;
-//    }
 
     public void onResumeOperation(MainActivity n) {
         mSensorManager.registerListener(n, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
@@ -134,6 +124,8 @@ public class SensorHelper {
         mCurrentDegree = -degrees;
         grad = (int) -mCurrentDegree;
         orientation = grad;
+        String text =  grad + "\u00B0";
+        degreeTV.setText(text);
     }
 
     private void startTimerThread() {
@@ -150,9 +142,5 @@ public class SensorHelper {
 
         Thread t = new Thread(r);
         t.start();
-    }
-
-    public static SensorHelper getSensor() {
-        return singleton;
     }
 }

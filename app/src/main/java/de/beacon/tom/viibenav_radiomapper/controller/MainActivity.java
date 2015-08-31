@@ -133,6 +133,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             //Bluetooth is disabled
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(enableBtIntent);
+//            bluetoothScan.getmBluetoothAdapter().enable();
             finish();
             return;
         }
@@ -161,6 +162,27 @@ public class MainActivity extends Activity implements SensorEventListener {
         // When application is paused turn on WiFi again
         if(!Connector.getConnector().WiFiEnabled())
             Connector.getConnector().enableWiFi();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(!Connector.getConnector().WiFiEnabled())
+            Connector.getConnector().enableWiFi();
+
+        bluetoothScan.getmBluetoothAdapter().disable();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(!Connector.getConnector().WiFiEnabled())
+            Connector.getConnector().enableWiFi();
+
+        bluetoothScan.getmBluetoothAdapter().disable();
+
     }
 
     public Application getApplicationUI() {

@@ -37,14 +37,19 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_X = "x";
     public static final String COLUMN_Y = "y";
     public static final String COLUMN_FLOOR = "floor";
+    public static final String COLUMN_FRONT = "front";
+    public static final String COLUMN_BACK = "back";
+    public static final String COLUMN_INFO_ID = "infoid";
+
     // MAXIMUM AMOUNT OF BEACONS IN ONE TABLE
+    public static final String TABLE_BEACON_MEDIAN_TO_ANCHOR = "beaconmediantoanchor";
+    public static final String BEACON_MEDIAN_TO_ANCHOR_ID = "id";
     public static final String COLUMN_BEACON_1 = "beacon1";
     public static final String COLUMN_BEACON_2 = "beacon2";
     public static final String COLUMN_BEACON_3 = "beacon3";
     public static final String COLUMN_BEACON_4 = "beacon4";
     public static final String COLUMN_BEACON_5 = "beacon5";
     public static final String COLUMN_BEACON_6 = "beacon6";
-    public static final String COLUMN_INFO_ID = "info";
 
     // MEDIANS TABLE
     public static final String TABLE_MEDIANS = "medians";
@@ -65,7 +70,6 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_ROOM_NAME = "roomname";
     public static final String COLUMN_ENVIRONMENT = "environment";
     public static final String COLUMN_CATEGORY = "category";
-
     private static DBHandler singleton;
 
     private Context context;
@@ -94,6 +98,7 @@ public class DBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+
         // CREATE BEACONS TABLE
         String query1 = "CREATE TABLE "+ TABLE_BEACONS + "(" +
                 "'"+ BEACONS_COLUMN_ID +"'"+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -117,12 +122,10 @@ public class DBHandler extends SQLiteOpenHelper {
                 "'"+ COLUMN_X +"'"+ " INTEGER, "+
                 "'"+ COLUMN_Y +"'"+ " INTEGER, "+
                 "'"+ COLUMN_FLOOR +"'"+ " INTEGER, "+
-                "'"+ COLUMN_BEACON_1 +"'"+ " INTEGER," /*FOREIGN KEY REFERENCES "+TABLE_MEDIANS+"("+MEDIANS_COLUMN_ID+"),"*/+
-                "'"+ COLUMN_BEACON_2 +"'"+ " INTEGER," /*FOREIGN KEY REFERENCES "+TABLE_MEDIANS+"("+MEDIANS_COLUMN_ID+"),"*/+
-                "'"+ COLUMN_BEACON_3 +"'"+ " INTEGER," /*FOREIGN KEY REFERENCES "+TABLE_MEDIANS+"("+MEDIANS_COLUMN_ID+"),"*/+
-                "'"+ COLUMN_BEACON_4 +"'"+ " INTEGER, " /*FOREIGN KEY REFERENCES "+TABLE_MEDIANS+"("+MEDIANS_COLUMN_ID+")"*/+
-                "'"+ COLUMN_BEACON_5 +"'"+ " INTEGER, " +
-                "'"+ COLUMN_BEACON_6 +"'"+ " INTEGER, " +
+                // 90 degrees
+                "'"+ COLUMN_FRONT +"'"+ " INTEGER,"+
+                // 270 degrees
+                "'"+ COLUMN_BACK +"'"+ " INTEGER,"+
                 "'"+ COLUMN_INFO_ID +"'"+ " INTEGER  " +
                 ");";
         db.execSQL(query3);
@@ -137,6 +140,18 @@ public class DBHandler extends SQLiteOpenHelper {
                 ");";
         db.execSQL(query4);
 
+        // CREATE INFO TABLE
+        String query5 = "CREATE TABLE "+ TABLE_BEACON_MEDIAN_TO_ANCHOR + "(" +
+                "'"+ BEACON_MEDIAN_TO_ANCHOR_ID +"'"+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "'"+ COLUMN_BEACON_1 +"'"+ " INTEGER, "+
+                "'"+ COLUMN_BEACON_2 +"'"+ " INTEGER, "+
+                "'"+ COLUMN_BEACON_3 +"'"+ " INTEGER, "+
+                "'"+ COLUMN_BEACON_4 +"'"+ " INTEGER, "+
+                "'"+ COLUMN_BEACON_5 +"'"+ " INTEGER, "+
+                "'"+ COLUMN_BEACON_6 +"'"+ " INTEGER "+
+                ");";
+        db.execSQL(query5);
+
     }
 
     @Override
@@ -145,6 +160,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS" + TABLE_MEDIANS);
         db.execSQL("DROP TABLE IF EXISTS" + TABLE_BEACONS);
         db.execSQL("DROP TABLE IF EXISTS" + TABLE_INFO);
+        db.execSQL("DROP TABLE IF EXISTS" + TABLE_BEACON_MEDIAN_TO_ANCHOR);
         onCreate(db);
     }
 
@@ -253,6 +269,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_MEDIANS+"'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_BEACONS+"'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_INFO+"'");
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_BEACON_MEDIAN_TO_ANCHOR+"'");
         onCreate(db);
     }
 

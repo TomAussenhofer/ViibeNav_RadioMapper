@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -44,13 +45,14 @@ public class Application{
      */
 
     // Layer 1
-    TextView totalAnchor,lastX,lastY,lastEtage;
+    private TextView totalAnchor,lastX,lastY,lastEtage;
 
     // Layer 2
-    TextView anzahlBeaconView,tempRSSIsView;
+    private TextView anzahlBeaconView,tempRSSIsView,degreeTV;
+    private ImageView arrowImage;
 
-    Handler calcMediansHandler;
-    Measurement measurement;
+    private Handler calcMediansHandler;
+    private Measurement measurement;
 
     private AddInfo addInfo;
 
@@ -76,6 +78,9 @@ public class Application{
         // Layer 2
         anzahlBeaconView = (TextView) main.findViewById(R.id.anzahlBeaconFeld);
         tempRSSIsView = (TextView) main.findViewById(R.id.tempRSSIFeld);
+        arrowImage = (ImageView) main.findViewById(R.id.arrowImageView);
+        degreeTV = (TextView) main.findViewById(R.id.degreeTV);
+
 
         addInfo = new AddInfo();
         layer3 = new Layer3(main);
@@ -100,7 +105,7 @@ public class Application{
             }
         };
 
-        sensorHelper = new SensorHelper(this, arrowImage, instructionText);
+        sensorHelper = new SensorHelper(main.getApplicationContext(), arrowImage, degreeTV);
     }
 
     /**
