@@ -99,6 +99,8 @@ public class Application{
                 measurement.overallCalcProgress(System.currentTimeMillis(), calcBeacons, main);
             }
         };
+
+        sensorHelper = new SensorHelper(this, arrowImage, instructionText);
     }
 
     /**
@@ -110,8 +112,8 @@ public class Application{
     }
 
     public void onSensorChangedOperation(SensorEvent event){sensorHelper.onSensorChangedOperation(event);}
-    public void onResumeOperation(MainActivity n){}
-    public void onPauseOperation(MainActivity n){}
+    public void onResumeOperation(MainActivity n){sensorHelper.onResumeOperation(n);}
+    public void onPauseOperation(MainActivity n){sensorHelper.onPauseOperation(n);}
 
     public void updateLayer1(){
         totalAnchor.setText("" + RadioMap.size());
