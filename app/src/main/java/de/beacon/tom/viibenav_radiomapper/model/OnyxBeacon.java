@@ -135,7 +135,10 @@ public class OnyxBeacon {
         measurementDone = false;
     }
 
-
+    public static OnyxBeacon[] getBeaconMapAsArr(HashMap<CharBuffer,OnyxBeacon> tmpBeaconMap){
+        ArrayList<OnyxBeacon> tmp = new ArrayList<OnyxBeacon>(tmpBeaconMap.values());
+        return tmp.toArray(new OnyxBeacon[tmp.size()]);
+    }
 
     public static ArrayList<OnyxBeacon> getBeaconMapAsList(){
         return new ArrayList<OnyxBeacon>(beaconMap.values());

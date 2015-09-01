@@ -1,78 +1,88 @@
 package de.beacon.tom.viibenav_radiomapper.model;
 
-import java.io.Serializable;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-
-import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 
 
 /**
  * Created by TomTheBomb on 23.06.2015.
  */
-public class AnchorPoint implements Serializable {
+public class AnchorPoint {
 
-    private int _id;
-    private HashMap<CharBuffer,OnyxBeacon> anchorBeacons;
-    private BeaconsMedians beaconsMedians;
     private Coordinate coordinate;
 
     /**
      * contains an array of MacAddresses mapped to medians
-     * 90 degrees
+     * 90 degrees - 270 degrees
      */
-    private MacToMedian[] front;
+    private BeaconsToOrient front;
 
     /**
      * contains an array of MacAddresses mapped to medians
-     * 270 degrees
+     * 0-90 degrees and 270-360 degrees
      */
-    private MacToMedian[] back;
+    private BeaconsToOrient back;
 
-    public AnchorPoint(Coordinate coordinate, HashMap<CharBuffer,OnyxBeacon> anchorBeacons) {
-        this.anchorBeacons = anchorBeacons;
+    public AnchorPoint(Coordinate coordinate) {
         this.coordinate = coordinate;
-        this.beaconsMedians = new BeaconsMedians(anchorBeacons);
     }
 
-    public AnchorPoint(Coordinate coordinate, ArrayList<OnyxBeacon> anchorBeaconsList) {
-        this.anchorBeacons = new HashMap<>();
-        Iterator it = anchorBeaconsList.iterator();
-        while(it.hasNext()){
-            OnyxBeacon temp = (OnyxBeacon) it.next();
-            anchorBeacons.put(temp.getMacAddress(),temp);
-        }
-        this.coordinate = coordinate;
-        this.beaconsMedians = new BeaconsMedians(anchorBeacons);
+    public void setMacToMedianWithOrientation(HashMap<CharBuffer, OnyxBeacon> input){
+        if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.front))
+            setFront(BeaconsToOrient.getBeaconsArrToOrient(input, UserOrientation.getOrientationFromSensorHelper()));
+        else if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.back))
+            setBack(BeaconsToOrient.getBeaconsArrToOrient(input,UserOrientation.getOrientationFromSensorHelper()));
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public void setMacToMedianWithOrientation(ArrayList<OnyxBeacon> input){
+        if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.front))
+            setFront(BeaconsToOrient.getBeaconsArrToOrient(input, UserOrientation.getOrientationFromSensorHelper()));
+        else if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.back))
+            setBack(BeaconsToOrient.getBeaconsArrToOrient(input,UserOrientation.getOrientationFromSensorHelper()));
     }
 
-    public int get_id() {
-        return _id;
+    public boolean isFrontAndBackSet(){
+        if(front != null && back != null)
+            return true;
+        return false;
+    }
+
+    public boolean isFrontSet(){
+        if( front != null)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean isBackSet(){
+        if( back != null)
+            return true;
+        else
+            return false;
     }
 
     public Coordinate getCoordinate() {
         return coordinate;
     }
 
-    public void setAnchorBeacons(HashMap<CharBuffer, OnyxBeacon> anchorBeacons) {
-        this.anchorBeacons = anchorBeacons;
+    public BeaconsToOrient getFront() {
+        return front;
     }
 
-    public HashMap<CharBuffer, OnyxBeacon> getAnchorBeacons() {
-        return anchorBeacons;
+    public void setFront(BeaconsToOrient front) {
+        this.front = front;
     }
 
-    public BeaconsMedians getBeaconsMedians() {
-        return beaconsMedians;
+    public BeaconsToOrient getBack() {
+        return back;
     }
 
-    public void setBeaconsMedians(BeaconsMedians beaconsMedians) {
-        this.beaconsMedians = beaconsMedians;
+    public void setBack(BeaconsToOrient back) {
+        this.back = back;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
     }
 }

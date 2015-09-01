@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import de.beacon.tom.viibenav_radiomapper.model.Coordinate;
 import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
+import de.beacon.tom.viibenav_radiomapper.model.UserOrientation;
 import de.beacon.tom.viibenav_radiomapper.model.Util;
 import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 import de.beacon.tom.viibenav_radiomapper.model.position.PositionAlgorithm;

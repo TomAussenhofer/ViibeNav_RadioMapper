@@ -125,7 +125,9 @@ public class SensorHelper {
         grad = (int) -mCurrentDegree;
         orientation = grad;
         String text =  grad + "\u00B0";
-        degreeTV.setText(text);
+
+        String orientationStr = UserOrientation.getOrientationFromSensorHelper().toString();
+        degreeTV.setText(text +"|"+orientationStr);
     }
 
     private void startTimerThread() {

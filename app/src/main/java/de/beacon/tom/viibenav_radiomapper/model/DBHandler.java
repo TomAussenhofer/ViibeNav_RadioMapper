@@ -7,10 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.nio.CharBuffer;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
 
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.AnchorPointDBModel;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.InfoDBModel;
@@ -168,32 +165,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public void addAnchor(AnchorPoint a, AddInfo addInfo){
         SQLiteDatabase db = getWritableDatabase();
 
-
-        ArrayList<Integer> relatedMedians = new ArrayList<>();
-        Iterator it = a.getAnchorBeacons().entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry<CharBuffer,OnyxBeacon> pair = (Map.Entry)it.next();
-
-            // INSERT INTO BEACONS TABLE IF NOT EXISTS
-            ContentValues values = new ContentValues();
-            // 1.param: COLUMN_NAME     2.param VALUE
-            values.put(COLUMN_MACADDRESS, pair.getKey().toString());
-            values.put(COLUMN_MAJOR, pair.getValue().getMajor());
-            values.put(COLUMN_MINOR, pair.getValue().getMinor());
-
-            //  laut: http://stackoverflow.com/questions/6918206/android-sqlite-insert-or-ignore-doesnt-work
-            db.insertWithOnConflict(TABLE_BEACONS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-//            db.insert(TABLE_BEACONS, null, values);
-
-            // INSERT INTO MEDIANSTABLE
-            ContentValues valuesMedian = new ContentValues();
-            valuesMedian.put(COLUMN_MEDIAN_VALUE, pair.getValue().getMedianRSSI());
-            valuesMedian.put(COLUMN_MACADDRESS, pair.getValue().getMacAddressStr());
-            db.insert(TABLE_MEDIANS, null, valuesMedian);
-
-            relatedMedians.add(getLastID(db,TABLE_MEDIANS, MEDIANS_COLUMN_ID));
-        }
-
+        int anchor_COLUMN_ID_FRONT = getBeaconMedianToAnchorID(db,a.getFront());
+        int anchor_COLUMN_ID_BACK = getBeaconMedianToAnchorID(db,a.getBack());
 
         //INSERT REALTED-MEDIANS IN ANCHORTABLE
         ContentValues valuesAnchor= new ContentValues();
@@ -201,18 +174,8 @@ public class DBHandler extends SQLiteOpenHelper {
         valuesAnchor.put(COLUMN_X, a.getCoordinate().getX());
         valuesAnchor.put(COLUMN_Y, a.getCoordinate().getY());
         valuesAnchor.put(COLUMN_FLOOR, a.getCoordinate().getFloor());
-        valuesAnchor.put(COLUMN_BEACON_1, relatedMedians.get(0));
-        valuesAnchor.put(COLUMN_BEACON_2, relatedMedians.get(1));
-        valuesAnchor.put(COLUMN_BEACON_3, relatedMedians.get(2));
-        valuesAnchor.put(COLUMN_BEACON_4, relatedMedians.get(3));
-
-        // IF THERE ARE MORE THAN 4 BEACONS AVAILABLE
-        if(relatedMedians.size()>= 5) {
-            valuesAnchor.put(COLUMN_BEACON_5, relatedMedians.get(4));
-        }
-        if(relatedMedians.size()== 6) {
-            valuesAnchor.put(COLUMN_BEACON_6, relatedMedians.get(5));
-        }
+        valuesAnchor.put(COLUMN_FRONT, anchor_COLUMN_ID_FRONT);
+        valuesAnchor.put(COLUMN_BACK, anchor_COLUMN_ID_BACK);
 
         // Add Additional Info
         if(addInfo.hasAddInfo()){
@@ -239,6 +202,43 @@ public class DBHandler extends SQLiteOpenHelper {
         db.insertOrThrow(TABLE_ANCHORS, null, valuesAnchor);
 
         db.close();
+    }
+
+    public int getBeaconMedianToAnchorID(SQLiteDatabase db, BeaconsToOrient input){
+        ArrayList<Integer> relatedMedians = new ArrayList<>();
+        for(OnyxBeacon tmp : input.getBeaconArray()){
+
+            // INSERT INTO BEACONS TABLE IF NOT EXISTS
+            ContentValues values = new ContentValues();
+            // 1.param: COLUMN_NAME     2.param VALUE
+            values.put(COLUMN_MACADDRESS, tmp.getMacAddressStr());
+            values.put(COLUMN_MAJOR, tmp.getMajor());
+            values.put(COLUMN_MINOR, tmp.getMinor());
+
+            //  laut: http://stackoverflow.com/questions/6918206/android-sqlite-insert-or-ignore-doesnt-work
+            db.insertWithOnConflict(TABLE_BEACONS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+//            db.insert(TABLE_BEACONS, null, values);
+
+            // INSERT INTO MEDIANSTABLE
+            ContentValues valuesMedian = new ContentValues();
+            valuesMedian.put(COLUMN_MEDIAN_VALUE, tmp.getMedianRSSI());
+            valuesMedian.put(COLUMN_MACADDRESS, tmp.getMacAddressStr());
+            db.insert(TABLE_MEDIANS, null, valuesMedian);
+
+            relatedMedians.add(getLastID(db,TABLE_MEDIANS, MEDIANS_COLUMN_ID));
+        }
+
+        // Insert Beacons Medians
+        ContentValues valuesBeaconMedianToAnchor = new ContentValues();
+        valuesBeaconMedianToAnchor.put(COLUMN_BEACON_1,relatedMedians.get(0));
+        valuesBeaconMedianToAnchor.put(COLUMN_BEACON_2,relatedMedians.get(1));
+        valuesBeaconMedianToAnchor.put(COLUMN_BEACON_3,relatedMedians.get(2));
+        valuesBeaconMedianToAnchor.put(COLUMN_BEACON_4,relatedMedians.get(3));
+        valuesBeaconMedianToAnchor.put(COLUMN_BEACON_5,relatedMedians.get(4));
+        valuesBeaconMedianToAnchor.put(COLUMN_BEACON_6, relatedMedians.get(5));
+        db.insert(TABLE_BEACON_MEDIAN_TO_ANCHOR, null, valuesBeaconMedianToAnchor);
+
+        return getLastID(db,TABLE_BEACON_MEDIAN_TO_ANCHOR, BEACON_MEDIAN_TO_ANCHOR_ID);
     }
 
     /**
@@ -301,13 +301,13 @@ public class DBHandler extends SQLiteOpenHelper {
 //            Log.d(TAG, "MEDIAN IN LOOP "+median);
 
             String query = "SELECT " + TABLE_ANCHORS + "." + COLUMN_FLOOR + "," + TABLE_ANCHORS + "." + COLUMN_X + ", " + TABLE_ANCHORS + "." + COLUMN_Y + "," + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + ", " + calcManhattenDB_Cmd(median) + " AS " + LOCAL_COLUMN_DEVIATION + " " +
-                    " FROM '" + TABLE_MEDIANS + "' JOIN '" + TABLE_ANCHORS + "' WHERE macAddress = '" + macAddress  + "' AND " +
-                    " ( "    + TABLE_ANCHORS + "." + COLUMN_BEACON_1 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + " " +
-                    "   OR " + TABLE_ANCHORS + "." + COLUMN_BEACON_2 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
-                    "   OR " + TABLE_ANCHORS + "." + COLUMN_BEACON_3 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
-                    "   OR " + TABLE_ANCHORS + "." + COLUMN_BEACON_4 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
-                    "   OR " + TABLE_ANCHORS + "." + COLUMN_BEACON_5 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
-                    "   OR " + TABLE_ANCHORS + "." + COLUMN_BEACON_6 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
+                    " FROM '" + TABLE_MEDIANS + "' JOIN '" + TABLE_BEACON_MEDIAN_TO_ANCHOR + "' WHERE macAddress = '" + macAddress  + "' AND " +
+                    " ( "    + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_1 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + " " +
+                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_2 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
+                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_3 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
+                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_4 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
+                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_5 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
+                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_6 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
                     "  ) " +
                     " GROUP BY " + COLUMN_MEDIAN_VALUE + " HAVING deviation <=" + threshold + " ORDER BY " + LOCAL_COLUMN_DEVIATION + " ASC LIMIT " + maxResults + ";";
 
@@ -335,6 +335,8 @@ public class DBHandler extends SQLiteOpenHelper {
 //        return devsToCoords.toArray(new DeviationToCoord[devsToCoords.size()]);
         return devsToCoords;
     }
+
+
 
 
     public Coordinate getCoordFromAnchorId(int id){

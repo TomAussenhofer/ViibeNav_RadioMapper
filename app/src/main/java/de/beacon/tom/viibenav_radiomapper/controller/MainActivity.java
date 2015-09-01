@@ -2,9 +2,7 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -131,10 +129,9 @@ public class MainActivity extends Activity implements SensorEventListener {
          */
         if (bluetoothScan.getmBluetoothAdapter() == null || !bluetoothScan.getmBluetoothAdapter().isEnabled()) {
             //Bluetooth is disabled
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivity(enableBtIntent);
-//            bluetoothScan.getmBluetoothAdapter().enable();
-            finish();
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivity(enableBtIntent);
+            bluetoothScan.getmBluetoothAdapter().enable();
             return;
         }
 

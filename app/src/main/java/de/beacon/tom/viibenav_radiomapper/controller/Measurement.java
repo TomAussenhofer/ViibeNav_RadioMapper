@@ -13,8 +13,6 @@ import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
 import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 import de.beacon.tom.viibenav_radiomapper.model.Person;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
-import de.beacon.tom.viibenav_radiomapper.model.Util;
-import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 
 
 /**
@@ -94,11 +92,15 @@ public class Measurement {
                 long ende = System.currentTimeMillis()-start;
                 Log.d(TAG, "Dauer: " + ende / 1000 + "s");
 
-                AnchorPoint a = new AnchorPoint(RadioMap.getRadioMap().getCoordinate(),this.beacons);
+                AnchorPoint a = new AnchorPoint(RadioMap.getRadioMap().getCoordinate());
+                a.setMacToMedianWithOrientation(beacons);
+
                 RadioMap.getRadioMap().add(a);
                 RadioMap.getRadioMap().setLastAnchor(a);
                 main.getApplicationUI().updateLayer1();
-                DBHandler.getDB().addAnchor(a,main.getApplicationUI().getAddInfo());
+
+                if(a.isFrontAndBackSet())
+                    DBHandler.getDB().addAnchor(a,main.getApplicationUI().getAddInfo());
                 cleanUp();
         }
 
@@ -136,7 +138,7 @@ public class Measurement {
     /**
      * Only Call this function for on the Fly measurement to identify position - NOT for saving data in the RadioMap (For saving data to RadioMap use overallCalcProcess())
      * @param beacons
-     * @param prefs
+     *
      */
     public void overallOnTheFlyCalcProcess(final ArrayList<OnyxBeacon> beacons, Person person){
         this.person = person;
@@ -194,11 +196,9 @@ public class Measurement {
 
         @Override
         protected void onPostExecute(String result) {
-            // OLD CODE OLD CODE OLD CODE OLD CODE
-            // person.getSupposedAnchorIds(beacons);
 
-            MacToMedian[] data = Util.listToMacToMedianArr(beacons);
-            person.estimatePos(data);
+//            MacToMedian[] data = Util.listToMacToMedianArr(beacons);
+//            person.estimatePos(data);
             cleanUp();
             person.checkLoop();
         }

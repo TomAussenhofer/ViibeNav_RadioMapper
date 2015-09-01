@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.hardware.SensorEvent;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +26,8 @@ import de.beacon.tom.viibenav_radiomapper.model.fragment.AddInfoDialog;
  * Created by TomTheBomb on 23.06.2015.
  */
 public class Application{
+
+    private static final String TAG = "Application";
 
     public MainActivity main;
     private SensorHelper sensorHelper;
@@ -87,6 +90,8 @@ public class Application{
     }
 
     private void initHandler(){
+        sensorHelper = new SensorHelper(main.getApplicationContext(), arrowImage, degreeTV);
+
         calcMediansHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -101,11 +106,10 @@ public class Application{
                     tmp.setMeasurementStarted(true);
                     calcBeacons.add(tmp);
                 }
+                Log.d(TAG,"MESSE BEACONS: "+calcBeacons.size());
                 measurement.overallCalcProgress(System.currentTimeMillis(), calcBeacons, main);
             }
         };
-
-        sensorHelper = new SensorHelper(main.getApplicationContext(), arrowImage, degreeTV);
     }
 
     /**

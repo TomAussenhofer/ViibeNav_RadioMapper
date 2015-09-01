@@ -1,8 +1,7 @@
 package de.beacon.tom.viibenav_radiomapper.model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by TomTheBomb on 25.06.2015.
@@ -13,11 +12,11 @@ public class RadioMap {
 
     private Coordinate coordinate;
 
-    private static HashMap<BeaconsMedians,AnchorPoint> data;
+    private static ArrayList<AnchorPoint> data;
     private AnchorPoint lastAnchor;
 
     private RadioMap() {
-        this.data = new HashMap<BeaconsMedians,AnchorPoint>();
+        this.data = new ArrayList<AnchorPoint>();
         this.coordinate = new Coordinate(0,0,0);
     }
 
@@ -36,14 +35,14 @@ public class RadioMap {
     }
 
     public static void add(AnchorPoint a){
-        data.put(a.getBeaconsMedians(),a);
+        data.add(a);
     }
 
     public static void remove(Coordinate coordinate){
-        Iterator it = data.entrySet().iterator();
+        Iterator it = data.iterator();
         while(it.hasNext()){
-            Map.Entry<BeaconsMedians,AnchorPoint> pair = (Map.Entry) it.next();
-            if(pair.getValue().getCoordinate().equals(coordinate))
+            AnchorPoint tmp = (AnchorPoint) it.next();
+            if(tmp.getCoordinate().equals(coordinate))
                 it.remove();
         }
     }
@@ -104,7 +103,7 @@ public class RadioMap {
         return coordinate.getFloor();
     }
 
-    public static HashMap<BeaconsMedians, AnchorPoint> getData() {
+    public static ArrayList<AnchorPoint> getData() {
         return data;
     }
 
