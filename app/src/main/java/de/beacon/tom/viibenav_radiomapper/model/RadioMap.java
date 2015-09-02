@@ -51,12 +51,11 @@ public class RadioMap {
         return data.size();
     }
 
-    public void setLastAnchor(AnchorPoint a){
-        this.lastAnchor = a;
-    }
+    public static AnchorPoint getLastAnchor() {
+        if(data!=null && data.size() != 0)
+            return data.get(data.size()-1);
 
-    public AnchorPoint getLastAnchor() {
-        return lastAnchor;
+        throw new NullPointerException("Last anchorpoint can not be determined - radiomap is empty.");
     }
 
     public Coordinate getCoordinate() {

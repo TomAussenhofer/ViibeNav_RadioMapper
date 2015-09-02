@@ -82,7 +82,7 @@ public class Application{
         anzahlBeaconView = (TextView) main.findViewById(R.id.anzahlBeaconFeld);
         tempRSSIsView = (TextView) main.findViewById(R.id.tempRSSIFeld);
         arrowImage = (ImageView) main.findViewById(R.id.arrowImageView);
-        degreeTV = (TextView) main.findViewById(R.id.degreeTV);
+        degreeTV = (TextView) main.findViewById(R.id.dialog_second_measure_degreeTV);
 
 
         addInfo = new AddInfo();
@@ -107,7 +107,7 @@ public class Application{
                     calcBeacons.add(tmp);
                 }
                 Log.d(TAG,"MESSE BEACONS: "+calcBeacons.size());
-                measurement.overallCalcProgress(System.currentTimeMillis(), calcBeacons, main);
+                measurement.overallCalcProgress(System.currentTimeMillis(), calcBeacons, main, true);
             }
         };
     }

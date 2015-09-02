@@ -26,19 +26,22 @@ public class BluetoothScan {
     private BluetoothLeScanner mBluetoothLeScanner;
     private BluetoothAdapter mBluetoothAdapter;
 
+
     public BluetoothScan(Application applicationUI, BluetoothAdapter mBluetoothAdapter) {
         this.applicationUI = applicationUI;
         this.mBluetoothAdapter = mBluetoothAdapter;
-        mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        this.mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
         mHandler = standardHandler;
 
 //        listAdapter = new CustomListAdapter(this);
 //        ListView beaconListView = (ListView) findViewById(R.id.myListView);
 //        beaconListView.setAdapter(listAdapter);
+        turnOnBluetooth();
+        startScanWhenBTEnabled();
     }
 
-    public void startScan(){
+    private void startScan(){
         // Scan for devices advertising the thermometer
         // does not work
 //        ScanFilter beaconFilter = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(Advertisement.filterUUID)).build();
@@ -50,8 +53,37 @@ public class BluetoothScan {
 //        filters.add(filter2);
 
         ScanSettings settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
+        Log.d(TAG,"Bluetooth enabled: "+mBluetoothAdapter.isEnabled());
         mBluetoothLeScanner.startScan(null, settings, mScanCallback);
 
+    }
+
+    private Handler startScanHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            startScan();
+        }
+    };
+
+    private void startScanWhenBTEnabled(){
+        Runnable r = new Runnable(){
+            @Override
+            public void run() {
+                while(true){
+                    turnOnBluetooth();
+                    if(mBluetoothLeScanner != null && mBluetoothAdapter.isEnabled())
+                        break;
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                startScanHandler.sendEmptyMessage(0);
+            }
+        };
+        Thread th = new Thread(r);
+        th.start();
     }
 
     private ScanCallback mScanCallback = new ScanCallback() {
@@ -83,17 +115,41 @@ public class BluetoothScan {
              */
             OnyxBeacon beacon = Advertisement.extractAD(result.getDevice().getAddress(), result.getRssi(), result.getScanRecord().getBytes());
 
-
             if(beacon != null)
                 beacon.checkState();
 
-
-            Message msg = Message.obtain();
+//            Message msg = Message.obtain();
 //            msg.obj = beacon;
 //            mHandler.sendMessage(msg);
             mHandler.sendEmptyMessage(0);
         }
     };
+
+    public void turnOnBluetooth(){
+        /*
+         * We need to enforce that Bluetooth is first enabled, and take the
+         * user to settings to enable it if they have not done so.
+         */
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            //Bluetooth is disabled
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivity(enableBtIntent);
+            mBluetoothAdapter.enable();
+        }
+
+        if(mBluetoothAdapter.isEnabled() && mBluetoothLeScanner == null)
+            mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+    }
+
+    private boolean isSetup(){
+        Log.d(TAG,"BTAdapter null "+(mBluetoothAdapter == null));
+        Log.d(TAG,"BTAdapter enabled "+(mBluetoothAdapter.isEnabled()));
+        Log.d(TAG,"BTScanner scanner "+(mBluetoothLeScanner == null));
+
+        if(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled() && mBluetoothLeScanner != null)
+            return true;
+        return false;
+    }
 
     public void stopScan() {
         mBluetoothLeScanner.stopScan(mScanCallback);
@@ -111,6 +167,8 @@ public class BluetoothScan {
 
         }
     };
+
+
 
     public Handler mHandler;
 

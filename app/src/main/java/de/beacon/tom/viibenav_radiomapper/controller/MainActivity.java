@@ -3,12 +3,14 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +25,6 @@ import de.beacon.tom.viibenav_radiomapper.model.fragment.SettingsDialog;
 
 public class MainActivity extends Activity implements SensorEventListener {
 
-
     Application applicationUI;
     BluetoothScan bluetoothScan;
 
@@ -32,20 +33,24 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         setContentView(R.layout.activity_main);
 
+        init();
+    }
+
+    private void init(){
         RadioMap.createRadioMap();
         DBHandler.createDB(this, null, null, 1);
         Connector.createConnector((WifiManager) getSystemService(this.WIFI_SERVICE));
 
         applicationUI = new Application(this);
-
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothScan = new BluetoothScan(applicationUI,manager.getAdapter());
 
+        // Turn Off WiFi signals on activity start as it mitigates position estimation
+        if(Connector.getConnector().WiFiEnabled())
+            Connector.getConnector().disableWiFi();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,6 +99,18 @@ public class MainActivity extends Activity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch(requestCode){
+            case 1:
+                if(resultCode == 1){
+                    Log.d("MAIN", "Hier angekommen :)");
+                }
+                break;
+        }
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -118,23 +135,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         super.onResume();
 
         applicationUI.onResumeOperation(this);
-
-        // Turn Off WiFi signals on activity start as it mitigates position estimation
-        if(Connector.getConnector().WiFiEnabled())
-            Connector.getConnector().disableWiFi();
-
-        /*
-         * We need to enforce that Bluetooth is first enabled, and take the
-         * user to settings to enable it if they have not done so.
-         */
-        if (bluetoothScan.getmBluetoothAdapter() == null || !bluetoothScan.getmBluetoothAdapter().isEnabled()) {
-            //Bluetooth is disabled
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivity(enableBtIntent);
-            bluetoothScan.getmBluetoothAdapter().enable();
-            return;
-        }
-
         /*
          * Check for Bluetooth LE Support.  In production, our manifest entry will keep this
          * from installing on these devices, but this will allow test devices or other
@@ -146,47 +146,33 @@ public class MainActivity extends Activity implements SensorEventListener {
             return;
         }
 
-        //Begin scanning for LE devices
-        bluetoothScan.startScan();
+        init();
+
     }
+
+
 
     @Override
     protected void onPause() {
         super.onPause();
-
         applicationUI.onPauseOperation(this);
-
         // When application is paused turn on WiFi again
         if(!Connector.getConnector().WiFiEnabled())
             Connector.getConnector().enableWiFi();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if(!Connector.getConnector().WiFiEnabled())
-            Connector.getConnector().enableWiFi();
-
         bluetoothScan.getmBluetoothAdapter().disable();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if(!Connector.getConnector().WiFiEnabled())
             Connector.getConnector().enableWiFi();
-
         bluetoothScan.getmBluetoothAdapter().disable();
-
     }
 
     public Application getApplicationUI() {
         return applicationUI;
     }
-
-
     public BluetoothScan getBluetoothScan() {
         return bluetoothScan;
     }

@@ -286,6 +286,7 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
 
         if(Connector.getConnector().WiFiEnabled())
             Connector.getConnector().disableWiFi();
+
     }
 
     public boolean isLoopTest() {

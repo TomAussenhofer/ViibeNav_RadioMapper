@@ -192,7 +192,7 @@ public class DBHandler extends SQLiteOpenHelper {
             if(addInfo.hasCategoryInfo())
                 valuesAddInfo.put(COLUMN_CATEGORY, addInfo.getCategory());
 
-            db.insertOrThrow(TABLE_INFO, null, valuesAddInfo);
+            Log.d(TAG, " Insert table info  "+db.insertOrThrow(TABLE_INFO, null, valuesAddInfo));
 
             int infoID = getLastID(db,TABLE_INFO, INFO_COLUMN_ID);
             Log.d(TAG, "ID " + infoID);
@@ -223,7 +223,7 @@ public class DBHandler extends SQLiteOpenHelper {
             ContentValues valuesMedian = new ContentValues();
             valuesMedian.put(COLUMN_MEDIAN_VALUE, tmp.getMedianRSSI());
             valuesMedian.put(COLUMN_MACADDRESS, tmp.getMacAddressStr());
-            db.insert(TABLE_MEDIANS, null, valuesMedian);
+            Log.d(TAG, "Medianstable "+db.insert(TABLE_MEDIANS, null, valuesMedian));
 
             relatedMedians.add(getLastID(db,TABLE_MEDIANS, MEDIANS_COLUMN_ID));
         }

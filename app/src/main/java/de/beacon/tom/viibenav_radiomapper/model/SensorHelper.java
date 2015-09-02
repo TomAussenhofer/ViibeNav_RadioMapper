@@ -4,12 +4,17 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.os.Handler;
+import android.os.Message;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import de.beacon.tom.viibenav_radiomapper.controller.MainActivity;
 
@@ -48,6 +53,8 @@ public class SensorHelper {
         return orientation;
     }
 
+    private ScheduledExecutorService exec;
+
     public SensorHelper(Context c, ImageView arrowImage, TextView degreeTV) {
         mSensorManager = (SensorManager) c.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -59,7 +66,33 @@ public class SensorHelper {
         grad = 0;
         String text =  grad + "\u00B0";
         this.degreeTV.setText(text);
+
+        Runnable r = new Runnable(){
+            @Override
+            public void run() {
+                exec = Executors.newSingleThreadScheduledExecutor();
+                exec.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() {
+//                        Log.d("Measurement", OnyxBeacon.getBeaconMapAsList().size() + "");
+                        handler.sendEmptyMessage(0);
+                    }
+                }, 0, 750, TimeUnit.MILLISECONDS);
+
+            }
+        };
+        Thread th = new Thread(r);
+        th.start();
     }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            String text =  grad + "\u00B0";
+            String orientationStr = UserOrientation.getOrientationFromSensorHelper().toString();
+            degreeTV.setText(text + "|" + orientationStr);
+        }
+    };
 
     public void onResumeOperation(MainActivity n) {
         mSensorManager.registerListener(n, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
@@ -84,27 +117,7 @@ public class SensorHelper {
             SensorManager.getOrientation(mR, mOrientation);
             float azimuthInRadians = mOrientation[0];
             float azimuthInDegrees = (float) (Math.toDegrees(azimuthInRadians) + 360) % 360;
-
-            if (!calcInProgress) {
-                degreeValuesForMedian.add(azimuthInDegrees);
-                startTime = System.currentTimeMillis();
-                calcInProgress = true;
-                startTimerThread();
-            }
-            if (timeToAddValue) {
-                degreeValuesForMedian.add(azimuthInDegrees);
-                if (degreeValuesForMedian.size() < 10) {
-                    startTime = System.currentTimeMillis();
-                    timeToAddValue = false;
-                } else {
-                    timeToAddValue = false;
-                    calcInProgress = false;
-
-                    float median = Statistics.calcMedianFromFloat(degreeValuesForMedian);
-                    degreeValuesForMedian.clear();
-                    animateImage(median);
-                }
-            }
+            animateImage(azimuthInDegrees);
         }
     }
 
@@ -124,25 +137,12 @@ public class SensorHelper {
         mCurrentDegree = -degrees;
         grad = (int) -mCurrentDegree;
         orientation = grad;
-        String text =  grad + "\u00B0";
 
-        String orientationStr = UserOrientation.getOrientationFromSensorHelper().toString();
-        degreeTV.setText(text +"|"+orientationStr);
     }
 
-    private void startTimerThread() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                while (calcInProgress) {
-                    curTime = System.currentTimeMillis();
-                    long dif = curTime - startTime;
-                    if (dif >= 15) timeToAddValue = true;
-                }
-            }
-        };
 
-        Thread t = new Thread(r);
-        t.start();
+
+    public ScheduledExecutorService getExec() {
+        return exec;
     }
 }
