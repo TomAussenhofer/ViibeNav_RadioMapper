@@ -5,11 +5,12 @@ package de.beacon.tom.viibenav_radiomapper.model.dbmodels;
  */
 public class BeaconMedianToAnchorDBModel {
 
-    private int beacon_1, beacon_2, beacon_3, beacon_4, beacon_5, beacon_6;
+    private int id, beacon_1, beacon_2, beacon_3, beacon_4, beacon_5, beacon_6;
 
     private static BeaconMedianToAnchorDBModel[] allBeaconMedianToAnchor;
 
-    public BeaconMedianToAnchorDBModel(int beacon_1, int beacon_2, int beacon_3, int beacon_4, int beacon_5, int beacon_6) {
+    public BeaconMedianToAnchorDBModel(int id, int beacon_1, int beacon_2, int beacon_3, int beacon_4, int beacon_5, int beacon_6) {
+        this.id = id;
         this.beacon_1 = beacon_1;
         this.beacon_2 = beacon_2;
         this.beacon_3 = beacon_3;
@@ -48,5 +49,9 @@ public class BeaconMedianToAnchorDBModel {
 
     public int getBeacon_6() {
         return beacon_6;
+    }
+
+    public int getId() {
+        return id;
     }
 }

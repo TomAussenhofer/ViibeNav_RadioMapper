@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -23,11 +24,13 @@ import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
 import de.beacon.tom.viibenav_radiomapper.model.Person;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
+import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomBeaconMedianToAnchorAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListAnchorAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListBeaconAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListInfoAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListMedianAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.AnchorPointDBModel;
+import de.beacon.tom.viibenav_radiomapper.model.dbmodels.BeaconMedianToAnchorDBModel;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.InfoDBModel;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.MedianDBModel;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.OnyxBeaconDBModel;
@@ -54,6 +57,7 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
     CustomListBeaconAdapter customListBeaconAdapter;
     CustomListMedianAdapter customListMedianAdapter;
     CustomListInfoAdapter customListInfoAdapter;
+    CustomBeaconMedianToAnchorAdapter customBeacMedToAnchAdapter;
 
     ListView tableView;
     LinearLayout tableHeadView;
@@ -74,6 +78,7 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
         customListBeaconAdapter = new CustomListBeaconAdapter(this);
         customListMedianAdapter = new CustomListMedianAdapter(this);
         customListInfoAdapter = new CustomListInfoAdapter(this);
+        customBeacMedToAnchAdapter = new CustomBeaconMedianToAnchorAdapter(this);
 
         tableView = (ListView) findViewById(R.id.tableView);
         tableHeadView = (LinearLayout) findViewById(R.id.tableHeadView);
@@ -92,11 +97,12 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
     }
 
     private void initSpinner(){
-        tables = new String[4];
+        tables = new String[5];
         tables[0] = "AnchorPoint";
         tables[1] = "Beacon";
         tables[2] = "Median";
         tables[3] = "Info";
+        tables[4] = "BeacMedToAnch";
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, tables);
 
@@ -159,6 +165,9 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
                             break;
                         case 3:
                             infoListHandler.sendEmptyMessage(0);
+                            break;
+                        case 4:
+                            beacMedToAnchHandler.sendEmptyMessage(0);
                             break;
                     }
 
@@ -228,6 +237,13 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
                 infoListHandler.sendEmptyMessage(0);
                 selectedItem = 3;
                 break;
+            case 4:
+                tableView.setAdapter(customBeacMedToAnchAdapter);
+                tableHeadView.addView(getLayoutInflater().inflate(R.layout.testarea_beaconmediantoanchor_custom_row, null),
+                        tableHeadView.getLayoutParams().width, tableHeadView.getLayoutParams().height);
+                beacMedToAnchHandler.sendEmptyMessage(0);
+                selectedItem = 4;
+                break;
         }
     }
 
@@ -272,6 +288,19 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
             customListInfoAdapter.clear();
             customListInfoAdapter.addAll(InfoDBModel.getAllInfo());
             customListInfoAdapter.notifyDataSetChanged();
+        }
+    };
+
+    private Handler beacMedToAnchHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            DBHandler.getDB().getAllBeaconMedianToAnchor();
+
+            Log.d("ALLL", ""+BeaconMedianToAnchorDBModel.getAllBeaconMedianToAnchor()[0].getBeacon_1());
+
+            customBeacMedToAnchAdapter.clear();
+            customBeacMedToAnchAdapter.addAll(BeaconMedianToAnchorDBModel.getAllBeaconMedianToAnchor());
+            customBeacMedToAnchAdapter.notifyDataSetChanged();
         }
     };
 

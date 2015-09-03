@@ -224,10 +224,14 @@ public class DBHandler extends SQLiteOpenHelper {
             ContentValues valuesMedian = new ContentValues();
             valuesMedian.put(COLUMN_MEDIAN_VALUE, tmp.getMedianRSSI());
             valuesMedian.put(COLUMN_MACADDRESS, tmp.getMacAddressStr());
-//            Log.d(TAG, "Medianstable "+db.insert(TABLE_MEDIANS, null, valuesMedian));
+            db.insert(TABLE_MEDIANS, null, valuesMedian);
+
 
             relatedMedians.add(getLastID(db,TABLE_MEDIANS, MEDIANS_COLUMN_ID));
         }
+
+
+//        Log.d(TAG,"TEST SAVING: "+relatedMedians.get(0));
 
         // Insert Beacons Medians
         ContentValues valuesBeaconMedianToAnchor = new ContentValues();
@@ -304,7 +308,7 @@ public class DBHandler extends SQLiteOpenHelper {
 //            Log.d(TAG, "MEDIAN IN LOOP "+median);
 
             String query = "SELECT " + TABLE_ANCHORS + "." + COLUMN_FLOOR + "," + TABLE_ANCHORS + "." + COLUMN_X + ", " + TABLE_ANCHORS + "." + COLUMN_Y + "," + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + ", " + calcManhattenDB_Cmd(median) + " AS " + LOCAL_COLUMN_DEVIATION + " " +
-                    " FROM '" + TABLE_MEDIANS + "' JOIN '" + TABLE_BEACON_MEDIAN_TO_ANCHOR + "' WHERE macAddress = '" + macAddress  + "' AND " +
+                    " FROM '" + TABLE_MEDIANS + "' JOIN '" + TABLE_ANCHORS + "' JOIN '" + TABLE_BEACON_MEDIAN_TO_ANCHOR + "' WHERE macAddress = '" + macAddress  + "' AND " +
                     " ( "    + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_1 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + " " +
                     "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_2 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
                     "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_3 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
@@ -508,6 +512,7 @@ public class DBHandler extends SQLiteOpenHelper {
         // Move to the first row in your results
         c.moveToFirst();
 
+        int id = 0;
         int beacon_1 = 0;
         int beacon_2 = 0;
         int beacon_3 = 0;
@@ -516,17 +521,18 @@ public class DBHandler extends SQLiteOpenHelper {
         int beacon_6 = 0;
 
         while(!c.isAfterLast()){
+            id = c.getInt(c.getColumnIndex(BEACON_MEDIAN_TO_ANCHOR_ID));
             beacon_1 = c.getInt(c.getColumnIndex(COLUMN_BEACON_1));
             beacon_2 = c.getInt(c.getColumnIndex(COLUMN_BEACON_2));
             beacon_3 = c.getInt(c.getColumnIndex(COLUMN_BEACON_3));
             beacon_4 = c.getInt(c.getColumnIndex(COLUMN_BEACON_4));
             beacon_5 = c.getInt(c.getColumnIndex(COLUMN_BEACON_5));
             beacon_6 = c.getInt(c.getColumnIndex(COLUMN_BEACON_6));
-            res.add(new BeaconMedianToAnchorDBModel(beacon_1,beacon_2,beacon_3,beacon_4,beacon_5,beacon_6));
+            res.add(new BeaconMedianToAnchorDBModel(id,beacon_1,beacon_2,beacon_3,beacon_4,beacon_5,beacon_6));
             c.moveToNext();
         }
 
-        Log.d(TAG,"DONE FETCHING INFOLIST SIZE:"+res.size());
+        Log.d(TAG, "DONE FETCHING BEACMEDTOANCH SIZE:"+res.size());
         c.close();
         db.close();
         BeaconMedianToAnchorDBModel.setAllBeaconMedianToAnchor(res.toArray(new BeaconMedianToAnchorDBModel[res.size()]));

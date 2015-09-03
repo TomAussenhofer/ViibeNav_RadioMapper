@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 
 
 /**
@@ -81,6 +80,17 @@ public class Util {
                 res += data.get(i) + ",";
             else
                 res += data.get(i);
+        res += " }";
+        return res;
+    }
+
+    public static String intArrToString(int[] data){
+        String res = "{ ";
+        for(int i=0;i<data.length;i++)
+            if(i<data.length-1)
+                res += data[i] + ",";
+            else
+                res += data[i];
         res += " }";
         return res;
     }
