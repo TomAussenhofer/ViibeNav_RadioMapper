@@ -21,6 +21,7 @@ public class BeaconsToOrient {
 
     public BeaconsToOrient(HashMap<CharBuffer, OnyxBeacon> tmpBeaconMap, Orientation orientation) {
         OnyxBeacon[] beaconArray = OnyxBeacon.getBeaconMapAsArr(tmpBeaconMap);
+
         this.beaconArray = beaconArray;
         this.orientation = orientation;
     }

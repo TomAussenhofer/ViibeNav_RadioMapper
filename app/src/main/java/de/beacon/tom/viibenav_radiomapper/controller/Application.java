@@ -133,7 +133,7 @@ public class Application{
                     public void run() {
                         orientationHandler.sendEmptyMessage(0);
                     }
-                }, 0, 400, TimeUnit.MILLISECONDS);
+                }, 0, 250, TimeUnit.MILLISECONDS);
 
             }
         };

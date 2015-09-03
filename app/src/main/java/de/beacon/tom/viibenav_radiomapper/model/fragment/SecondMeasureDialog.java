@@ -60,6 +60,8 @@ public class SecondMeasureDialog  extends DialogFragment {
                     MainActivity main = (MainActivity) getActivity();
                     main.getApplicationUI().startMeasurement(false);
                     cleanUp();
+
+                    dismiss();
                 }
             });
 
@@ -68,6 +70,8 @@ public class SecondMeasureDialog  extends DialogFragment {
                 public void onClick(View view) {
                     SecondMeasureDialog.this.getDialog().cancel();
                     cleanUp();
+
+                    dismiss();
                 }
             });
                     // Add action buttons

@@ -98,7 +98,7 @@ public class Measurement {
 
                 if(firstMeasure) {
                     AnchorPoint a = new AnchorPoint(RadioMap.getRadioMap().getCoordinate());
-                    Log.d(TAG, "beacons size" + beacons.size());
+//                    Log.d(TAG, "beacons size" + beacons.size());
                     a.setMacToMedianWithOrientation(beacons);
 
                     RadioMap.getRadioMap().add(a);
@@ -119,6 +119,7 @@ public class Measurement {
 
                     cleanBeacons();
                 } else {
+                    Log.d(TAG, "Second measurement");
                     AnchorPoint a = RadioMap.getLastAnchor();
                     a.setMacToMedianWithOrientation(beacons);
                     if(a.isFrontAndBackSet())

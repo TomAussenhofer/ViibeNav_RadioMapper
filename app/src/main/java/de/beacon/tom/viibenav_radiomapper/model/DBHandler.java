@@ -234,8 +234,15 @@ public class DBHandler extends SQLiteOpenHelper {
         valuesBeaconMedianToAnchor.put(COLUMN_BEACON_2,relatedMedians.get(1));
         valuesBeaconMedianToAnchor.put(COLUMN_BEACON_3,relatedMedians.get(2));
         valuesBeaconMedianToAnchor.put(COLUMN_BEACON_4,relatedMedians.get(3));
-        valuesBeaconMedianToAnchor.put(COLUMN_BEACON_5,relatedMedians.get(4));
-        valuesBeaconMedianToAnchor.put(COLUMN_BEACON_6, relatedMedians.get(5));
+        if(relatedMedians.size()>4)
+            valuesBeaconMedianToAnchor.put(COLUMN_BEACON_5,relatedMedians.get(4));
+        else
+            valuesBeaconMedianToAnchor.put(COLUMN_BEACON_5,0);
+        if(relatedMedians.size()>5)
+            valuesBeaconMedianToAnchor.put(COLUMN_BEACON_6, relatedMedians.get(5));
+        else
+            valuesBeaconMedianToAnchor.put(COLUMN_BEACON_6, 0);
+
         db.insert(TABLE_BEACON_MEDIAN_TO_ANCHOR, null, valuesBeaconMedianToAnchor);
 
         return getLastID(db,TABLE_BEACON_MEDIAN_TO_ANCHOR, BEACON_MEDIAN_TO_ANCHOR_ID);
