@@ -10,19 +10,18 @@ import de.beacon.tom.viibenav_radiomapper.model.Coordinate;
  */
 public class AnchorPointDBModel {
 
-    private int _id;
     private Coordinate coord;
-    private ArrayList<Integer> medianList;
-    private int addInfoID;
+    private int _id,addInfoID,front_id,back_id;
 
 
     private static ArrayList<AnchorPointDBModel> allAnchors;
 
-    public AnchorPointDBModel(int _id, Coordinate coord, final ArrayList<Integer> medianList, int addInfoID) {
-        this._id = _id;
+    public AnchorPointDBModel(int id, Coordinate coord, int front_id, int back_id, int addInfoID) {
+        this._id = id;
         this.coord = coord;
-        this.medianList = medianList;
         this.addInfoID = addInfoID;
+        this.front_id = front_id;
+        this.back_id = back_id;
     }
 
 
@@ -30,8 +29,12 @@ public class AnchorPointDBModel {
         AnchorPointDBModel.allAnchors = allAnchors;
     }
 
-    public ArrayList<Integer> getAllMediansFromAnchor() {
-        return medianList;
+    public int getFront_id() {
+        return front_id;
+    }
+
+    public int getBack_id() {
+        return back_id;
     }
 
     public static ArrayList<AnchorPointDBModel> getAllAnchors() {

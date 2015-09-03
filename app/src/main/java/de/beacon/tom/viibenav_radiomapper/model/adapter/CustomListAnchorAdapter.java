@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.AnchorPointDBModel;
 
@@ -32,22 +30,16 @@ public class CustomListAnchorAdapter extends ArrayAdapter<AnchorPointDBModel> {
         AnchorPointDBModel a = getItem(position);
         TextView id = (TextView) customView.findViewById(R.id.dbAnchorID);
         TextView coord = (TextView) customView.findViewById(R.id.dbCoord);
-        TextView median = (TextView) customView.findViewById(R.id.dbAnchorMedian);
+        TextView front = (TextView) customView.findViewById(R.id.dbAnchorFrontID);
+        TextView back = (TextView) customView.findViewById(R.id.dbAnchorBackID);
         TextView info = (TextView) customView.findViewById(R.id.dbAnchorInfoID);
 
         id.setText("" + a.get_id());
         coord.setText("" + a.getCoord().getFloor()+" | " + a.getCoord().getX()+" | " + a.getCoord().getY()+" | ");
+        front.setText(""+a.getFront_id());
+        back.setText(""+a.getBack_id());
         info.setText(""+a.getAddInfoID());
 
-        String in = "";
-        ArrayList<Integer> tmpAllMedians = a.getAllMediansFromAnchor();
-        for(int i=0; i<tmpAllMedians.size();i++)
-            if(i<tmpAllMedians.size() - 1)
-                in += ""+tmpAllMedians.get(i)+",";
-            else
-                in += ""+ tmpAllMedians.get(i);
-
-        median.setText(in);
         return customView;
     }
 }

@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.AnchorPointDBModel;
+import de.beacon.tom.viibenav_radiomapper.model.dbmodels.BeaconMedianToAnchorDBModel;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.InfoDBModel;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.MedianDBModel;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.OnyxBeaconDBModel;
@@ -223,7 +224,7 @@ public class DBHandler extends SQLiteOpenHelper {
             ContentValues valuesMedian = new ContentValues();
             valuesMedian.put(COLUMN_MEDIAN_VALUE, tmp.getMedianRSSI());
             valuesMedian.put(COLUMN_MACADDRESS, tmp.getMacAddressStr());
-            Log.d(TAG, "Medianstable "+db.insert(TABLE_MEDIANS, null, valuesMedian));
+//            Log.d(TAG, "Medianstable "+db.insert(TABLE_MEDIANS, null, valuesMedian));
 
             relatedMedians.add(getLastID(db,TABLE_MEDIANS, MEDIANS_COLUMN_ID));
         }
@@ -264,11 +265,6 @@ public class DBHandler extends SQLiteOpenHelper {
         return ID;
     }
 
-    //Delete an anchor from the database
-    public void deleteAnchor(String anchorName){
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_ANCHORS + " WHERE " + anchorName + "=\"" + anchorName + "\";");
-    }
 
     public void deleteAllTables(){
         SQLiteDatabase db = getWritableDatabase();
@@ -276,7 +272,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_MEDIANS+"'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_BEACONS+"'");
         db.execSQL("DROP TABLE IF EXISTS '" + TABLE_INFO+"'");
-        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_BEACON_MEDIAN_TO_ANCHOR+"'");
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_BEACON_MEDIAN_TO_ANCHOR + "'");
         onCreate(db);
     }
 
@@ -366,6 +362,7 @@ public class DBHandler extends SQLiteOpenHelper {
             c.moveToNext();
         }
 
+        c.close();
         db.close();
         Coordinate coord = new Coordinate(floor,x,y);
         return coord;
@@ -387,27 +384,26 @@ public class DBHandler extends SQLiteOpenHelper {
         int y = 0;
         int floor = 0;
         int addInfoID = 0;
+        int front_id = 0;
+        int back_id = 0;
 
         while(!c.isAfterLast()){
             _id = c.getInt(c.getColumnIndex(ANCHORS_COLUMN_ID));
             x = c.getInt(c.getColumnIndex(COLUMN_X));
             y = c.getInt(c.getColumnIndex(COLUMN_Y));
             floor = c.getInt(c.getColumnIndex(COLUMN_FLOOR));
-            ArrayList<Integer> beaconIds = new ArrayList<>();
-            beaconIds.add(c.getInt(c.getColumnIndex(COLUMN_BEACON_1)));
-            beaconIds.add(c.getInt(c.getColumnIndex(COLUMN_BEACON_2)));
-            beaconIds.add(c.getInt(c.getColumnIndex(COLUMN_BEACON_3)));
-            beaconIds.add(c.getInt(c.getColumnIndex(COLUMN_BEACON_4)));
-            beaconIds.add(c.getInt(c.getColumnIndex(COLUMN_BEACON_5)));
-            beaconIds.add(c.getInt(c.getColumnIndex(COLUMN_BEACON_6)));
+
+            front_id = c.getInt(c.getColumnIndex(COLUMN_FRONT));
+            back_id = c.getInt(c.getColumnIndex(COLUMN_BACK));
+
             addInfoID = c.getInt(c.getColumnIndex(COLUMN_INFO_ID));
 
-            res.add(new AnchorPointDBModel(_id,new Coordinate(floor,x,y),beaconIds,addInfoID));
+            res.add(new AnchorPointDBModel(_id,new Coordinate(floor,x,y),front_id, back_id,addInfoID));
             c.moveToNext();
         }
 
-        Log.d(TAG, "DONE FETCHING ANCHORLIST " + res.size());
-//        Log.d(TAG, "DB "+DBHandler.getDB().databaseToString());
+        Log.d(TAG, "DONE FETCHING ANCHORLIST, SIZE:" + res.size());
+        c.close();
         db.close();
         AnchorPointDBModel.setAllAnchors(res);
     }
@@ -436,7 +432,8 @@ public class DBHandler extends SQLiteOpenHelper {
             c.moveToNext();
         }
 
-        Log.d(TAG, "DONE FETCHING BEACONSLIST " + res.size());
+        Log.d(TAG, "DONE FETCHING BEACONSLIST SIZE:" + res.size());
+        c.close();
         db.close();
         OnyxBeaconDBModel.setAllBeacons(res);
     }
@@ -463,7 +460,8 @@ public class DBHandler extends SQLiteOpenHelper {
             c.moveToNext();
         }
 
-        Log.d(TAG, "DONE FETCHING MEDIANSLIST " + res.size());
+        Log.d(TAG, "DONE FETCHING MEDIANSLIST SIZE:" + res.size());
+        c.close();
         db.close();
         MedianDBModel.setAllMedians(res);
     }
@@ -494,10 +492,47 @@ public class DBHandler extends SQLiteOpenHelper {
             c.moveToNext();
         }
 
-        Log.d(TAG,"DONE FETCHING INFOLIST "+res.size());
+        Log.d(TAG,"DONE FETCHING INFOLIST SIZE:"+res.size());
+        c.close();
         db.close();
         InfoDBModel.setAllInfo(res);
     }
+
+    public void getAllBeaconMedianToAnchor(){
+        ArrayList<BeaconMedianToAnchorDBModel> res = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM '"+TABLE_BEACON_MEDIAN_TO_ANCHOR + "';";
+
+        // Cursor point to a location in your results
+        Cursor c = db.rawQuery(query,null);
+        // Move to the first row in your results
+        c.moveToFirst();
+
+        int beacon_1 = 0;
+        int beacon_2 = 0;
+        int beacon_3 = 0;
+        int beacon_4 = 0;
+        int beacon_5 = 0;
+        int beacon_6 = 0;
+
+        while(!c.isAfterLast()){
+            beacon_1 = c.getInt(c.getColumnIndex(COLUMN_BEACON_1));
+            beacon_2 = c.getInt(c.getColumnIndex(COLUMN_BEACON_2));
+            beacon_3 = c.getInt(c.getColumnIndex(COLUMN_BEACON_3));
+            beacon_4 = c.getInt(c.getColumnIndex(COLUMN_BEACON_4));
+            beacon_5 = c.getInt(c.getColumnIndex(COLUMN_BEACON_5));
+            beacon_6 = c.getInt(c.getColumnIndex(COLUMN_BEACON_6));
+            res.add(new BeaconMedianToAnchorDBModel(beacon_1,beacon_2,beacon_3,beacon_4,beacon_5,beacon_6));
+            c.moveToNext();
+        }
+
+        Log.d(TAG,"DONE FETCHING INFOLIST SIZE:"+res.size());
+        c.close();
+        db.close();
+        BeaconMedianToAnchorDBModel.setAllBeaconMedianToAnchor(res.toArray(new BeaconMedianToAnchorDBModel[res.size()]));
+    }
+
+
 
     public String getDBPath(){
         return context.getDatabasePath(DBHandler.DATABASE_NAME).toString();
