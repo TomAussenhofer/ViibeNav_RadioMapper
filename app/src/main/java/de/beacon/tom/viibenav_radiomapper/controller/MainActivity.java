@@ -3,14 +3,12 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothManager;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +18,7 @@ import android.widget.Toast;
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
+import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
 import de.beacon.tom.viibenav_radiomapper.model.fragment.SettingsDialog;
 
 
@@ -46,6 +45,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         applicationUI = new Application(this);
         BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothScan = new BluetoothScan(applicationUI,manager.getAdapter());
+        SensorHelper sh = SensorHelper.getSensorHelper(this);
 
         // Turn Off WiFi signals on activity start as it mitigates position estimation
         if(Connector.getConnector().WiFiEnabled())
@@ -98,19 +98,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) { }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        switch(requestCode){
-            case 1:
-                if(resultCode == 1){
-                    Log.d("MAIN", "Hier angekommen :)");
-                }
-                break;
-        }
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -5,8 +5,8 @@
     android:weightSum="1">
 
     <RelativeLayout
-        android:layout_width="220dp"
-        android:layout_height="61dp"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
         android:background="#06c36b">
 
         <TextView
@@ -20,8 +20,9 @@
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -35,7 +36,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Werte Messen"
+                android:text="Werte\nMessen"
                 android:id="@+id/dialog_second_measure_measure"
                 android:layout_marginTop="40dp" />
 
@@ -81,14 +82,14 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imageView2"
+                    android:id="@+id/dialog_second_measure_arrowImageView"
                     android:src="@mipmap/arrow2_gelb"
                     android:layout_toStartOf="@+id/dialog_second_measure_degreeTV"
                     android:layout_below="@+id/dialog_second_measure_degreeTV"
-                    android:layout_margin="20dp" />
+                    android:layout_margin="25dp" />
             </LinearLayout>
 
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

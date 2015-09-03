@@ -13,6 +13,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.AddInfo;
@@ -30,7 +33,6 @@ public class Application{
     private static final String TAG = "Application";
 
     public MainActivity main;
-    private SensorHelper sensorHelper;
 
     /*
     GUI elements
@@ -61,9 +63,13 @@ public class Application{
 
     private Layer3 layer3;
 
+    private ScheduledExecutorService execOrientation;
+    private SensorHelper sh;
+
     Application(MainActivity main){
         this.main = main;
         measurement = new Measurement();
+        sh = SensorHelper.getSensorHelper(main.getApplicationContext());
 
         // initialize GUI elemnts
         initGUI();
@@ -90,27 +96,58 @@ public class Application{
     }
 
     private void initHandler(){
-        sensorHelper = new SensorHelper(main.getApplicationContext(), arrowImage, degreeTV);
+        Log.d(TAG,"null? "+(arrowImage == null));
+        execScheduled();
 
         calcMediansHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 // sets device state to measuring, which deactivates GUI elements
-                measurement.setState(Measurement.State.isMeasuring);
-                ArrayList<OnyxBeacon> calcBeacons = new ArrayList<>();
-                int amountOfMeasuredBeacons = 0;
-                Iterator it = OnyxBeacon.filterSurroundingBeacons().iterator();
-                while (it.hasNext()) {
-                    amountOfMeasuredBeacons++;
-                    OnyxBeacon tmp = (OnyxBeacon) it.next();
-                    tmp.setMeasurementStarted(true);
-                    calcBeacons.add(tmp);
-                }
-                Log.d(TAG,"MESSE BEACONS: "+calcBeacons.size());
-                measurement.overallCalcProgress(System.currentTimeMillis(), calcBeacons, main, true);
+                startMeasurement(true);
             }
         };
     }
+
+    public void startMeasurement(boolean firstMeasurement){
+        measurement.setState(Measurement.State.isMeasuring);
+        ArrayList<OnyxBeacon> calcBeacons = new ArrayList<>();
+        int amountOfMeasuredBeacons = 0;
+        Iterator it = OnyxBeacon.filterSurroundingBeacons().iterator();
+        while (it.hasNext()) {
+            amountOfMeasuredBeacons++;
+            OnyxBeacon tmp = (OnyxBeacon) it.next();
+            tmp.setMeasurementStarted(true);
+            calcBeacons.add(tmp);
+        }
+        Log.d(TAG, "MESSE BEACONS: " + calcBeacons.size());
+        measurement.overallCalcProgress(System.currentTimeMillis(), calcBeacons, main, firstMeasurement);
+    }
+
+    public void execScheduled() {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                execOrientation = Executors.newSingleThreadScheduledExecutor();
+                execOrientation.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() {
+                        orientationHandler.sendEmptyMessage(0);
+                    }
+                }, 0, 400, TimeUnit.MILLISECONDS);
+
+            }
+        };
+        Thread th = new Thread(r);
+        th.start();
+    }
+
+    private Handler orientationHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            sh.animateImage(arrowImage);
+            sh.updateTextView(degreeTV);
+        }
+    };
 
     /**
      * By invoking this method you start median measurement for the beacons found nearby.
@@ -120,9 +157,9 @@ public class Application{
         calcMediansHandler.sendEmptyMessage(0);
     }
 
-    public void onSensorChangedOperation(SensorEvent event){sensorHelper.onSensorChangedOperation(event);}
-    public void onResumeOperation(MainActivity n){sensorHelper.onResumeOperation(n);}
-    public void onPauseOperation(MainActivity n){sensorHelper.onPauseOperation(n);}
+    public void onSensorChangedOperation(SensorEvent event){sh.onSensorChangedOperation(event);}
+    public void onResumeOperation(MainActivity n){sh.onResumeOperation(n);}
+    public void onPauseOperation(MainActivity n){sh.onPauseOperation(n);}
 
     public void updateLayer1(){
         totalAnchor.setText("" + RadioMap.size());
@@ -149,7 +186,6 @@ public class Application{
         }
         tempRSSIsView.setText(tempRSSIs);
     }
-
 
     public void clickUp(View view){
         layer3.clickUp(view);
@@ -182,5 +218,9 @@ public class Application{
 
     public AddInfo getAddInfo() {
         return addInfo;
+    }
+
+    public ScheduledExecutorService getExecOrientation() {
+        return execOrientation;
     }
 }

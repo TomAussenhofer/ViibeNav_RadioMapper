@@ -1,15 +1,16 @@
 package de.beacon.tom.viibenav_radiomapper.controller;
 
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.beacon.tom.viibenav_radiomapper.model.AnchorPoint;
+import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
 import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 import de.beacon.tom.viibenav_radiomapper.model.Person;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
@@ -57,7 +58,8 @@ public class Measurement {
             dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
-                    cleanUp();
+                    cleanBeacons();
+                    cleanAddInfo();
                 }
             });
             dialog.show();
@@ -75,7 +77,6 @@ public class Measurement {
                         it.remove();
                     }
                 }
-
                 // break out if list is empty = all calcs are done
                 if(beacons.isEmpty())
                     setState(State.notMeasuring);
@@ -97,32 +98,46 @@ public class Measurement {
 
                 if(firstMeasure) {
                     AnchorPoint a = new AnchorPoint(RadioMap.getRadioMap().getCoordinate());
+                    Log.d(TAG, "beacons size" + beacons.size());
                     a.setMacToMedianWithOrientation(beacons);
 
                     RadioMap.getRadioMap().add(a);
+
                     main.getApplicationUI().updateLayer1();
 
-                    DialogFragment smd = new SecondMeasureDialog();
-                    smd.setTargetFragment(smd, 1);
-                    smd.show(main.getFragmentManager(), "MyDF");
+                    Boolean frontMeasuredFirst = false;
+                    if(a.getFront() != null)
+                        frontMeasuredFirst = true;
+                    else if (a.getBack() != null)
+                        frontMeasuredFirst = false;
 
+                    SecondMeasureDialog dialog = new SecondMeasureDialog();
+                    Bundle b = new Bundle();
+                    b.putBoolean("frontMeasuredFirst",frontMeasuredFirst);
+                    dialog.setArguments(b);
+                    dialog.show(main.getFragmentManager(), "dialog");
 
-                    overallCalcProgress(System.currentTimeMillis(), OnyxBeacon.filterSurroundingBeacons(), main, false);
+                    cleanBeacons();
                 } else {
                     AnchorPoint a = RadioMap.getLastAnchor();
-//                    if(a.isFrontAndBackSet())
-//                        DBHandler.getDB().addAnchor(a,main.getApplicationUI().getAddInfo());
+                    a.setMacToMedianWithOrientation(beacons);
+                    if(a.isFrontAndBackSet())
+                        DBHandler.getDB().addAnchor(a,main.getApplicationUI().getAddInfo());
                 }
 
-                cleanUp();
+                cleanAddInfo();
+                cleanBeacons();
         }
 
-        private void cleanUp(){
-            for(OnyxBeacon b : this.beacons) {
+        private void cleanBeacons(){
+            for(OnyxBeacon b : this.beacons)
                 b.resetMedianMeasurement();
-            }
+        }
+
+        private void cleanAddInfo(){
             main.getApplicationUI().getAddInfo().reset();
         }
+
 
     }
 

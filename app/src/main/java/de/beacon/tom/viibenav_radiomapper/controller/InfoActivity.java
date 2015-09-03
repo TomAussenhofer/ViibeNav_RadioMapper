@@ -82,5 +82,6 @@ public class InfoActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
     }
 }
