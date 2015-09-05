@@ -3,6 +3,7 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -59,6 +60,11 @@ public class MainActivity extends Activity implements SensorEventListener {
         return true;
     }
 
+
+    public void exportClicked(View view){
+        Intent i = new Intent(this, ExportImportDB.class);
+        startActivityForResult(i, 0);
+    }
 
     public void prefsClicked(View view){ applicationUI.prefsClicked(view); }
 
@@ -132,9 +138,6 @@ public class MainActivity extends Activity implements SensorEventListener {
             finish();
             return;
         }
-
-        init();
-
     }
 
 
@@ -143,6 +146,31 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onPause() {
         super.onPause();
         applicationUI.onPauseOperation(this);
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+//        onBackPressed();
+    }
+
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        switch(keyCode){
+//            case KeyEvent.KEYCODE_BACK:
+//                onBackPressed();
+//                break;
+//            case KeyEvent.KEYCODE_MOVE_HOME:
+//                onBackPressed();
+//                break;
+//            case KeyEvent.KEYCODE_HOME:
+//                onBackPressed();
+//                break;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+
+    private void cleanUp(){
         // When application is paused turn on WiFi again
         if(!Connector.getConnector().WiFiEnabled())
             Connector.getConnector().enableWiFi();
@@ -154,7 +182,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         super.onDestroy();
         if(!Connector.getConnector().WiFiEnabled())
             Connector.getConnector().enableWiFi();
-        bluetoothScan.getmBluetoothAdapter().disable();
+//        bluetoothScan.getmBluetoothAdapter().disable();
     }
 
     public Application getApplicationUI() {

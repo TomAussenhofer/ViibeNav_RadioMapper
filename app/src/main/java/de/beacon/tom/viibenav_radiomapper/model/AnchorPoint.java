@@ -12,6 +12,8 @@ public class AnchorPoint {
 
     private Coordinate coordinate;
 
+    private AddInfo addInfo;
+
     /**
      * contains an array of MacAddresses mapped to medians
      * 90 degrees - 270 degrees
@@ -84,5 +86,13 @@ public class AnchorPoint {
 
     public void setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
+    }
+
+    public AddInfo getAddInfo() {
+        return addInfo;
+    }
+
+    public void setAddInfo(AddInfo addInfo) {
+        this.addInfo = addInfo;
     }
 }

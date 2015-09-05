@@ -29,6 +29,10 @@ public class Util {
         return Double.parseDouble(df.format(data).replaceAll(",", "."));
     }
 
+    public static float twoDecimals(float data){
+        return Float.parseFloat(df.format(data).replaceAll(",", "."));
+    }
+
     /**
      * Converts the Value of a textView to an Integer
      * @param t

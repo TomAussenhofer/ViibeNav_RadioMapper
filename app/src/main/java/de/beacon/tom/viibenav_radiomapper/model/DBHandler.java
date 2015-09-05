@@ -106,7 +106,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 ");";
         db.execSQL(query1);
 
-        // CREATE MEDIANS TABLE - laut: http://www.w3schools.com/sql/sql_foreignkey.asp
+        // CREATE MEDIANS TABLE
         String query2 = "CREATE TABLE "+ TABLE_MEDIANS + "(" +
                 "'"+ MEDIANS_COLUMN_ID +"'"+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "'"+ COLUMN_MEDIAN_VALUE+"'"+ " INTEGER, "+
@@ -163,7 +163,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // Add a new row to the database
-    public void addAnchor(AnchorPoint a, AddInfo addInfo){
+    public void addAnchor(AnchorPoint a){
         SQLiteDatabase db = getWritableDatabase();
 
         int anchor_COLUMN_ID_FRONT = getBeaconMedianToAnchorID(db,a.getFront());
@@ -177,6 +177,10 @@ public class DBHandler extends SQLiteOpenHelper {
         valuesAnchor.put(COLUMN_FLOOR, a.getCoordinate().getFloor());
         valuesAnchor.put(COLUMN_FRONT, anchor_COLUMN_ID_FRONT);
         valuesAnchor.put(COLUMN_BACK, anchor_COLUMN_ID_BACK);
+
+        AddInfo addInfo = a.getAddInfo();
+        Log.d(TAG,a.getAddInfo().getPerson_name());
+
 
         // Add Additional Info
         if(addInfo.hasAddInfo()){
@@ -196,7 +200,6 @@ public class DBHandler extends SQLiteOpenHelper {
             Log.d(TAG, " Insert table info  "+db.insertOrThrow(TABLE_INFO, null, valuesAddInfo));
 
             int infoID = getLastID(db,TABLE_INFO, INFO_COLUMN_ID);
-            Log.d(TAG, "ID " + infoID);
             valuesAnchor.put(COLUMN_INFO_ID, infoID);
         }
 
@@ -329,7 +332,7 @@ public class DBHandler extends SQLiteOpenHelper {
             while (!c.isAfterLast()) {
                 Coordinate coordinate = new Coordinate(c.getInt(c.getColumnIndex(COLUMN_FLOOR)), c.getInt(c.getColumnIndex(COLUMN_X)), c.getInt(c.getColumnIndex(COLUMN_Y)));
 
-                double deviation = c.getInt(c.getColumnIndex(LOCAL_COLUMN_DEVIATION));
+                float deviation = c.getInt(c.getColumnIndex(LOCAL_COLUMN_DEVIATION));
                 devsToCoords.add(new DeviationToCoord(deviation, coordinate));
 
                 Log.d(TAG, "Deviation-Median" + c.getInt(c.getColumnIndex(MEDIANS_COLUMN_ID)) +

@@ -7,7 +7,6 @@ import java.util.Iterator;
 
 import de.beacon.tom.viibenav_radiomapper.model.Coordinate;
 import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
-import de.beacon.tom.viibenav_radiomapper.model.UserOrientation;
 import de.beacon.tom.viibenav_radiomapper.model.Util;
 import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 import de.beacon.tom.viibenav_radiomapper.model.position.PositionAlgorithm;
@@ -27,13 +26,8 @@ import de.beacon.tom.viibenav_radiomapper.model.position.PositionAlgorithm;
  */
 public class Ewknn implements PositionAlgorithm {
 
-    private static int threshold;
-    private static int limit;
-
-    static{
-        threshold = 6;
-        limit = 5;
-    }
+    private static int threshold = 6;
+    private static int limit = 5;
 
     @Override
     public Coordinate estimatePos(MacToMedian[] map){
@@ -73,19 +67,19 @@ public class Ewknn implements PositionAlgorithm {
      * @return
      */
     private Coordinate estimatePosFromData(ArrayList<DeviationToCoord> data){
-        double numerator_FLOOR = 0;
-        double denominator_FLOOR = 0;
+        float numerator_FLOOR = 0;
+        float denominator_FLOOR = 0;
 
-        double numerator_X = 0;
-        double denominator_X = 0;
+        float numerator_X = 0;
+        float denominator_X = 0;
 
-        double numerator_Y = 0;
-        double denominator_Y = 0;
+        float numerator_Y = 0;
+        float denominator_Y = 0;
 
         for(DeviationToCoord tmp : data){
             // to prevent NaN and Infinity error by dividing through 0
             // we choose a very small deviation like: 0,0000001
-            double deviation = tmp.getdeviation()!=0 ? tmp.getdeviation() : 0.0000001;
+            float deviation = tmp.getdeviation()!=0 ? tmp.getdeviation() : 1;
 
             numerator_FLOOR += (1/deviation*tmp.getCoordinate().getFloor());
             numerator_X += (1/deviation*tmp.getCoordinate().getX());
@@ -96,11 +90,11 @@ public class Ewknn implements PositionAlgorithm {
             denominator_Y += (1/deviation);
         }
 
-        Log.d(TAG, "CHECK BUG: -NaN and -Infinity: " + numerator_FLOOR + " + " + denominator_FLOOR);
+//        Log.d(TAG, "CHECK BUG: -NaN and -Infinity: " + numerator_FLOOR + " + " + denominator_FLOOR);
 
-        final double estimate_FLOOR = numerator_FLOOR/denominator_FLOOR;
-        final double estimate_X = numerator_X/denominator_X;
-        final double estimate_Y = numerator_Y/denominator_Y;
+        final float estimate_FLOOR = numerator_FLOOR/denominator_FLOOR;
+        final float estimate_X = numerator_X/denominator_X;
+        final float estimate_Y = numerator_Y/denominator_Y;
 
         return new Coordinate (Util.twoDecimals(estimate_FLOOR),Util.twoDecimals(estimate_X),Util.twoDecimals(estimate_Y));
     }

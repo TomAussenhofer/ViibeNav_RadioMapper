@@ -211,7 +211,7 @@ public class Application{
     }
 
     public void createInfo(View view){
-        AddInfoDialog aid = new AddInfoDialog(this);
+        AddInfoDialog aid = new AddInfoDialog();
         DialogFragment dialogFrag = aid;
         aid.show(main.getFragmentManager(), "MyDF");
     }

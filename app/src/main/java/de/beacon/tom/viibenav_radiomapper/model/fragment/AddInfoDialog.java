@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,7 +14,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import de.beacon.tom.viibenav_radiomapper.R;
-import de.beacon.tom.viibenav_radiomapper.controller.Application;
+import de.beacon.tom.viibenav_radiomapper.controller.MainActivity;
 
 
 /**
@@ -21,14 +22,11 @@ import de.beacon.tom.viibenav_radiomapper.controller.Application;
  */
 public class AddInfoDialog extends DialogFragment {
 
-    private Application application;
-
-    public AddInfoDialog(Application application) {
-        this.application = application;
-    }
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        final MainActivity main = (MainActivity) getActivity();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -59,10 +57,12 @@ public class AddInfoDialog extends DialogFragment {
         builder.setPositiveButton(R.string.add_info, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                application.getAddInfo().setEnvironment(environmentText.getText().toString());
-                application.getAddInfo().setPerson_name(person_nameText.getText().toString());
-                application.getAddInfo().setRoom_name(room_nameText.getText().toString());
-                application.getAddInfo().setCategory(category.getText().toString());
+                main.getApplicationUI().getAddInfo().setEnvironment(environmentText.getText().toString());
+                main.getApplicationUI().getAddInfo().setPerson_name(person_nameText.getText().toString());
+                main.getApplicationUI().getAddInfo().setRoom_name(room_nameText.getText().toString());
+                main.getApplicationUI().getAddInfo().setCategory(category.getText().toString());
+
+                Log.d("AddInfoDialog",main.getApplicationUI().getAddInfo().getPerson_name());
             }
         });
         builder.setNegativeButton(R.string.cancel_info, new DialogInterface.OnClickListener() {

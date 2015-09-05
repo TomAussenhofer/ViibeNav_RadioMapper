@@ -15,6 +15,7 @@ import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 import de.beacon.tom.viibenav_radiomapper.model.Person;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
 import de.beacon.tom.viibenav_radiomapper.model.fragment.SecondMeasureDialog;
+import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 
 
 /**
@@ -100,6 +101,7 @@ public class Measurement {
                     AnchorPoint a = new AnchorPoint(RadioMap.getRadioMap().getCoordinate());
 //                    Log.d(TAG, "beacons size" + beacons.size());
                     a.setMacToMedianWithOrientation(beacons);
+                    a.setAddInfo(main.getApplicationUI().getAddInfo());
 
                     RadioMap.getRadioMap().add(a);
 
@@ -121,13 +123,15 @@ public class Measurement {
                 } else {
                     Log.d(TAG, "Second measurement");
                     AnchorPoint a = RadioMap.getLastAnchor();
+                    Log.d(TAG, "VALUE"+a.getAddInfo().getPerson_name());
                     a.setMacToMedianWithOrientation(beacons);
-                    if(a.isFrontAndBackSet())
-                        DBHandler.getDB().addAnchor(a,main.getApplicationUI().getAddInfo());
-                }
 
-                cleanAddInfo();
-                cleanBeacons();
+                    if(a.isFrontAndBackSet())
+                        DBHandler.getDB().addAnchor(a);
+
+                    cleanAddInfo();
+                    cleanBeacons();
+                }
         }
 
         private void cleanBeacons(){
@@ -203,15 +207,17 @@ public class Measurement {
             while(isMeasuring()) {
                 Iterator<OnyxBeacon> it = beacons.iterator();
                 while (it.hasNext()) {
-                    if (it.next().isMeasurementDone()) {
+                    OnyxBeacon tmp = it.next();
+                    if (tmp.isMeasurementDone()) {
                         publishProgress(1);
                         it.remove();
                     }
+                    if(beacons.isEmpty())
+                        setState(State.notMeasuring);
+//                    Log.d(TAG, "MeasurementDone: "+tmp.isMeasurementDone());
                 }
-
                 // break out if list is empty = all calcs are done
-                if(beacons.isEmpty())
-                    setState(State.notMeasuring);
+
             }
             dialog.dismiss();
 
@@ -225,9 +231,10 @@ public class Measurement {
 
         @Override
         protected void onPostExecute(String result) {
+            Log.d(TAG,"ONPOST EXECUTE");
 
-//            MacToMedian[] data = Util.listToMacToMedianArr(beacons);
-//            person.estimatePos(data);
+            MacToMedian[] data = MacToMedian.listToMacToMedianArr(beacons);
+            person.estimatePos(data);
             cleanUp();
             person.checkLoop();
         }

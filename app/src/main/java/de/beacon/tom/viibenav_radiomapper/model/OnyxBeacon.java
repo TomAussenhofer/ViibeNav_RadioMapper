@@ -146,6 +146,7 @@ public class OnyxBeacon {
 
     public static ArrayList<OnyxBeacon> filterSurroundingBeacons(){
         ArrayList<OnyxBeacon> res = (ArrayList<OnyxBeacon>)getBeaconMapAsList();
+//        Log.d(TAG, "Beacon MAP SIZE: "+beaconMap.size());
         Iterator it = res.iterator();
         while(it.hasNext()){
             OnyxBeacon tmp = (OnyxBeacon) it.next();
@@ -157,6 +158,7 @@ public class OnyxBeacon {
                 it.remove();
             }
         }
+//        Log.d(TAG, "Beacon RES SIZE: "+res.size());
         return res;
     }
 

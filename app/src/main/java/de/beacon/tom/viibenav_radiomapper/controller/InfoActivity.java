@@ -65,10 +65,12 @@ public class InfoActivity extends Activity {
         }
     };
 
+    @Override
     public void onBackPressed(){
         exec.shutdown();
         super.onBackPressed();
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
