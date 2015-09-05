@@ -340,6 +340,8 @@ public class DBHandler extends SQLiteOpenHelper {
                         " -> Coord: " + coordinate + " macAddress " + macAddress);
                 c.moveToNext();
             }
+
+            c.close();
         }
         db.close();
 //        return devsToCoords.toArray(new DeviationToCoord[devsToCoords.size()]);
