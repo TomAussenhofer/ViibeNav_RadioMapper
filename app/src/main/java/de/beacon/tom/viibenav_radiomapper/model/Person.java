@@ -50,7 +50,6 @@ public class Person {
                 tmp.setMeasurementStarted(true);
         }
         measurement.overallOnTheFlyCalcProcess(surrounding, this);
-
     }
 
     public void estimatePos(MacToMedian[] data){

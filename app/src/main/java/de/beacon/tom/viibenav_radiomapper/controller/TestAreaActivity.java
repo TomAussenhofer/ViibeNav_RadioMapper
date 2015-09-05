@@ -283,7 +283,7 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
     private Handler infoListHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            DBHandler.getDB().getAllInfo();
+            DBHandler.getDB().retrieveAllInfo();
 
             customListInfoAdapter.clear();
             customListInfoAdapter.addAll(InfoDBModel.getAllInfo());

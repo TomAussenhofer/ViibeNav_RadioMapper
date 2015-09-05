@@ -473,7 +473,7 @@ public class DBHandler extends SQLiteOpenHelper {
         MedianDBModel.setAllMedians(res);
     }
 
-    public void getAllInfo(){
+    public void retrieveAllInfo(){
         ArrayList<InfoDBModel> res = new ArrayList<>();
         SQLiteDatabase db = getWritableDatabase();
         String query = "SELECT * FROM '"+TABLE_INFO + "';";
