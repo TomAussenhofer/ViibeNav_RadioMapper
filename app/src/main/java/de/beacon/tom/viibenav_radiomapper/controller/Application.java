@@ -96,7 +96,6 @@ public class Application{
     }
 
     private void initHandler(){
-        Log.d(TAG,"null? "+(arrowImage == null));
         execScheduled();
 
         calcMediansHandler = new Handler(){
