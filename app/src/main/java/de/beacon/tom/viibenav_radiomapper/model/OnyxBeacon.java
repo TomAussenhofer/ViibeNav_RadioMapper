@@ -113,7 +113,7 @@ public class OnyxBeacon {
                 Log.d(TAG, "Calculated Median is: " + medianRSSI + " | mac: " + macAddress);
                 measurementDone = true;
             }
-        Log.d(TAG, "check STATE: "+measurementStarted);
+//        Log.d(TAG, "check STATE: "+measurementStarted);
     }
 
     public boolean isMeasurementDone(){
