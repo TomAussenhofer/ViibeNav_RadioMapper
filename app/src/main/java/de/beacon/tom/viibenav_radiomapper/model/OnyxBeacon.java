@@ -1,5 +1,8 @@
 package de.beacon.tom.viibenav_radiomapper.model;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.nio.CharBuffer;
@@ -41,16 +44,16 @@ public class OnyxBeacon {
         beaconMap = new HashMap<>();
     }
 
-    public OnyxBeacon(CharBuffer deviceAddress, String uuid, int major, int minor, int rssi, int txPower) {
+    public OnyxBeacon(CharBuffer deviceAddress, String uuid, int major, int minor, int rssi, int txPower, long lastSignalMeasured) {
         this.macAddress = deviceAddress;
         this.uuid = uuid;
         this.major = major;
         this.minor = minor;
         this.rssi = rssi;
         this.txPower = txPower;
+        this.lastSignalMeasured = lastSignalMeasured;
 
         init();
-        addBeaconToHashMap(this);
     }
 
     private void init(){
@@ -59,11 +62,17 @@ public class OnyxBeacon {
         measurementRSSIs = new ArrayList<>();
     }
 
-    private void addBeaconToHashMap(OnyxBeacon beacon){
+    public static void addBeaconToHashMap(Context c,OnyxBeacon beacon){
         if(beacon == null)
             throw new NullPointerException("Can Not Add a NULL beacon to HashMap!");
         // puts the Beacon object in the HashMap
-        beaconMap.put(macAddress, beacon);
+        if(!beaconMap.containsKey(beacon.getMacAddress())) {
+            beaconMap.put(beacon.getMacAddress(), beacon);
+
+            Intent intent = new Intent("minIDadded");
+            intent.putExtra("minID", true);
+            LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
+        }
     }
 
     /**
@@ -104,7 +113,7 @@ public class OnyxBeacon {
                 Log.d(TAG, "Calculated Median is: " + medianRSSI + " | mac: " + macAddress);
                 measurementDone = true;
             }
-
+        Log.d(TAG, "check STATE: "+measurementStarted);
     }
 
     public boolean isMeasurementDone(){
@@ -119,8 +128,8 @@ public class OnyxBeacon {
         if(measurementRSSIs.size()<Setup.MEASUREMENT_AMT_THRESHOLD) {
             measurementRSSIs.add(rssi);
             return false;
-        } else
-            measurementStarted = false;
+        }
+        measurementStarted = false;
         return true;
     }
 

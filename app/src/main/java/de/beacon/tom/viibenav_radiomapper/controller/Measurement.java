@@ -36,7 +36,7 @@ public class Measurement {
     private boolean firstMeasure;
     private long start;
 
-    public void overallCalcProgress(final long start, final ArrayList<OnyxBeacon> beacons, final MainActivity main, boolean firstMeasure){
+    public void overallCalcProgress(final long start, final ArrayList<OnyxBeacon> beacons, MainActivity main, boolean firstMeasure){
             this.main = main;
             this.start = start;
             this.firstMeasure = firstMeasure;

@@ -1,10 +1,14 @@
 package de.beacon.tom.viibenav_radiomapper.controller;
 
 import android.app.DialogFragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.SensorEvent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -53,7 +57,7 @@ public class Application{
     private TextView totalAnchor,lastX,lastY,lastEtage;
 
     // Layer 2
-    private TextView anzahlBeaconView,tempRSSIsView,degreeTV;
+    private TextView anzahlBeaconView,minIDsFeld,degreeTV;
     private ImageView arrowImage;
 
     private Handler calcMediansHandler;
@@ -65,6 +69,8 @@ public class Application{
 
     private ScheduledExecutorService execOrientation;
     private SensorHelper sh;
+
+    private BroadcastReceiver mReceiver;
 
     Application(MainActivity main){
         this.main = main;
@@ -86,7 +92,7 @@ public class Application{
 
         // Layer 2
         anzahlBeaconView = (TextView) main.findViewById(R.id.anzahlBeaconFeld);
-        tempRSSIsView = (TextView) main.findViewById(R.id.tempRSSIFeld);
+        minIDsFeld = (TextView) main.findViewById(R.id.minIDsFeld);
         arrowImage = (ImageView) main.findViewById(R.id.arrowImageView);
         degreeTV = (TextView) main.findViewById(R.id.dialog_second_measure_degreeTV);
 
@@ -96,6 +102,18 @@ public class Application{
     }
 
     private void initHandler(){
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                    boolean minIDadded = intent.getBooleanExtra("minID",false);
+                Log.d(TAG, "new MinID");
+                    if(minIDadded == true)
+                        updateLayer2();
+            }
+        };
+
+        LocalBroadcastManager.getInstance(main).registerReceiver(mReceiver,new IntentFilter("minIDadded"));
+
         execScheduled();
 
         calcMediansHandler = new Handler(){
@@ -110,10 +128,8 @@ public class Application{
     public void startMeasurement(boolean firstMeasurement){
         measurement.setState(Measurement.State.isMeasuring);
         ArrayList<OnyxBeacon> calcBeacons = new ArrayList<>();
-        int amountOfMeasuredBeacons = 0;
         Iterator it = OnyxBeacon.filterSurroundingBeacons().iterator();
         while (it.hasNext()) {
-            amountOfMeasuredBeacons++;
             OnyxBeacon tmp = (OnyxBeacon) it.next();
             tmp.setMeasurementStarted(true);
             calcBeacons.add(tmp);
@@ -169,21 +185,17 @@ public class Application{
 
     public void updateLayer2(){
         anzahlBeaconView.setText(""+OnyxBeacon.beaconMap.size());
-        String tempRSSIs = "";
+        String minIDs = "";
         Iterator it = OnyxBeacon.beaconMap.entrySet().iterator();
         int count = 0;
         while (it.hasNext()) {
             count++;
             Map.Entry<String,OnyxBeacon> pair = (Map.Entry)it.next();
-            if(tempRSSIs.isEmpty())
-                tempRSSIs += "" + pair.getValue().getRssi();
-            else {
-                tempRSSIs += "|" + pair.getValue().getRssi();
+                minIDs += "|" + pair.getValue().getRssi();
                 if((count % 4) == 0)
-                    tempRSSIs += System.lineSeparator();
-            }
+                    minIDs += System.lineSeparator();
         }
-        tempRSSIsView.setText(tempRSSIs);
+        minIDsFeld.setText(minIDs);
     }
 
     public void clickUp(View view){

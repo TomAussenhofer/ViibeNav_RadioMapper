@@ -31,10 +31,12 @@ public class BluetoothScan {
     private BluetoothLeScanner mBluetoothLeScanner;
 
     private static BluetoothScan singleton;
-
+    private Advertisement advert;
     private BroadcastReceiver mReceiver;
 
     private BluetoothScan(Activity act) {
+        advert = new Advertisement(act.getApplicationContext());
+
         BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
         this.mBluetoothAdapter = manager.getAdapter();
         this.mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
@@ -76,12 +78,6 @@ public class BluetoothScan {
         // Register for broadcasts on BluetoothAdapter state change
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         act.registerReceiver(mReceiver, filter);
-//        mHandler = standardHandler;
-
-//        listAdapter = new CustomListAdapter(this);
-//        ListView beaconListView = (ListView) findViewById(R.id.myListView);
-//        beaconListView.setAdapter(listAdapter);
-//        startScanWhenBTEnabled();
     }
 
     public static BluetoothScan getBtScan(Activity act){
@@ -110,34 +106,6 @@ public class BluetoothScan {
 
     }
 
-//    private Handler startScanHandler = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg) {
-//            startScan();
-//        }
-//    };
-
-//    private void startScanWhenBTEnabled(){
-//        Runnable r = new Runnable(){
-//            @Override
-//            public void run() {
-//                while(true){
-//                    turnOnBluetooth();
-//                    if(mBluetoothLeScanner != null && mBluetoothAdapter.isEnabled())
-//                        break;
-//                    try {
-//                        Thread.sleep(250);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                startScanHandler.sendEmptyMessage(0);
-//            }
-//        };
-//        Thread th = new Thread(r);
-//        th.start();
-//    }
-
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -165,7 +133,7 @@ public class BluetoothScan {
              * Create a new beacon from the list of obtains AD structures
              * and pass it up to the main thread if it is not already listed in OnyxBeacon.onyxBeaconHashmap
              */
-            OnyxBeacon beacon = Advertisement.extractAD(result.getDevice().getAddress(), result.getRssi(), result.getScanRecord().getBytes());
+            OnyxBeacon beacon = advert.extractAD(result.getDevice().getAddress(), result.getRssi(), result.getScanRecord().getBytes());
 
             if(beacon != null)
                 beacon.checkState();
@@ -188,8 +156,10 @@ public class BluetoothScan {
 //            mBluetoothAdapter.enable();
 //        }
 
-        if(!mBluetoothAdapter.isEnabled())
+        if(!mBluetoothAdapter.isEnabled() || mBluetoothAdapter.ACTION_STATE_CHANGED.equals(mBluetoothAdapter.STATE_TURNING_OFF))
             mBluetoothAdapter.enable();
+        else
+            startScan();
     }
 
     private boolean isSetup(){
