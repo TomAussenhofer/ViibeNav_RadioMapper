@@ -156,7 +156,7 @@ public class BluetoothScan {
 //            mBluetoothAdapter.enable();
 //        }
 
-        if(!mBluetoothAdapter.isEnabled() || BluetoothAdapter.EXTRA_STATE.equals(mBluetoothAdapter.STATE_TURNING_OFF))
+        if(!mBluetoothAdapter.isEnabled())
             mBluetoothAdapter.enable();
         else
             startScan();
