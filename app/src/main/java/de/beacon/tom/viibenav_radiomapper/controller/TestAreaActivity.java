@@ -113,23 +113,6 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
 
 
     public void startTest(View view){
-//        Runnable r = new Runnable(){
-//            @Override
-//            public void run() {
-//                exec = Executors.newSingleThreadScheduledExecutor();
-//                exec.scheduleAtFixedRate(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        getMostLikelyPositionHandler.sendEmptyMessage(0);
-//                    }
-//                }, 0, 1100, TimeUnit.MILLISECONDS);
-//            }
-//        };
-//        Thread th = new Thread(r);
-//        th.start();
-
-
-
         // start one time measuring
         Runnable r = new Runnable(){
             @Override

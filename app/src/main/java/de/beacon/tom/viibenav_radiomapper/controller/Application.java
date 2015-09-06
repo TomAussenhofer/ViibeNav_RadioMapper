@@ -30,7 +30,7 @@ import de.beacon.tom.viibenav_radiomapper.model.fragment.AddInfoDialog;
  */
 public class Application{
 
-    private static final String TAG = "Application";
+    private static final String TAG = "ApplicationUI";
 
     public MainActivity main;
 

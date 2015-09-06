@@ -2,7 +2,6 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.bluetooth.BluetoothManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -25,9 +24,8 @@ import de.beacon.tom.viibenav_radiomapper.model.fragment.SettingsDialog;
 
 public class MainActivity extends Activity implements SensorEventListener {
 
-    Application applicationUI;
-    BluetoothScan bluetoothScan;
-
+    private Application applicationUI;
+    private BluetoothScan bluetoothScan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +37,13 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
 
     private void init(){
+
+        BluetoothScan btScan = BluetoothScan.getBtScan(this);
+        applicationUI = new Application(this);
         RadioMap.createRadioMap();
         DBHandler.createDB(this, null, null, 1);
         Connector.createConnector((WifiManager) getSystemService(this.WIFI_SERVICE));
 
-        applicationUI = new Application(this);
-        BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-        bluetoothScan = new BluetoothScan(applicationUI,manager.getAdapter());
         SensorHelper sh = SensorHelper.getSensorHelper(this);
 
         // Turn Off WiFi signals on activity start as it mitigates position estimation
@@ -182,6 +180,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         super.onDestroy();
         if(!Connector.getConnector().WiFiEnabled())
             Connector.getConnector().enableWiFi();
+
+//        unregisterReceiver(mReceiver);
 //        bluetoothScan.getmBluetoothAdapter().disable();
     }
 
