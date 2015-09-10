@@ -95,7 +95,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+//        db.execSQL("SELECT load_extension('./libsqlitefunctions.so')");
 
         // CREATE BEACONS TABLE
         String query1 = "CREATE TABLE "+ TABLE_BEACONS + "(" +

@@ -191,7 +191,7 @@ public class Application{
         while (it.hasNext()) {
             count++;
             Map.Entry<String,OnyxBeacon> pair = (Map.Entry)it.next();
-                minIDs += "|" + pair.getValue().getMinor();
+                minIDs += "|" + pair.getValue().getMajor();
                 if((count % 4) == 0)
                     minIDs += System.lineSeparator();
         }
