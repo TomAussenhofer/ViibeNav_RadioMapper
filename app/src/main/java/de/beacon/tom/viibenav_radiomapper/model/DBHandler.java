@@ -138,6 +138,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 ");";
         db.execSQL(query4);
 
+        //
         // CREATE INFO TABLE
         String query5 = "CREATE TABLE "+ TABLE_BEACON_MEDIAN_TO_ANCHOR + "(" +
                 "'"+ BEACON_MEDIAN_TO_ANCHOR_ID +"'"+ " INTEGER PRIMARY KEY AUTOINCREMENT, " +
