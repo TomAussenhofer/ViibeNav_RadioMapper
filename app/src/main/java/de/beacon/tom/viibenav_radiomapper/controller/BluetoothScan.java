@@ -33,8 +33,10 @@ public class BluetoothScan {
     private static BluetoothScan singleton;
     private Advertisement advert;
     private BroadcastReceiver mReceiver;
+    private Activity act;
 
     private BluetoothScan(Activity act) {
+        this.act = act;
         advert = new Advertisement(act.getApplicationContext());
 
         BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
@@ -89,6 +91,7 @@ public class BluetoothScan {
     }
 
     private void startScan(){
+        Log.d(TAG, " method startScan");
         // Scan for devices advertising the thermometer
         // does not work
 //        ScanFilter beaconFilter = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(Advertisement.filterUUID)).build();
@@ -109,13 +112,13 @@ public class BluetoothScan {
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-//            Log.d(TAG, "onScanResult");
+            Log.d(TAG, "onScanResult");
             processResult(result);
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
-//            Log.d(TAG, "onBatchScanResults: "+results.size()+" results");
+            Log.d(TAG, "onBatchScanResults: "+results.size()+" results");
             for (ScanResult result : results) {
                 processResult(result);
             }
@@ -127,7 +130,7 @@ public class BluetoothScan {
         }
 
         private void processResult(ScanResult result) {
-//            Log.d(TAG, "New LE Device: " + result.getDevice().getName() + " @ " + result.getRssi());
+            Log.d(TAG, "New LE Device: " + result.getDevice().getName() + " @ " + result.getRssi());
 
             /*
              * Create a new beacon from the list of obtains AD structures
@@ -156,6 +159,7 @@ public class BluetoothScan {
 //            mBluetoothAdapter.enable();
 //        }
 
+        Log.d(TAG, "method turn on bt");
         if(!mBluetoothAdapter.isEnabled())
             mBluetoothAdapter.enable();
         else
