@@ -43,7 +43,8 @@
                 android:text="Import"
                 android:id="@+id/importButton"
                 android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:onClick="importClicked" />
 
             <TextView
                 android:layout_width="wrap_content"
