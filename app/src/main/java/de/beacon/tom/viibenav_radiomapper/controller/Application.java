@@ -160,7 +160,7 @@ public class Application{
         @Override
         public void handleMessage(Message msg) {
             sh.animateImage(arrowImage);
-            sh.updateTextView(degreeTV);
+            sh.updateUI(degreeTV);
         }
     };
 

@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -171,26 +172,30 @@ public class SensorHelper {
         mCurrentDegree = -degrees;
     }
 
-    public void updateTextView(TextView tv){
+    public void updateUI(TextView tv){
             tv.setText(orientation + degreeSign + "|" + UserOrientation.getOrientationFromSensorHelper());
     }
 
-    public void updateTextView(TextView tv, boolean frontMeasuredFirst){
+    public void updateUI(TextView tv,Button second_measure, boolean frontMeasuredFirst){
         if(frontMeasuredFirst) {
             if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.back)) {
                 tv.setTextColor(Color.BLACK);
                 tv.setText(orientation + degreeSign + "|" + UserOrientation.getOrientationFromSensorHelper());
+                second_measure.setEnabled(true);
             } else {
                 tv.setTextColor(Color.RED);
                 tv.setText("drehen!");
+                second_measure.setEnabled(false);
             }
         } else if(!frontMeasuredFirst){
             if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.front)) {
                 tv.setTextColor(Color.BLACK);
                 tv.setText(orientation + degreeSign + "|" + UserOrientation.getOrientationFromSensorHelper());
+                second_measure.setEnabled(true);
             } else {
                 tv.setTextColor(Color.RED);
                 tv.setText("drehen!");
+                second_measure.setEnabled(false);
             }
         }
     }

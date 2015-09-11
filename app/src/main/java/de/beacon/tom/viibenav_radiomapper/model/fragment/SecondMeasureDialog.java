@@ -31,6 +31,7 @@ public class SecondMeasureDialog  extends DialogFragment {
 
     private TextView degreeTV;
     private ImageView arrowImage;
+    private Button second_measure;
 
     private Boolean frontMeasuredFirst;
 
@@ -47,7 +48,7 @@ public class SecondMeasureDialog  extends DialogFragment {
             View v = inflater.inflate(R.layout.dialog_second_measure, null);
             degreeTV = (TextView) v.findViewById(R.id.dialog_second_measure_degreeTV);
             arrowImage = (ImageView) v.findViewById(R.id.dialog_second_measure_arrowImageView);
-            Button second_measure = (Button) v.findViewById(R.id.dialog_second_measure_measure);
+            second_measure = (Button) v.findViewById(R.id.dialog_second_measure_measure);
             Button cancel = (Button) v.findViewById(R.id.dialog_second_measure_cancel);
 
             sh = SensorHelper.getSensorHelper(getActivity().getApplicationContext());
@@ -116,7 +117,7 @@ public class SecondMeasureDialog  extends DialogFragment {
         private Handler handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                sh.updateTextView(degreeTV, frontMeasuredFirst);
+                sh.updateUI(degreeTV,second_measure, frontMeasuredFirst);
                 sh.animateImage(arrowImage);
             }
         };
