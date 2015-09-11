@@ -178,7 +178,7 @@ public class BluetoothScan {
                     mBluetoothLeScanner.stopScan(mScanCallback);
                     scanStarted = true;
                 }
-                new Handler().postDelayed(this, 1100);
+                new Handler().postDelayed(this, 400);
             }
         }, 0);
     }
