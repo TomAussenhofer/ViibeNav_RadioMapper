@@ -173,14 +173,14 @@ public class SensorHelper {
     }
 
     public void updateUI(TextView tv){
-            tv.setText(orientation + degreeSign + "|" + UserOrientation.getOrientationFromSensorHelper());
+            tv.setText(orientation + degreeSign + "|" + getOrientationFromDegree());
     }
 
     public void updateUI(TextView tv,Button second_measure, boolean frontMeasuredFirst){
         if(frontMeasuredFirst) {
-            if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.back)) {
+            if(getOrientationFromDegree().equals(Orientation.back)) {
                 tv.setTextColor(Color.BLACK);
-                tv.setText(orientation + degreeSign + "|" + UserOrientation.getOrientationFromSensorHelper());
+                tv.setText(orientation + degreeSign + "|" + getOrientationFromDegree());
                 second_measure.setEnabled(true);
             } else {
                 tv.setTextColor(Color.RED);
@@ -188,9 +188,9 @@ public class SensorHelper {
                 second_measure.setEnabled(false);
             }
         } else if(!frontMeasuredFirst){
-            if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.front)) {
+            if(getOrientationFromDegree().equals(Orientation.front)) {
                 tv.setTextColor(Color.BLACK);
-                tv.setText(orientation + degreeSign + "|" + UserOrientation.getOrientationFromSensorHelper());
+                tv.setText(orientation + degreeSign + "|" + getOrientationFromDegree());
                 second_measure.setEnabled(true);
             } else {
                 tv.setTextColor(Color.RED);
@@ -198,6 +198,10 @@ public class SensorHelper {
                 second_measure.setEnabled(false);
             }
         }
+    }
+
+    public Orientation getOrientationFromDegree(){
+        return UserOrientation.getOrientationFromDegree(orientation);
     }
 
     public ScheduledExecutorService getExec() {

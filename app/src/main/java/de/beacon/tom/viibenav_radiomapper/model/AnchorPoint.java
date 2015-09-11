@@ -1,8 +1,6 @@
 package de.beacon.tom.viibenav_radiomapper.model;
 
-import java.nio.CharBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -30,18 +28,18 @@ public class AnchorPoint {
         this.coordinate = coordinate;
     }
 
-    public void setMacToMedianWithOrientation(HashMap<CharBuffer, OnyxBeacon> input){
-        if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.front))
-            setFront(BeaconsToOrient.getBeaconsArrToOrient(input, UserOrientation.getOrientationFromSensorHelper()));
-        else if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.back))
-            setBack(BeaconsToOrient.getBeaconsArrToOrient(input,UserOrientation.getOrientationFromSensorHelper()));
-    }
+//    public void setMacToMedianWithOrientation(HashMap<CharBuffer, OnyxBeacon> input){
+//        if(UserOrientation.getOrientationFromDegree(orientation).equals(Orientation.front))
+//            setFront(BeaconsToOrient.getBeaconsArrToOrient(input, UserOrientation.getOrientationFromSensorHelper()));
+//        else if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.back))
+//            setBack(BeaconsToOrient.getBeaconsArrToOrient(input,UserOrientation.getOrientationFromSensorHelper()));
+//    }
 
-    public void setMacToMedianWithOrientation(ArrayList<OnyxBeacon> input){
-        if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.front))
-            setFront(BeaconsToOrient.getBeaconsArrToOrient(input, UserOrientation.getOrientationFromSensorHelper()));
-        else if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.back))
-            setBack(BeaconsToOrient.getBeaconsArrToOrient(input,UserOrientation.getOrientationFromSensorHelper()));
+    public void setMacToMedianWithOrientation(ArrayList<OnyxBeacon> input, Orientation currentOrientation){
+        if(currentOrientation.equals(Orientation.front))
+            setFront(BeaconsToOrient.getBeaconsArrToOrient(input, currentOrientation));
+        else if(currentOrientation.equals(Orientation.back))
+            setBack(BeaconsToOrient.getBeaconsArrToOrient(input, currentOrientation));
     }
 
     public boolean isFrontAndBackSet(){

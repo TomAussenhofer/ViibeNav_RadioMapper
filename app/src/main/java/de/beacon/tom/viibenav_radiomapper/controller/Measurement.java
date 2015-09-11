@@ -14,6 +14,7 @@ import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
 import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 import de.beacon.tom.viibenav_radiomapper.model.Person;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
+import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
 import de.beacon.tom.viibenav_radiomapper.model.fragment.SecondMeasureDialog;
 import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 
@@ -35,11 +36,13 @@ public class Measurement {
     private int measurementSize;
     private boolean firstMeasure;
     private long start;
+    private SensorHelper sh;
 
     public void overallCalcProgress(final long start, final ArrayList<OnyxBeacon> beacons, MainActivity main, boolean firstMeasure){
             this.main = main;
             this.start = start;
             this.firstMeasure = firstMeasure;
+            this.sh = SensorHelper.getSensorHelper(main.getApplicationContext());
 
             measurementSize = beacons.size();
         new AsyncMeasure().execute(beacons);
@@ -100,7 +103,7 @@ public class Measurement {
                 if(firstMeasure) {
                     AnchorPoint a = new AnchorPoint(RadioMap.getRadioMap().getCoordinate());
 //                    Log.d(TAG, "beacons size" + beacons.size());
-                    a.setMacToMedianWithOrientation(beacons);
+                    a.setMacToMedianWithOrientation(beacons,sh.getOrientationFromDegree());
                     a.setAddInfo(main.getApplicationUI().getAddInfo());
 
                     RadioMap.getRadioMap().add(a);
@@ -124,7 +127,7 @@ public class Measurement {
                     Log.d(TAG, "Second measurement");
                     AnchorPoint a = RadioMap.getLastAnchor();
                     Log.d(TAG, "VALUE"+a.getAddInfo().getPerson_name());
-                    a.setMacToMedianWithOrientation(beacons);
+                    a.setMacToMedianWithOrientation(beacons, sh.getOrientationFromDegree());
 
                     if(a.isFrontAndBackSet())
                         DBHandler.getDB().addAnchor(a);
