@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import java.util.List;
@@ -33,11 +32,12 @@ public class BluetoothScan {
     private static BluetoothScan singleton;
     private Advertisement advert;
     private BroadcastReceiver mReceiver;
-    private Activity act;
+    private ScanSettings settings;
+    private boolean scanStarted;
 
     private BluetoothScan(Activity act) {
-        this.act = act;
         advert = new Advertisement(act.getApplicationContext());
+        scanStarted = false;
 
         BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
         this.mBluetoothAdapter = manager.getAdapter();
@@ -91,7 +91,7 @@ public class BluetoothScan {
     }
 
     private void startScan(){
-        Log.d(TAG, " method startScan");
+//        Log.d(TAG, " method startScan");
         // Scan for devices advertising the thermometer
         // does not work
 //        ScanFilter beaconFilter = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(Advertisement.filterUUID)).build();
@@ -99,26 +99,27 @@ public class BluetoothScan {
 //        ScanFilter filter2 = new ScanFilter.Builder().setDeviceAddress(tagMAC).build();
 //        ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
 //        // does not work
-//        // filters.add(beaconFilter);
+//         filters.add(beaconFilter);
 //        filters.add(filter2);
 
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
-        ScanSettings settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
-        Log.d(TAG,"Bluetooth enabled: "+mBluetoothAdapter.isEnabled() + " Try to start scanning...");
-        mBluetoothLeScanner.startScan(null, settings, mScanCallback);
+        settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
+//        Log.d(TAG,"Bluetooth enabled: "+mBluetoothAdapter.isEnabled() + " Try to start scanning...");
+        scanLeDevice();
 
     }
 
     private ScanCallback mScanCallback = new ScanCallback() {
+
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-            Log.d(TAG, "onScanResult");
+//            Log.d(TAG, "onScanResult" + " | callback->"+callbackType);
             processResult(result);
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
-            Log.d(TAG, "onBatchScanResults: "+results.size()+" results");
+//            Log.d(TAG, "onBatchScanResults: "+results.size()+" results");
             for (ScanResult result : results) {
                 processResult(result);
             }
@@ -130,7 +131,7 @@ public class BluetoothScan {
         }
 
         private void processResult(ScanResult result) {
-            Log.d(TAG, "New LE Device: " + result.getDevice().getName() + " @ " + result.getRssi());
+//            Log.d(TAG, "New LE Device: " + result.getDevice().getName() + " @ " + result.getRssi());
 
             /*
              * Create a new beacon from the list of obtains AD structures
@@ -166,39 +167,30 @@ public class BluetoothScan {
             startScan();
     }
 
+    private void scanLeDevice() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (scanStarted) {
+                    mBluetoothLeScanner.startScan(null, settings, mScanCallback);
+                    scanStarted = false;
+                } else {
+                    mBluetoothLeScanner.stopScan(mScanCallback);
+                    scanStarted = true;
+                }
+                new Handler().postDelayed(this, 1100);
+            }
+        }, 0);
+    }
+
     private boolean isSetup(){
-        Log.d(TAG,"BTAdapter null "+(mBluetoothAdapter == null));
+        Log.d(TAG, "BTAdapter null " + (mBluetoothAdapter == null));
         Log.d(TAG,"BTAdapter enabled "+(mBluetoothAdapter.isEnabled()));
         Log.d(TAG,"BTScanner scanner "+(mBluetoothLeScanner == null));
 
         if(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled() && mBluetoothLeScanner != null)
             return true;
         return false;
-    }
-
-    public void stopScan() {
-        mBluetoothLeScanner.stopScan(mScanCallback);
-    }
-
-    /*
-     * We have a Handler to process scan results on the main thread,
-     * add them to our list adapter, and update the view
-     */
-    public Handler standardHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-//            OnyxBeacon msgStr = (OnyxBeacon) msg.obj;
-//            applicationUI.updateLayer2();
-
-        }
-    };
-
-
-
-    public Handler mHandler;
-
-    public void setmHandler(Handler mHandler) {
-        this.mHandler = mHandler;
     }
 
     public BluetoothAdapter getmBluetoothAdapter() {
