@@ -17,6 +17,7 @@ public class MinorFilter {
         minorFilter.add(44694);
         minorFilter.add(65080);
         minorFilter.add(16339);
+        minorFilter.add(25535);
     }
 
     public static boolean inFilter(int minor){
