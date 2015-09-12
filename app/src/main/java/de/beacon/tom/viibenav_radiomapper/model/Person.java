@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import de.beacon.tom.viibenav_radiomapper.controller.Measurement;
 import de.beacon.tom.viibenav_radiomapper.controller.TestAreaActivity;
 import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 import de.beacon.tom.viibenav_radiomapper.model.position.PositionAlgorithm;

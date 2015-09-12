@@ -1,4 +1,4 @@
-package de.beacon.tom.viibenav_radiomapper.controller;
+package de.beacon.tom.viibenav_radiomapper.model;
 
 import android.content.Context;
 import android.util.Log;

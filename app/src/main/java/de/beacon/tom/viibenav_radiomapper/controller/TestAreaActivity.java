@@ -21,6 +21,7 @@ import android.widget.TextView;
 import java.util.concurrent.ScheduledExecutorService;
 
 import de.beacon.tom.viibenav_radiomapper.R;
+import de.beacon.tom.viibenav_radiomapper.model.Connector;
 import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
 import de.beacon.tom.viibenav_radiomapper.model.Person;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;

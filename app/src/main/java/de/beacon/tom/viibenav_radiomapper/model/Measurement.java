@@ -1,4 +1,4 @@
-package de.beacon.tom.viibenav_radiomapper.controller;
+package de.beacon.tom.viibenav_radiomapper.model;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -9,12 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import de.beacon.tom.viibenav_radiomapper.model.AnchorPoint;
-import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
-import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
-import de.beacon.tom.viibenav_radiomapper.model.Person;
-import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
-import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
+import de.beacon.tom.viibenav_radiomapper.controller.MainActivity;
 import de.beacon.tom.viibenav_radiomapper.model.fragment.SecondMeasureDialog;
 import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 
@@ -62,6 +57,8 @@ public class Measurement {
             dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
+                    RadioMap.getRadioMap().deleteLastAnchor();
+                    main.getApplicationUI().updateLayer1();
                     cleanBeacons();
                     cleanAddInfo();
                 }
@@ -121,12 +118,11 @@ public class Measurement {
                     b.putBoolean("frontMeasuredFirst",frontMeasuredFirst);
                     dialog.setArguments(b);
                     dialog.show(main.getFragmentManager(), "dialog");
-
                     cleanBeacons();
                 } else {
                     Log.d(TAG, "Second measurement");
                     AnchorPoint a = RadioMap.getLastAnchor();
-                    Log.d(TAG, "VALUE"+a.getAddInfo().getPerson_name());
+                    Log.d(TAG, "VALUE" + a.getAddInfo().getPerson_name());
                     a.setMacToMedianWithOrientation(beacons, sh.getOrientationFromDegree());
 
                     if(a.isFrontAndBackSet())
@@ -236,7 +232,7 @@ public class Measurement {
         protected void onPostExecute(String result) {
             Log.d(TAG,"ONPOST EXECUTE");
 
-            MacToMedian[] data = MacToMedian.listToMacToMedianArr(beacons);
+            MacToMedian[] data = MacToMedian.listToMacToMedianArr(beacons,SensorHelper.getSensorHelper(main).getOrientationFromDegree());
             person.estimatePos(data);
             cleanUp();
             person.checkLoop();

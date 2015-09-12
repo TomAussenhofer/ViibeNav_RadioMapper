@@ -1,4 +1,4 @@
-package de.beacon.tom.viibenav_radiomapper.controller;
+package de.beacon.tom.viibenav_radiomapper.model;
 
 import android.content.Context;
 import android.os.Environment;
@@ -10,8 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-
-import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
 
 /**
  * Created by TomTheBomb on 04.09.2015.
