@@ -20,7 +20,7 @@ public class RadioMap {
         this.coordinate = new Coordinate(0,0,0);
     }
 
-    public static RadioMap createRadioMap(){
+    public static RadioMap getRadioMap(){
         // Avoid possible errors with multiple threads accessing this method -> synchronized
         synchronized(RadioMap.class) {
             if (singleton == null) {
@@ -30,9 +30,9 @@ public class RadioMap {
         return singleton;
     }
 
-    public static RadioMap getRadioMap(){
-        return singleton;
-    }
+//    public static RadioMap getRadioMap(){
+//        return singleton;
+//    }
 
     public static void add(AnchorPoint a){
         data.add(a);
@@ -54,8 +54,13 @@ public class RadioMap {
     public static AnchorPoint getLastAnchor() {
         if(data!=null && data.size() != 0)
             return data.get(data.size()-1);
+        else
+            return null;
+//        throw new NullPointerException("Last anchorpoint can not be determined - radiomap is empty.");
+    }
 
-        throw new NullPointerException("Last anchorpoint can not be determined - radiomap is empty.");
+    public void deleteLastAnchor(){
+        data.remove(data.size()-1);
     }
 
     public Coordinate getCoordinate() {

@@ -16,7 +16,7 @@
         android:icon="@mipmap/radio_logo"
         android:logo="@mipmap/radio_logo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/CustomTheme"
         >
 
         <activity
@@ -31,7 +31,7 @@
         </activity>
         <activity
             android:name=".controller.InfoActivity"
-            android:label="@string/app_name"
+            android:label="Beacons in area"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="de.beacon.tom.radiomapper.controller.InfoActivity" />
@@ -39,20 +39,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".controller.ExportImportDB"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="de.beacon.tom.radiomapper.controller.ExportImportDB" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".controller.TestAreaActivity"
-            android:label="@string/app_name"
+            android:label="TestArea"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="de.beacon.tom.radiomapper.controller.PreferencesActivity" />
+                <action android:name="de.beacon.tom.radiomapper.controller.TestAreaActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

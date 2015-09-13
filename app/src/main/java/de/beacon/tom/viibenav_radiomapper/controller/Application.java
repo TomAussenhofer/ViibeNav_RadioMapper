@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.AddInfo;
+import de.beacon.tom.viibenav_radiomapper.model.AnchorPoint;
+import de.beacon.tom.viibenav_radiomapper.model.Measurement;
 import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
 import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
@@ -178,9 +180,17 @@ public class Application{
 
     public void updateLayer1(){
         totalAnchor.setText("" + RadioMap.size());
-        lastX.setText(""+RadioMap.getRadioMap().getLastAnchor().getCoordinate().getX());
-        lastY.setText(""+RadioMap.getRadioMap().getLastAnchor().getCoordinate().getY());
-        lastEtage.setText("" + RadioMap.getRadioMap().getLastAnchor().getCoordinate().getFloor());
+
+        AnchorPoint last = RadioMap.getRadioMap().getLastAnchor();
+            if(last != null) {
+                lastX.setText("" + last.getCoordinate().getX());
+                lastY.setText("" + last.getCoordinate().getY());
+                lastEtage.setText("" + last.getCoordinate().getFloor());
+            } else {
+                lastX.setText("");
+                lastY.setText("");
+                lastEtage.setText("");
+            }
     }
 
     public void updateLayer2(){

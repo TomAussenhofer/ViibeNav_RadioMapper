@@ -300,26 +300,32 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<DeviationToCoord> getAllDistancesFromMedians(MacToMedian[] map, int maxResults, int threshold){
+    public ArrayList<DeviationToCoord> getAllDistancesFromMedians(MacToMedian[] map, int maxResults, float threshold) {
         SQLiteDatabase db = getWritableDatabase();
 
         ArrayList<DeviationToCoord> devsToCoords = new ArrayList<>();
         final String LOCAL_COLUMN_DEVIATION = "deviation";
 
-        for(int i=0;i<map.length;i++) {
+        for (int i = 0; i < map.length; i++) {
             final String macAddress = map[i].getMacAddressStr();
             final double median = map[i].getMedian();
 //            Log.d(TAG, "MEDIAN IN LOOP "+median);
 
+            String queryOrientation = "";
+            if (map[i].getOrientation().equals(Orientation.back))
+                queryOrientation = "( " + TABLE_ANCHORS + "." + COLUMN_BACK + " = " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + BEACON_MEDIAN_TO_ANCHOR_ID + " ) ";
+            else if (map[i].getOrientation().equals(Orientation.front))
+                queryOrientation = "( " + TABLE_ANCHORS + "." + COLUMN_FRONT + " = " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + BEACON_MEDIAN_TO_ANCHOR_ID + " ) ";
+
             String query = "SELECT " + TABLE_ANCHORS + "." + COLUMN_FLOOR + "," + TABLE_ANCHORS + "." + COLUMN_X + ", " + TABLE_ANCHORS + "." + COLUMN_Y + "," + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + ", " + calcManhattenDB_Cmd(median) + " AS " + LOCAL_COLUMN_DEVIATION + " " +
-                    " FROM '" + TABLE_MEDIANS + "' JOIN '" + TABLE_ANCHORS + "' JOIN '" + TABLE_BEACON_MEDIAN_TO_ANCHOR + "' WHERE macAddress = '" + macAddress  + "' AND " +
-                    " ( "    + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_1 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + " " +
+                    " FROM '" + TABLE_MEDIANS + "' JOIN '" + TABLE_ANCHORS + "' JOIN '" + TABLE_BEACON_MEDIAN_TO_ANCHOR + "' WHERE macAddress = '" + macAddress + "' AND " +
+                    " ( " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_1 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + " " +
                     "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_2 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
                     "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_3 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
                     "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_4 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
                     "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_5 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
                     "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_6 + " = " + TABLE_MEDIANS + "." + MEDIANS_COLUMN_ID + "  " +
-                    "  ) " +
+                    "  ) AND " + queryOrientation +
                     " GROUP BY " + COLUMN_MEDIAN_VALUE + " HAVING deviation <=" + threshold + " ORDER BY " + LOCAL_COLUMN_DEVIATION + " ASC LIMIT " + maxResults + ";";
 
             // IMPORTANT - NOTE:
@@ -336,12 +342,11 @@ public class DBHandler extends SQLiteOpenHelper {
                 float deviation = c.getInt(c.getColumnIndex(LOCAL_COLUMN_DEVIATION));
                 devsToCoords.add(new DeviationToCoord(deviation, coordinate));
 
-                Log.d(TAG, "Deviation-Median" + c.getInt(c.getColumnIndex(MEDIANS_COLUMN_ID)) +
-                        " deviation: " + deviation +
-                        " -> Coord: " + coordinate + " macAddress " + macAddress);
+//                Log.d(TAG, "Deviation-Median" + c.getInt(c.getColumnIndex(MEDIANS_COLUMN_ID)) +
+//                        " deviation: " + deviation +
+//                        " -> Coord: " + coordinate + " macAddress " + macAddress);
                 c.moveToNext();
             }
-
             c.close();
         }
         db.close();

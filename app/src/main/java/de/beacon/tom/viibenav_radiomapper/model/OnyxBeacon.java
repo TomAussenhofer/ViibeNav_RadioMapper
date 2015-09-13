@@ -16,16 +16,10 @@ import java.util.Iterator;
 public class OnyxBeacon {
 
     private static final String TAG = "OnyxBeacon";
-
-    private String name;
-    private int signal;
-
     private CharBuffer macAddress;
 
     private String uuid;
     private int minor,major,rssi,txPower;
-    private float distanceFSPL;
-    private float distanceRegression;
 
 
     private float medianRSSI;
@@ -192,9 +186,6 @@ public class OnyxBeacon {
     }
     public static HashMap<CharBuffer, OnyxBeacon> getbeaconMap() {
         return beaconMap;
-    }
-    public String getName() {
-        return name;
     }
     public CharBuffer getMacAddress() {
         return macAddress;

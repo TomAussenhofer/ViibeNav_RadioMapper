@@ -1,55 +1,36 @@
-package de.beacon.tom.viibenav_radiomapper.controller;
+package de.beacon.tom.viibenav_radiomapper.model;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-
-import de.beacon.tom.viibenav_radiomapper.R;
-import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
 
 /**
  * Created by TomTheBomb on 04.09.2015.
  */
-public class ExportImportDB extends Activity {
+public class ExportImportDB{
 
     public static final String TAG = "ExportImportDB";
-    public static final String SAVE_DB_FILENAME = "radiomap.db";
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export);
+    private Context context;
 
+    public ExportImportDB(Context context) {
+        this.context = context;
     }
 
-    public void importClicked(View view){
-        importDB();
-    }
-
-    public void export(View view){
-        try {
-            backupDatabase(DBHandler.getDB().getDBPath());
-        } catch (IOException e) {
-            Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG)
-                    .show();
-        }
-    }
-
-    public void backupDatabase(String DB_FILEPATH) throws IOException {
+    public void exportDB(String DB_FILEPATH){
 
         if (isSDCardWriteable()) {
             // Open your local db as the input stream
             String inFileName = DB_FILEPATH;
             File dbFile = new File(inFileName);
+
+            try{
             FileInputStream fis = new FileInputStream(dbFile);
 
             String outFileName = Environment.getExternalStorageDirectory() + "/radiomap/radiomap.db";
@@ -61,7 +42,7 @@ public class ExportImportDB extends Activity {
             Log.d("DB_FILEPATH", DB_FILEPATH);
 
             // Open the empty db as the output stream
-            try{
+
                 OutputStream output = new FileOutputStream(outFileName);
                 // transfer bytes from the inputfile to the outputfile
                 byte[] buffer = new byte[1024];
@@ -74,8 +55,9 @@ public class ExportImportDB extends Activity {
                 output.close();
                 fis.close();
 
-                Toast.makeText(this,"Exporting DB worked", Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"Exporting DB worked", Toast.LENGTH_LONG).show();
             } catch(Exception e){
+                Toast.makeText(context,"ERROR: "+e.toString(), Toast.LENGTH_LONG).show();
                 Log.e(TAG,"ERROR: " + e.toString());
             }
         }
@@ -92,7 +74,7 @@ public class ExportImportDB extends Activity {
 
 
     //importing database
-    private void importDB() {
+    public void importDB() {
 
 
             String currentDBPath = DBHandler.getDB().getDBPath();
@@ -110,12 +92,12 @@ public class ExportImportDB extends Activity {
             src.close();
             dst.close();
             Log.d(TAG, "Importing DB worked! ");
-            Toast.makeText(getBaseContext(), currentDB.toString()+" worked! ",
+            Toast.makeText(context, currentDB.toString()+" worked! ",
                     Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
             Log.e("ERROR: ",e.toString());
-            Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG)
+            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG)
                     .show();
         }
     }

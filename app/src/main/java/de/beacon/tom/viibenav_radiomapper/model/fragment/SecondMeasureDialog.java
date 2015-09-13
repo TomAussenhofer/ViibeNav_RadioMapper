@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.controller.MainActivity;
+import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
 import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
 
 /**
@@ -34,12 +35,14 @@ public class SecondMeasureDialog  extends DialogFragment {
     private Button second_measure;
 
     private Boolean frontMeasuredFirst;
+    private MainActivity main;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             frontMeasuredFirst = getArguments().getBoolean("frontMeasuredFirst");
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            main = (MainActivity) getActivity();
+            AlertDialog.Builder builder = new AlertDialog.Builder(main);
+            this.setCancelable(false);
             // Get the layout inflater
             LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -70,6 +73,7 @@ public class SecondMeasureDialog  extends DialogFragment {
                 @Override
                 public void onClick(View view) {
                     SecondMeasureDialog.this.getDialog().cancel();
+                    RadioMap.getRadioMap().deleteLastAnchor();
                     cleanUp();
 
                     dismiss();
@@ -123,6 +127,7 @@ public class SecondMeasureDialog  extends DialogFragment {
         };
 
         private void cleanUp(){
+            main.getApplicationUI().updateLayer1();
             exec.shutdown();
         }
 

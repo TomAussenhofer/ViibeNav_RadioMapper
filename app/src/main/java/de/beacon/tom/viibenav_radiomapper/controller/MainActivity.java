@@ -2,7 +2,6 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,7 +15,10 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import de.beacon.tom.viibenav_radiomapper.R;
+import de.beacon.tom.viibenav_radiomapper.model.BluetoothScan;
+import de.beacon.tom.viibenav_radiomapper.model.Connector;
 import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
+import de.beacon.tom.viibenav_radiomapper.model.ExportImportDB;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
 import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
 import de.beacon.tom.viibenav_radiomapper.model.fragment.SettingsDialog;
@@ -25,7 +27,8 @@ import de.beacon.tom.viibenav_radiomapper.model.fragment.SettingsDialog;
 public class MainActivity extends Activity implements SensorEventListener {
 
     private Application applicationUI;
-    private BluetoothScan bluetoothScan;
+    private BluetoothScan btScan;
+    private ExportImportDB exportImport;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +40,10 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
 
     private void init(){
-
-        BluetoothScan btScan = BluetoothScan.getBtScan(this);
+        btScan = BluetoothScan.getBtScan(this);
         applicationUI = new Application(this);
-        RadioMap.createRadioMap();
+        exportImport = new ExportImportDB(this);
+        RadioMap.getRadioMap();
         DBHandler.createDB(this, null, null, 1);
         Connector.createConnector((WifiManager) getSystemService(this.WIFI_SERVICE));
 
@@ -60,8 +63,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
     public void exportClicked(View view){
-        Intent i = new Intent(this, ExportImportDB.class);
-        startActivityForResult(i, 0);
+        exportImport.exportDB(DBHandler.getDB().getDBPath());
+    }
+
+    public void importClicked(View view){
+        exportImport.importDB();
     }
 
     public void prefsClicked(View view){ applicationUI.prefsClicked(view); }
@@ -172,7 +178,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         // When application is paused turn on WiFi again
         if(!Connector.getConnector().WiFiEnabled())
             Connector.getConnector().enableWiFi();
-        bluetoothScan.getmBluetoothAdapter().disable();
+        btScan.getmBluetoothAdapter().disable();
     }
 
     @Override
@@ -189,7 +195,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         return applicationUI;
     }
     public BluetoothScan getBluetoothScan() {
-        return bluetoothScan;
+        return btScan;
     }
 
 

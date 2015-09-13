@@ -1,4 +1,4 @@
-package de.beacon.tom.viibenav_radiomapper.controller;
+package de.beacon.tom.viibenav_radiomapper.model;
 
 
 import android.app.Activity;
@@ -16,8 +16,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.util.List;
-
-import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 
 
 /**
