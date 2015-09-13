@@ -156,10 +156,9 @@ public class SensorHelper {
     }
 
     public void animateImage(ImageView arrowImage) {
-        float degrees = azimuthInDegrees;
         RotateAnimation ra = new RotateAnimation(
                 mCurrentDegree,
-                -degrees,
+                -azimuthInDegrees,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF,
                 0.5f);
@@ -169,7 +168,7 @@ public class SensorHelper {
 
         arrowImage.startAnimation(ra);
 
-        mCurrentDegree = -degrees;
+        mCurrentDegree = -azimuthInDegrees;
     }
 
     public void updateUI(TextView tv){
