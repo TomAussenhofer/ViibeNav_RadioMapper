@@ -103,7 +103,7 @@ public class OnyxBeacon {
         if(measurementStarted)
             if (onMeasurementRSSIsFilled()) {
                 calculateMedian();
-                Log.d(TAG, Util.intListToString(measurementRSSIs) + " " + macAddress);
+                Log.d(TAG, Util.primitiveListToString(measurementRSSIs) + " " + macAddress);
                 Log.d(TAG, "Calculated Median is: " + medianRSSI + " | mac: " + macAddress);
                 measurementDone = true;
             }
@@ -209,7 +209,7 @@ public class OnyxBeacon {
     public int getMinor() {
         return minor;
     }
-    public double getMedianRSSI() {
+    public float getMedianRSSI() {
         return medianRSSI;
     }
     public void setMedianRSSI(float medianRSSI) {

@@ -77,7 +77,7 @@ public class ExportImportDB{
     public void importDB() {
 
 
-            String currentDBPath = DBHandler.getDB().getDBPath();
+            String currentDBPath = Database.getDB().getDBPath();
             String backupDBPath  = Environment.getExternalStorageDirectory() + "/radiomap/radiomap.db";
             File backupDB = new File(backupDBPath);
             backupDB.setReadable(true, false);

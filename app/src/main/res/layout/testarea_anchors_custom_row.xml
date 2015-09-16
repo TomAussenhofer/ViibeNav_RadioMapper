@@ -37,21 +37,6 @@
                 android:text="InfoID"
                 android:id="@+id/dbAnchorInfoID" />
 
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="FrontID"
-                    android:layout_weight="1"
-                    android:id="@+id/dbAnchorFrontID" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BackID"
-                android:id="@+id/dbAnchorBackID"
-                android:layout_gravity="right"
-                android:layout_marginRight="10dp" />
-
         </TableRow>
     </TableLayout>
 

@@ -5,21 +5,21 @@ package de.beacon.tom.viibenav_radiomapper.model;
  *
  * This class contains additional Info to a specific AnchorPoint
  */
-public class AddInfo {
+public class Info {
 
     private String person_name;
     private String room_name;
     private String environment;
     private String category;
 
-    public AddInfo(String person_name, String room_name, String environment, String category) {
+    public Info(String person_name, String room_name, String environment, String category) {
         this.person_name = person_name;
         this.room_name = room_name;
         this.environment = environment;
         this.category = category;
     }
 
-    public AddInfo() {
+    public Info() {
         person_name = "";
         room_name = "";
         environment = "";

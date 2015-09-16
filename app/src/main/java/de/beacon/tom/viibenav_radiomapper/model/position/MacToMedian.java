@@ -16,11 +16,11 @@ import de.beacon.tom.viibenav_radiomapper.model.Orientation;
 public class MacToMedian {
 
     private CharBuffer macAddress;
-    private double median;
+    private float median;
     private Orientation orientation;
     private String macAddressStr;
 
-    public MacToMedian(CharBuffer macAddress, double median, Orientation orientation) {
+    public MacToMedian(CharBuffer macAddress, float median, Orientation orientation) {
         this.macAddress = macAddress;
         this.median = median;
         this.orientation = orientation;

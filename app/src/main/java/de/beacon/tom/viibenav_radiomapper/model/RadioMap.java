@@ -12,11 +12,11 @@ public class RadioMap {
 
     private Coordinate coordinate;
 
-    private static ArrayList<AnchorPoint> data;
-    private AnchorPoint lastAnchor;
+    private static ArrayList<Fingerprint> data;
+    private Fingerprint lastAnchor;
 
     private RadioMap() {
-        this.data = new ArrayList<AnchorPoint>();
+        this.data = new ArrayList<Fingerprint>();
         this.coordinate = new Coordinate(0,0,0);
     }
 
@@ -34,14 +34,14 @@ public class RadioMap {
 //        return singleton;
 //    }
 
-    public static void add(AnchorPoint a){
+    public static void add(Fingerprint a){
         data.add(a);
     }
 
     public static void remove(Coordinate coordinate){
         Iterator it = data.iterator();
         while(it.hasNext()){
-            AnchorPoint tmp = (AnchorPoint) it.next();
+            Fingerprint tmp = (Fingerprint) it.next();
             if(tmp.getCoordinate().equals(coordinate))
                 it.remove();
         }
@@ -51,7 +51,7 @@ public class RadioMap {
         return data.size();
     }
 
-    public static AnchorPoint getLastAnchor() {
+    public static Fingerprint getLastAnchor() {
         if(data!=null && data.size() != 0)
             return data.get(data.size()-1);
         else
@@ -107,7 +107,7 @@ public class RadioMap {
         return coordinate.getFloor();
     }
 
-    public static ArrayList<AnchorPoint> getData() {
+    public static ArrayList<Fingerprint> getData() {
         return data;
     }
 

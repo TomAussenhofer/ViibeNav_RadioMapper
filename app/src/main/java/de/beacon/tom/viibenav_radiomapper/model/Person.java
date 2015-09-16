@@ -32,7 +32,6 @@ public class Person {
     }
 
     public void getMostLikelyPosition(){
-
         ArrayList<OnyxBeacon> surrounding = OnyxBeacon.filterSurroundingBeacons();
         getOnTheFlyMedians(surrounding);
 
@@ -66,7 +65,7 @@ public class Person {
     }
 
     private Coordinate getCoordFromAnchorId(int id){
-        return DBHandler.getDB().getCoordFromAnchorId(id);
+        return Database.getDB().getCoordFromAnchorId(id);
     }
 
     public void setCoord(Coordinate coord) {

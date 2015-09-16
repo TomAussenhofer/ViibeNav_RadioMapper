@@ -22,8 +22,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.beacon.tom.viibenav_radiomapper.R;
-import de.beacon.tom.viibenav_radiomapper.model.AddInfo;
-import de.beacon.tom.viibenav_radiomapper.model.AnchorPoint;
+import de.beacon.tom.viibenav_radiomapper.model.Info;
+import de.beacon.tom.viibenav_radiomapper.model.Fingerprint;
 import de.beacon.tom.viibenav_radiomapper.model.Measurement;
 import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
@@ -65,7 +65,7 @@ public class Application{
     private Handler calcMediansHandler;
     private Measurement measurement;
 
-    private AddInfo addInfo;
+    private Info addInfo;
 
     private Layer3 layer3;
 
@@ -99,7 +99,7 @@ public class Application{
         degreeTV = (TextView) main.findViewById(R.id.dialog_second_measure_degreeTV);
 
 
-        addInfo = new AddInfo();
+        addInfo = new Info();
         layer3 = new Layer3(main);
     }
 
@@ -181,7 +181,7 @@ public class Application{
     public void updateLayer1(){
         totalAnchor.setText("" + RadioMap.size());
 
-        AnchorPoint last = RadioMap.getRadioMap().getLastAnchor();
+        Fingerprint last = RadioMap.getRadioMap().getLastAnchor();
             if(last != null) {
                 lastX.setText("" + last.getCoordinate().getX());
                 lastY.setText("" + last.getCoordinate().getY());
@@ -237,7 +237,7 @@ public class Application{
         aid.show(main.getFragmentManager(), "MyDF");
     }
 
-    public AddInfo getAddInfo() {
+    public Info getAddInfo() {
         return addInfo;
     }
 

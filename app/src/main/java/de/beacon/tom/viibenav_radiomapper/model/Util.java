@@ -8,7 +8,6 @@ import java.nio.CharBuffer;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 
 
@@ -43,25 +42,6 @@ public class Util {
     }
 
 
-    public static String stringListToString(ArrayList<Integer> list){
-        String res = "";
-        int[] temp = new int[list.size()];
-
-        for (int j = 0; j < list.size() ; j++)
-            temp[j] = list.get(j);
-        Arrays.sort(temp);
-        int count = 0;
-        for(int i : temp) {
-            count++;
-            if (count != list.size())
-                res += String.valueOf(i) + ",";
-            else
-                res += String.valueOf(i);
-        }
-
-        return res;
-    }
-
     public static CharBuffer strToCharBuff(String str){
             char[] data = str.toCharArray();
             ByteBuffer bb = ByteBuffer.allocate(data.length * 2);
@@ -77,7 +57,7 @@ public class Util {
         return sdf.format(c.getTime());
     }
 
-    public static String intListToString(ArrayList<Integer> data){
+    public static String primitiveListToString(ArrayList<? extends Object> data){
         String res = "{ ";
         for(int i=0;i<data.size();i++)
             if(i<data.size()-1)
@@ -88,7 +68,7 @@ public class Util {
         return res;
     }
 
-    public static String intArrToString(int[] data){
+    public static String primitiveArrayToString(Object[] data){
         String res = "{ ";
         for(int i=0;i<data.length;i++)
             if(i<data.length-1)
@@ -105,13 +85,6 @@ public class Util {
 
     public static boolean hasSufficientSendingFreq(long time){
         return Util.timeDiff_MillisToNow(time) <= Setup.TIME_LAST_SIGNAL_THRESHOLD;
-    }
-
-    public static ArrayList<Integer> convertFloatListToIntegerList(ArrayList<Float> floatArray){
-        ArrayList<Integer> intArray = new ArrayList<>();
-        for(float temp : floatArray)
-            intArray.add((int) temp);
-        return intArray;
     }
 
 

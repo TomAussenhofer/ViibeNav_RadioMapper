@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -22,19 +21,19 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.Connector;
-import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
+import de.beacon.tom.viibenav_radiomapper.model.Database;
 import de.beacon.tom.viibenav_radiomapper.model.Person;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
-import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomBeaconMedianToAnchorAdapter;
-import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListAnchorAdapter;
+import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListFingerprint_has_MedianAdapter;
+import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListFingerprintAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListBeaconAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListInfoAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListMedianAdapter;
-import de.beacon.tom.viibenav_radiomapper.model.dbmodels.AnchorPointDBModel;
-import de.beacon.tom.viibenav_radiomapper.model.dbmodels.BeaconMedianToAnchorDBModel;
-import de.beacon.tom.viibenav_radiomapper.model.dbmodels.InfoDBModel;
-import de.beacon.tom.viibenav_radiomapper.model.dbmodels.MedianDBModel;
-import de.beacon.tom.viibenav_radiomapper.model.dbmodels.OnyxBeaconDBModel;
+import de.beacon.tom.viibenav_radiomapper.model.dbmodels.FingerprintView;
+import de.beacon.tom.viibenav_radiomapper.model.dbmodels.Fingerprint_has_MedianView;
+import de.beacon.tom.viibenav_radiomapper.model.dbmodels.InfoView;
+import de.beacon.tom.viibenav_radiomapper.model.dbmodels.MedianView;
+import de.beacon.tom.viibenav_radiomapper.model.dbmodels.OnyxBeaconView;
 
 
 /**
@@ -54,11 +53,11 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
     private int selectedItem;
 
 
-    CustomListAnchorAdapter customListAnchorAdapter;
+    CustomListFingerprintAdapter customListFingerprintAdapter;
     CustomListBeaconAdapter customListBeaconAdapter;
     CustomListMedianAdapter customListMedianAdapter;
     CustomListInfoAdapter customListInfoAdapter;
-    CustomBeaconMedianToAnchorAdapter customBeacMedToAnchAdapter;
+    CustomListFingerprint_has_MedianAdapter customListFingerprint_has_medianAdapter;
 
     ListView tableView;
     LinearLayout tableHeadView;
@@ -75,11 +74,11 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
         setContentView(R.layout.activity_test_area);
 
 
-        customListAnchorAdapter = new CustomListAnchorAdapter(this);
+        customListFingerprintAdapter = new CustomListFingerprintAdapter(this);
         customListBeaconAdapter = new CustomListBeaconAdapter(this);
         customListMedianAdapter = new CustomListMedianAdapter(this);
         customListInfoAdapter = new CustomListInfoAdapter(this);
-        customBeacMedToAnchAdapter = new CustomBeaconMedianToAnchorAdapter(this);
+        customListFingerprint_has_medianAdapter = new CustomListFingerprint_has_MedianAdapter(this);
 
         tableView = (ListView) findViewById(R.id.tableView);
         tableHeadView = (LinearLayout) findViewById(R.id.tableHeadView);
@@ -99,11 +98,11 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
 
     private void initSpinner(){
         tables = new String[5];
-        tables[0] = "AnchorPoint";
+        tables[0] = "Fingerprint";
         tables[1] = "Beacon";
         tables[2] = "Median";
         tables[3] = "Info";
-        tables[4] = "BeacMedToAnch";
+        tables[4] = "Fingerprint_has_Median";
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, tables);
 
@@ -133,7 +132,7 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
             builder.setTitle("Delete all tables?");
             builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    DBHandler.getDB().deleteAllTables();
+                    Database.getDB().deleteAllTables();
                     RadioMap.getData().clear();
 
                     // reload cleared List which was selected
@@ -151,7 +150,7 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
                             infoListHandler.sendEmptyMessage(0);
                             break;
                         case 4:
-                            beacMedToAnchHandler.sendEmptyMessage(0);
+                            fingerprint_has_medianHandler.sendEmptyMessage(0);
                             break;
                     }
 
@@ -194,7 +193,7 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
         tableHeadView.removeAllViewsInLayout();
         switch(selected){
             case 0:
-                tableView.setAdapter(customListAnchorAdapter);
+                tableView.setAdapter(customListFingerprintAdapter);
                 tableHeadView.addView(getLayoutInflater().inflate(R.layout.testarea_anchors_custom_row, null),
                         tableHeadView.getLayoutParams().width,tableHeadView.getLayoutParams().height);
                 anchorListHandler.sendEmptyMessage(0);
@@ -222,10 +221,10 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
                 selectedItem = 3;
                 break;
             case 4:
-                tableView.setAdapter(customBeacMedToAnchAdapter);
-                tableHeadView.addView(getLayoutInflater().inflate(R.layout.testarea_beaconmediantoanchor_custom_row, null),
+                tableView.setAdapter(customListFingerprint_has_medianAdapter);
+                tableHeadView.addView(getLayoutInflater().inflate(R.layout.testarea_fingerprint_has_median_custom_row, null),
                         tableHeadView.getLayoutParams().width, tableHeadView.getLayoutParams().height);
-                beacMedToAnchHandler.sendEmptyMessage(0);
+                fingerprint_has_medianHandler.sendEmptyMessage(0);
                 selectedItem = 4;
                 break;
         }
@@ -234,21 +233,21 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
     private Handler anchorListHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            DBHandler.getDB().getAllAnchors();
+            Database.getDB().getAllFingerprints();
 
-            customListAnchorAdapter.clear();
-            customListAnchorAdapter.addAll(AnchorPointDBModel.getAllAnchors());
-            customListAnchorAdapter.notifyDataSetChanged();
+            customListFingerprintAdapter.clear();
+            customListFingerprintAdapter.addAll(FingerprintView.getAll());
+            customListFingerprintAdapter.notifyDataSetChanged();
         }
     };
 
     private Handler beaconListHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            DBHandler.getDB().getAllBeacons();
+            Database.getDB().getAllBeacons();
 
             customListBeaconAdapter.clear();
-            customListBeaconAdapter.addAll(OnyxBeaconDBModel.getAllBeacons());
+            customListBeaconAdapter.addAll(OnyxBeaconView.getAll());
             customListBeaconAdapter.notifyDataSetChanged();
         }
     };
@@ -256,10 +255,10 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
     private Handler medianListHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            DBHandler.getDB().getAllMedians();
+            Database.getDB().getAllMedians();
 
             customListMedianAdapter.clear();
-            customListMedianAdapter.addAll(MedianDBModel.getAllMedians());
+            customListMedianAdapter.addAll(MedianView.getAll());
             customListMedianAdapter.notifyDataSetChanged();
         }
     };
@@ -267,24 +266,22 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
     private Handler infoListHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            DBHandler.getDB().retrieveAllInfo();
+            Database.getDB().getAllInfo();
 
             customListInfoAdapter.clear();
-            customListInfoAdapter.addAll(InfoDBModel.getAllInfo());
+            customListInfoAdapter.addAll(InfoView.getAll());
             customListInfoAdapter.notifyDataSetChanged();
         }
     };
 
-    private Handler beacMedToAnchHandler = new Handler(){
+    private Handler fingerprint_has_medianHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            DBHandler.getDB().getAllBeaconMedianToAnchor();
+            Database.getDB().getAllFingerprint_has_Medians();
 
-            Log.d("ALLL", ""+BeaconMedianToAnchorDBModel.getAllBeaconMedianToAnchor()[0].getBeacon_1());
-
-            customBeacMedToAnchAdapter.clear();
-            customBeacMedToAnchAdapter.addAll(BeaconMedianToAnchorDBModel.getAllBeaconMedianToAnchor());
-            customBeacMedToAnchAdapter.notifyDataSetChanged();
+            customListFingerprint_has_medianAdapter.clear();
+            customListFingerprint_has_medianAdapter.addAll(Fingerprint_has_MedianView.getAll());
+            customListFingerprint_has_medianAdapter.notifyDataSetChanged();
         }
     };
 

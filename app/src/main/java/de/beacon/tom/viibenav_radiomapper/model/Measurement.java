@@ -98,7 +98,7 @@ public class Measurement {
                 Log.d(TAG, "Dauer: " + ende / 1000 + "s");
 
                 if(firstMeasure) {
-                    AnchorPoint a = new AnchorPoint(RadioMap.getRadioMap().getCoordinate());
+                    Fingerprint a = new Fingerprint(RadioMap.getRadioMap().getCoordinate());
 //                    Log.d(TAG, "beacons size" + beacons.size());
                     a.setMacToMedianWithOrientation(beacons,sh.getOrientationFromDegree());
                     a.setAddInfo(main.getApplicationUI().getAddInfo());
@@ -121,12 +121,12 @@ public class Measurement {
                     cleanBeacons();
                 } else {
                     Log.d(TAG, "Second measurement");
-                    AnchorPoint a = RadioMap.getLastAnchor();
+                    Fingerprint a = RadioMap.getLastAnchor();
                     Log.d(TAG, "VALUE" + a.getAddInfo().getPerson_name());
                     a.setMacToMedianWithOrientation(beacons, sh.getOrientationFromDegree());
 
                     if(a.isFrontAndBackSet())
-                        DBHandler.getDB().addAnchor(a);
+                        Database.getDB().addFingerprint(a);
 
                     cleanAddInfo();
                     cleanBeacons();

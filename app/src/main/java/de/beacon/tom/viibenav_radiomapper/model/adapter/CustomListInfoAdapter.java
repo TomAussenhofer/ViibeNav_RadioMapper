@@ -8,12 +8,12 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import de.beacon.tom.viibenav_radiomapper.R;
-import de.beacon.tom.viibenav_radiomapper.model.dbmodels.InfoDBModel;
+import de.beacon.tom.viibenav_radiomapper.model.dbmodels.InfoView;
 
 /**
  * Created by TomTheBomb on 27.08.2015.
  */
-public class CustomListInfoAdapter extends ArrayAdapter<InfoDBModel> {
+public class CustomListInfoAdapter extends ArrayAdapter<InfoView> {
 
     public CustomListInfoAdapter(Context context){
         super(context,0);
@@ -25,7 +25,7 @@ public class CustomListInfoAdapter extends ArrayAdapter<InfoDBModel> {
         LayoutInflater tomsInflater = LayoutInflater.from(getContext());
         View customView = tomsInflater.inflate(R.layout.testarea_info_custom_row, parent, false);
 
-        InfoDBModel tmp = getItem(position);
+        InfoView tmp = getItem(position);
         TextView id = (TextView) customView.findViewById(R.id.dbInfoID);
         TextView person_name = (TextView) customView.findViewById(R.id.dbInfoPersonName);
         TextView room_name = (TextView) customView.findViewById(R.id.dbInfoRoomName);

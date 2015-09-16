@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.beacon.tom.viibenav_radiomapper.model.Coordinate;
-import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
+import de.beacon.tom.viibenav_radiomapper.model.Database;
 import de.beacon.tom.viibenav_radiomapper.model.Util;
 import de.beacon.tom.viibenav_radiomapper.model.position.MacToMedian;
 import de.beacon.tom.viibenav_radiomapper.model.position.PositionAlgorithm;
@@ -43,7 +43,7 @@ public class Ewknn implements PositionAlgorithm {
         // see slide 10 on ppxt mentioned above
         // ||||||||||||||||||||||||||||||||||||
         // Step 1/3 done -> I RPs filtering
-        ArrayList<DeviationToCoord> data = DBHandler.getDB().getAllDistancesFromMedians(map,limit,threshold);
+        ArrayList<DeviationToCoord> data = Database.getDB().getAllDistancesFromMedians(map,limit,threshold);
 
         // Step 2/3 done -> II RPs filtering
         // Remove minDeviation from list and calculate next threshold with it

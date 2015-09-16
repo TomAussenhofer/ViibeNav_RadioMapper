@@ -17,7 +17,7 @@ import android.widget.Toast;
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.BluetoothScan;
 import de.beacon.tom.viibenav_radiomapper.model.Connector;
-import de.beacon.tom.viibenav_radiomapper.model.DBHandler;
+import de.beacon.tom.viibenav_radiomapper.model.Database;
 import de.beacon.tom.viibenav_radiomapper.model.ExportImportDB;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
 import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
@@ -44,7 +44,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         applicationUI = new Application(this);
         exportImport = new ExportImportDB(this);
         RadioMap.getRadioMap();
-        DBHandler.createDB(this, null, null, 1);
+        Database.createDB(this, null, null, 1);
         Connector.createConnector((WifiManager) getSystemService(this.WIFI_SERVICE));
 
         SensorHelper sh = SensorHelper.getSensorHelper(this);
@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
     public void exportClicked(View view){
-        exportImport.exportDB(DBHandler.getDB().getDBPath());
+        exportImport.exportDB(Database.getDB().getDBPath());
     }
 
     public void importClicked(View view){

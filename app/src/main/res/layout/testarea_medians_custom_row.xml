@@ -42,10 +42,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/median_macAddress"
+                android:id="@+id/median_beaconid"
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
-                android:text="MacAddress" />
+                android:text="Beaconid" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Orientation"
+                android:id="@+id/orientation"
+                android:layout_column="14" />
         </TableRow>
     </TableLayout>
 </LinearLayout>

@@ -6,11 +6,11 @@ import java.util.ArrayList;
 /**
  * Created by TomTheBomb on 23.06.2015.
  */
-public class AnchorPoint {
+public class Fingerprint {
 
     private Coordinate coordinate;
 
-    private AddInfo addInfo;
+    private Info addInfo;
 
     /**
      * contains an array of MacAddresses mapped to medians
@@ -24,7 +24,7 @@ public class AnchorPoint {
      */
     private BeaconsToOrient back;
 
-    public AnchorPoint(Coordinate coordinate) {
+    public Fingerprint(Coordinate coordinate) {
         this.coordinate = coordinate;
     }
 
@@ -46,20 +46,6 @@ public class AnchorPoint {
         if(front != null && back != null)
             return true;
         return false;
-    }
-
-    public boolean isFrontSet(){
-        if( front != null)
-            return true;
-        else
-            return false;
-    }
-
-    public boolean isBackSet(){
-        if( back != null)
-            return true;
-        else
-            return false;
     }
 
     public Coordinate getCoordinate() {
@@ -86,11 +72,11 @@ public class AnchorPoint {
         this.coordinate = coordinate;
     }
 
-    public AddInfo getAddInfo() {
+    public Info getAddInfo() {
         return addInfo;
     }
 
-    public void setAddInfo(AddInfo addInfo) {
+    public void setAddInfo(Info addInfo) {
         this.addInfo = addInfo;
     }
 }
