@@ -107,14 +107,14 @@ public class Application{
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                    boolean minIDadded = intent.getBooleanExtra("minID",false);
-                Log.d(TAG, "new MinID");
-                    if(minIDadded == true)
+                    boolean majIDadded = intent.getBooleanExtra("majID",false);
+                Log.d(TAG, "new MajID");
+                    if(majIDadded == true)
                         updateLayer2();
             }
         };
 
-        LocalBroadcastManager.getInstance(main).registerReceiver(mReceiver,new IntentFilter("minIDadded"));
+        LocalBroadcastManager.getInstance(main).registerReceiver(mReceiver,new IntentFilter("majIDadded"));
 
         execScheduled();
 

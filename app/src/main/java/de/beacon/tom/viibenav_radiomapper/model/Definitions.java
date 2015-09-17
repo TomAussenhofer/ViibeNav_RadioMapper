@@ -3,14 +3,14 @@ package de.beacon.tom.viibenav_radiomapper.model;
 /**
  * Created by TomTheBomb on 27.07.2015.
  */
-public class Setup {
+public class Definitions {
 
     /**
      * The amount of RSSIs to be measured to calculate on the fly RSSI median from.
      */
     public static  int ON_THE_FLY_AMT_THRESHOLD = 6;
 
-    public static  int MEASUREMENT_AMT_THRESHOLD = 10;
+    public static  int MEASUREMENT_AMT_THRESHOLD = 5;
 
     public static  float FSPL_ELEMENT = 2.5f;
 

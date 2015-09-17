@@ -19,7 +19,7 @@ public class DistanceCalculation {
              * d = 10 ^ ((TxPower - RSSI) / (10 * n))
              */
 
-        double distance =  Math.pow(10d, ((double) txPower - rssi) / (10 * Setup.FSPL_ELEMENT));
+        double distance =  Math.pow(10d, ((double) txPower - rssi) / (10 * Definitions.FSPL_ELEMENT));
         return distance;
     }
 

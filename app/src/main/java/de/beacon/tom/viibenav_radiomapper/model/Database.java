@@ -172,20 +172,19 @@ public class Database extends SQLiteOpenHelper {
         valuesFingerprint.put(COLUMN_Y, a.getCoordinate().getY());
         valuesFingerprint.put(COLUMN_FLOOR, a.getCoordinate().getFloor());
 
-        Info info = a.getAddInfo();
-
-        if(info.hasAddInfo()){
-            ContentValues valuesAddInfo = new ContentValues();
+        Info info = a.getInfo();
+        if(info.hasInfo()){
+            ContentValues valuesInfo = new ContentValues();
             if(info.hasPersonInfo())
-                valuesAddInfo.put(COLUMN_PERSON_NAME, info.getPerson_name());
+                valuesInfo.put(COLUMN_PERSON_NAME, info.getPerson_name());
             if(info.hasRoomInfo())
-                valuesAddInfo.put(COLUMN_ROOM_NAME, info.getRoom_name());
+                valuesInfo.put(COLUMN_ROOM_NAME, info.getRoom_name());
             if(info.hasEnvironmentInfo())
-                valuesAddInfo.put(COLUMN_ENVIRONMENT, info.getEnvironment());
+                valuesInfo.put(COLUMN_ENVIRONMENT, info.getEnvironment());
             if(info.hasCategoryInfo())
-                valuesAddInfo.put(COLUMN_CATEGORY, info.getCategory());
+                valuesInfo.put(COLUMN_CATEGORY, info.getCategory());
 
-            Log.d(TAG, " Insert table info  "+db.insertOrThrow(TABLE_INFO, null, valuesAddInfo));
+            Log.d(TAG, " Insert table info  "+db.insertOrThrow(TABLE_INFO, null, valuesInfo));
 
             int infoID = getLastID(db,TABLE_INFO, INFO_COLUMN_ID);
             valuesFingerprint.put(COLUMN_INFO_ID, infoID);
@@ -194,18 +193,18 @@ public class Database extends SQLiteOpenHelper {
         db.insertOrThrow(TABLE_FINGERPRINT, null, valuesFingerprint);
         int fingerprintid = getLastID(db,TABLE_FINGERPRINT,FINGERPRINT_COLUMN_ID);
 
+        Log.d(TAG,"FRONT ARRAY: "+a.getFront());
+        Log.d(TAG,"BACK ARRAY: "+a.getBack());
         ArrayList<Integer> frontBeaconIds = getInsertedMedianIds(db, a.getFront());
         ArrayList<Integer> backBeaconIds = getInsertedMedianIds(db, a.getBack());
 
 //        Log.d(TAG,"frontIDS:"+Util.primitiveListToString(frontBeaconIds));
 //        Log.d(TAG,"backIDS:"+Util.primitiveListToString(backBeaconIds));
-//        addFingerprint_has_Median(fingerprintid,frontInsertedMedians,backInsertedMedians);
+        addFingerprint_has_Median(fingerprintid,frontBeaconIds,backBeaconIds);
         db.close();
     }
 
-//    private ArrayList<Integer>
-
-    private ArrayList<Integer> getInsertedMedianIds(SQLiteDatabase db, BeaconsToOrient input) {
+    private ArrayList<Integer> getInsertedMedianIds(SQLiteDatabase db, BeaconToOrient input) {
         ArrayList<Integer> res = new ArrayList<>();
         ArrayList<Integer> beaconIds = new ArrayList<>();
         OnyxBeacon[] beaconArr = input.getBeaconArray();
@@ -227,18 +226,18 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         //INSERT FINGERPRINT_HAS_MEDIAN IN TABLE FINGERPRINT
-        for (int i = 0; i < front.size(); i++) {
+        for (int i : front) {
             ContentValues valuesFingerprint_has_Median = new ContentValues();
             valuesFingerprint_has_Median.put(COLUMN_FINGERPRINT_ID, fingerprintid);
-            valuesFingerprint_has_Median.put(COLUMN_MEDIAN_ID, front.get(i));
+            valuesFingerprint_has_Median.put(COLUMN_MEDIAN_ID, i);
 
             db.insertOrThrow(TABLE_FP_HAS_MEDIAN, null, valuesFingerprint_has_Median);
         }
 
-        for (int i = 0; i < back.size(); i++) {
+        for (int i : back) {
             ContentValues valuesFingerprint_has_Median = new ContentValues();
             valuesFingerprint_has_Median.put(COLUMN_FINGERPRINT_ID, fingerprintid);
-            valuesFingerprint_has_Median.put(COLUMN_MEDIAN_ID, back.get(i));
+            valuesFingerprint_has_Median.put(COLUMN_MEDIAN_ID, i);
 
             db.insertOrThrow(TABLE_FP_HAS_MEDIAN, null, valuesFingerprint_has_Median);
         }
@@ -256,7 +255,7 @@ public class Database extends SQLiteOpenHelper {
             valuesBeacon.put(COLUMN_MAC_ADDRESS, b.getMacAddressStr());
             valuesBeacon.put(COLUMN_MAJOR, b.getMajor());
             valuesBeacon.put(COLUMN_MINOR, b.getMinor());
-            valuesBeacon.put(COLUMN_UUID, "empty UUID");
+            valuesBeacon.put(COLUMN_UUID, b.getUuid());
 
             long returnVal = db.insertWithOnConflict(TABLE_BEACON, null, valuesBeacon, SQLiteDatabase.CONFLICT_IGNORE);
 
@@ -542,7 +541,7 @@ public class Database extends SQLiteOpenHelper {
             id = c.getInt(c.getColumnIndex(FP_HAS_MEDIAN_COLUMN_ID));
             medianid = c.getInt(c.getColumnIndex(COLUMN_MEDIAN_ID));
             fingerprintid = c.getInt(c.getColumnIndex(COLUMN_FINGERPRINT_ID));
-            res.add(new Fingerprint_has_MedianView(id,medianid,fingerprintid));
+            res.add(new Fingerprint_has_MedianView(id,fingerprintid,medianid));
             c.moveToNext();
         }
 

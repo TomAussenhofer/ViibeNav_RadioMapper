@@ -200,7 +200,8 @@ public class SensorHelper {
     }
 
     public Orientation getOrientationFromDegree(){
-        return UserOrientation.getOrientationFromDegree(orientation);
+        Orientation orientation = UserOrientation.getOrientationFromDegree(getOrientation());
+        return orientation;
     }
 
     public ScheduledExecutorService getExec() {

@@ -63,8 +63,8 @@ public class OnyxBeacon {
         if(!beaconMap.containsKey(beacon.getMacAddress())) {
             beaconMap.put(beacon.getMacAddress(), beacon);
 
-            Intent intent = new Intent("minIDadded");
-            intent.putExtra("minID", true);
+            Intent intent = new Intent("majIDadded");
+            intent.putExtra("majID", true);
             LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
         }
     }
@@ -119,7 +119,7 @@ public class OnyxBeacon {
      * @return
      */
     private boolean onMeasurementRSSIsFilled(){
-        if(measurementRSSIs.size()<Setup.MEASUREMENT_AMT_THRESHOLD) {
+        if(measurementRSSIs.size()< Definitions.MEASUREMENT_AMT_THRESHOLD) {
             measurementRSSIs.add(rssi);
             return false;
         }
@@ -156,7 +156,7 @@ public class OnyxBeacon {
             if(!Util.hasSufficientSendingFreq(tmp.lastSignalMeasured)) {
                 tmp.resetMedianMeasurement();
                 it.remove();
-            } else if(tmp.rssi <= Setup.SIGNAL_TOO_BAD_THRESHOLD) {
+            } else if(tmp.rssi <= Definitions.SIGNAL_TOO_BAD_THRESHOLD) {
                 tmp.resetMedianMeasurement();
                 it.remove();
             }
@@ -178,6 +178,12 @@ public class OnyxBeacon {
                     return true;
             }
         return false;
+    }
+
+    public OnyxBeacon clone() {
+        OnyxBeacon clone = new OnyxBeacon(macAddress,uuid,major,minor,rssi,txPower,lastSignalMeasured);
+        clone.medianRSSI = medianRSSI;
+        return clone;
     }
 
     @Override
@@ -212,9 +218,6 @@ public class OnyxBeacon {
     public float getMedianRSSI() {
         return medianRSSI;
     }
-    public void setMedianRSSI(float medianRSSI) {
-        this.medianRSSI = medianRSSI;
-    }
     public void setMeasurementStarted(boolean measurementStarted) {
         this.measurementStarted = measurementStarted;
     }
@@ -223,5 +226,9 @@ public class OnyxBeacon {
     }
     public void setRssi(int rssi) {
         this.rssi = rssi;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }

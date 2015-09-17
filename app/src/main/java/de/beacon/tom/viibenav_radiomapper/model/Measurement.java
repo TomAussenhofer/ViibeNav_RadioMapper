@@ -60,7 +60,7 @@ public class Measurement {
                     RadioMap.getRadioMap().deleteLastAnchor();
                     main.getApplicationUI().updateLayer1();
                     cleanBeacons();
-                    cleanAddInfo();
+                    cleanInfo();
                 }
             });
             dialog.show();
@@ -98,19 +98,18 @@ public class Measurement {
                 Log.d(TAG, "Dauer: " + ende / 1000 + "s");
 
                 if(firstMeasure) {
-                    Fingerprint a = new Fingerprint(RadioMap.getRadioMap().getCoordinate());
-//                    Log.d(TAG, "beacons size" + beacons.size());
-                    a.setMacToMedianWithOrientation(beacons,sh.getOrientationFromDegree());
-                    a.setAddInfo(main.getApplicationUI().getAddInfo());
+                    Fingerprint fingerprint = new Fingerprint(RadioMap.getRadioMap().getCoordinate());
+                    fingerprint.setBeaconToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
+                    fingerprint.setInfo(main.getApplicationUI().getAddInfo());
 
-                    RadioMap.getRadioMap().add(a);
+                    RadioMap.getRadioMap().add(fingerprint);
 
                     main.getApplicationUI().updateLayer1();
 
                     Boolean frontMeasuredFirst = false;
-                    if(a.getFront() != null)
+                    if(fingerprint.getFront() != null)
                         frontMeasuredFirst = true;
-                    else if (a.getBack() != null)
+                    else if (fingerprint.getBack() != null)
                         frontMeasuredFirst = false;
 
                     SecondMeasureDialog dialog = new SecondMeasureDialog();
@@ -122,13 +121,12 @@ public class Measurement {
                 } else {
                     Log.d(TAG, "Second measurement");
                     Fingerprint a = RadioMap.getLastAnchor();
-                    Log.d(TAG, "VALUE" + a.getAddInfo().getPerson_name());
-                    a.setMacToMedianWithOrientation(beacons, sh.getOrientationFromDegree());
 
+                    a.setBeaconToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
                     if(a.isFrontAndBackSet())
                         Database.getDB().addFingerprint(a);
 
-                    cleanAddInfo();
+                    cleanInfo();
                     cleanBeacons();
                 }
         }
@@ -138,7 +136,7 @@ public class Measurement {
                 b.resetMedianMeasurement();
         }
 
-        private void cleanAddInfo(){
+        private void cleanInfo(){
             main.getApplicationUI().getAddInfo().reset();
         }
 

@@ -26,7 +26,7 @@ public class Info {
         category = "";
     }
 
-    public boolean hasAddInfo(){
+    public boolean hasInfo(){
         if(hasRoomInfo() || hasPersonInfo() || hasEnvironmentInfo())
             return true;
         return false;
