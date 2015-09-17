@@ -155,6 +155,7 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
                     }
 
                     dialog.dismiss();
+                    RadioMap.getRadioMap().deleteData();
                 }
             });
             builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

@@ -175,7 +175,12 @@ public class Application{
     }
 
     public void onSensorChangedOperation(SensorEvent event){sh.onSensorChangedOperation(event);}
-    public void onResumeOperation(MainActivity n){sh.onResumeOperation(n);}
+
+    public void onResume(MainActivity main){
+        sh.onResumeOperation(main);
+        updateLayer1();
+    }
+
     public void onPauseOperation(MainActivity n){sh.onPauseOperation(n);}
 
     public void updateLayer1(){
@@ -237,7 +242,7 @@ public class Application{
         aid.show(main.getFragmentManager(), "MyDF");
     }
 
-    public Info getAddInfo() {
+    public Info getInfo() {
         return addInfo;
     }
 

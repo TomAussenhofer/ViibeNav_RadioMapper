@@ -100,11 +100,9 @@ public class Measurement {
                 if(firstMeasure) {
                     Fingerprint fingerprint = new Fingerprint(RadioMap.getRadioMap().getCoordinate());
                     fingerprint.setBeaconToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
-                    fingerprint.setInfo(main.getApplicationUI().getAddInfo());
+                    fingerprint.setInfo(main.getApplicationUI().getInfo());
 
                     RadioMap.getRadioMap().add(fingerprint);
-
-                    main.getApplicationUI().updateLayer1();
 
                     Boolean frontMeasuredFirst = false;
                     if(fingerprint.getFront() != null)
@@ -126,6 +124,9 @@ public class Measurement {
                     if(a.isFrontAndBackSet())
                         Database.getDB().addFingerprint(a);
 
+
+                    main.getApplicationUI().updateLayer1();
+
                     cleanInfo();
                     cleanBeacons();
                 }
@@ -137,7 +138,7 @@ public class Measurement {
         }
 
         private void cleanInfo(){
-            main.getApplicationUI().getAddInfo().reset();
+            main.getApplicationUI().getInfo().reset();
         }
 
 

@@ -131,7 +131,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onResume() {
         super.onResume();
 
-        applicationUI.onResumeOperation(this);
+        applicationUI.onResume(this);
         /*
          * Check for Bluetooth LE Support.  In production, our manifest entry will keep this
          * from installing on these devices, but this will allow test devices or other

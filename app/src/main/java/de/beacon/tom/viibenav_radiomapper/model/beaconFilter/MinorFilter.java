@@ -13,11 +13,11 @@ public class MinorFilter {
         minorFilter = new HashSet<>();
         minorFilter.add(17176);
         minorFilter.add(25497);
-        minorFilter.add(25522);
-        minorFilter.add(44694);
-        minorFilter.add(65080);
-        minorFilter.add(16339);
-        minorFilter.add(25535);
+//        minorFilter.add(25522);
+//        minorFilter.add(44694);
+//        minorFilter.add(65080);
+//        minorFilter.add(16339);
+//        minorFilter.add(25535);
     }
 
     public static boolean inFilter(int minor){

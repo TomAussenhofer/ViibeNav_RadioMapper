@@ -127,7 +127,6 @@ public class SecondMeasureDialog  extends DialogFragment {
         };
 
         private void cleanUp(){
-            main.getApplicationUI().updateLayer1();
             exec.shutdown();
         }
 

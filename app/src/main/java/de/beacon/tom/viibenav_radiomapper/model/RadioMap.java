@@ -30,10 +30,6 @@ public class RadioMap {
         return singleton;
     }
 
-//    public static RadioMap getRadioMap(){
-//        return singleton;
-//    }
-
     public static void add(Fingerprint a){
         data.add(a);
     }
@@ -52,23 +48,20 @@ public class RadioMap {
     }
 
     public static Fingerprint getLastAnchor() {
-        if(data!=null && data.size() != 0)
-            return data.get(data.size()-1);
-        else
+        if(data == null || data.size() == 0)
             return null;
-//        throw new NullPointerException("Last anchorpoint can not be determined - radiomap is empty.");
+        else
+            return data.get(data.size()-1);
     }
 
     public void deleteLastAnchor(){
         data.remove(data.size()-1);
     }
 
+    public void deleteData(){data.clear();}
+
     public Coordinate getCoordinate() {
         return coordinate;
-    }
-
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
     }
 
     public double getPosition_x() {

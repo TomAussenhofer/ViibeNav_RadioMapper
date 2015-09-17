@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -57,12 +56,11 @@ public class AddInfoDialog extends DialogFragment {
         builder.setPositiveButton(R.string.add_info, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                main.getApplicationUI().getAddInfo().setEnvironment(environmentText.getText().toString());
-                main.getApplicationUI().getAddInfo().setPerson_name(person_nameText.getText().toString());
-                main.getApplicationUI().getAddInfo().setRoom_name(room_nameText.getText().toString());
-                main.getApplicationUI().getAddInfo().setCategory(category.getText().toString());
+                main.getApplicationUI().getInfo().setEnvironment(environmentText.getText().toString().trim());
+                main.getApplicationUI().getInfo().setPerson_name(person_nameText.getText().toString().trim());
+                main.getApplicationUI().getInfo().setRoom_name(room_nameText.getText().toString().trim());
+                main.getApplicationUI().getInfo().setCategory(category.getText().toString().trim());
 
-                Log.d("AddInfoDialog",main.getApplicationUI().getAddInfo().getPerson_name());
             }
         });
         builder.setNegativeButton(R.string.cancel_info, new DialogInterface.OnClickListener() {
