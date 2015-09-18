@@ -95,6 +95,8 @@ public class OnyxBeacon {
             OnyxBeacon temp = getBeaconInMap(key);
             temp.setRssi(rssi);
             temp.setLastSignalMeasured(timeSignalMeasured);
+            if(temp.getMacAddressStr().equals("20:C3:8F:D5:63:BF"))
+                Log.d(TAG,"BEACON UPDATED "+temp.getRssi());
             beaconMap.put(key, temp);
         }
     }

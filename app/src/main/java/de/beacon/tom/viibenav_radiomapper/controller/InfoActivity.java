@@ -24,6 +24,7 @@ public class InfoActivity extends ViibeActivity {
     ListView beaconListView;
     private boolean shutdown;
     private Handler beaconSignals;
+    private Handler followUpHandler;
 
 
     @Override
@@ -32,14 +33,15 @@ public class InfoActivity extends ViibeActivity {
         Log.d(TAG,"CREATING INFO");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.info_activity);
+
+
+        listAdapter = new CustomListAdapter(this);
+        beaconListView = (ListView) findViewById(R.id.myListView);
+        beaconListView.setAdapter(listAdapter);
     }
 
     public void init(){
         shutdown = false;
-        listAdapter = new CustomListAdapter(this);
-        beaconListView = (ListView) findViewById(R.id.myListView);
-        beaconListView.setAdapter(listAdapter);
-
         beaconSignals = new Handler();
         beaconSignals.postDelayed(new Runnable() {
             @Override
@@ -47,10 +49,10 @@ public class InfoActivity extends ViibeActivity {
                 if (!shutdown) {
                     infoHandler.sendEmptyMessage(0);
                     new Handler().postDelayed(this, 1000);
+                    Log.d(TAG, "INSIDE HANDLER");
                 }
             }
-        }, 1000);
-
+        }, 0);
     }
 
     Handler infoHandler = new Handler(){
@@ -63,23 +65,17 @@ public class InfoActivity extends ViibeActivity {
     };
 
     @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
+    protected void onPause() {
         shutdown = true;
         beaconSignals.removeCallbacksAndMessages(null);
+        super.onPause();
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        BluetoothScan.getBtScan(this).onResumeOperation();
         init();
+        BluetoothScan.getBtScan(this).onResumeOperation();
         Log.d(TAG, "RESUMING IN INFO");
     }
 

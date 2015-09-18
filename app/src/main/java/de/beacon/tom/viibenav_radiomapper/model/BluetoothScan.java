@@ -39,6 +39,10 @@ public class BluetoothScan {
         this.act = act;
         advert = new Advertisement(act.getApplicationContext());
 
+        BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
+        this.mBluetoothAdapter = manager.getAdapter();
+        this.mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -85,10 +89,6 @@ public class BluetoothScan {
     private void init(){
         scanStarted = false;
         killBluetooth = false;
-
-        BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
-        this.mBluetoothAdapter = manager.getAdapter();
-        this.mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
         turnOnBluetooth();
         // Register for broadcasts on BluetoothAdapter state change
@@ -182,12 +182,10 @@ public class BluetoothScan {
             @Override
             public void run() {
                 if (scanStarted) {
-                    if(mBluetoothLeScanner != null && mBluetoothAdapter.isEnabled()) {
                         mBluetoothLeScanner.startScan(null, settings, mScanCallback);
                         scanStarted = false;
-                    }
                 } else {
-                    if(!killBluetooth && mBluetoothLeScanner != null) {
+                    if(!killBluetooth) {
                         mBluetoothLeScanner.stopScan(mScanCallback);
                         scanStarted = true;
                     }

@@ -63,6 +63,18 @@ public class ViibeActivity extends Activity {
         super.startActivityForResult(intent, requestCode, options);
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        initAnotherActivity = true;
+        super.startActivity(intent);
+    }
+
+    @Override
+    public void startActivity(Intent intent, Bundle options) {
+        initAnotherActivity = true;
+        super.startActivity(intent, options);
+    }
+
     /**
      * On Hide gets called, then the user hides the application by leaving to home screen, showing the application in the android task manager
      * (rectangle symbol) or pressing the back button on the root activity (which leads to switching to android home screen)
