@@ -36,16 +36,6 @@ public class Database extends SQLiteOpenHelper {
     public static final String COLUMN_Y = "y";
     public static final String COLUMN_INFO_ID = "fingerprint_infoid";
 
-//    // MAXIMUM AMOUNT OF BEACONS IN ONE TABLE
-//    public static final String TABLE_BEACON_MEDIAN_TO_ANCHOR = "beaconmediantoanchor";
-//    public static final String BEACON_MEDIAN_TO_ANCHOR_ID = "id";
-//    public static final String COLUMN_BEACON_1 = "beacon1";
-//    public static final String COLUMN_BEACON_2 = "beacon2";
-//    public static final String COLUMN_BEACON_3 = "beacon3";
-//    public static final String COLUMN_BEACON_4 = "beacon4";
-//    public static final String COLUMN_BEACON_5 = "beacon5";
-//    public static final String COLUMN_BEACON_6 = "beacon6";
-
     public static final String TABLE_FP_HAS_MEDIAN = "fp_has_median";
     public static final String FP_HAS_MEDIAN_COLUMN_ID = "fp_has_medianid";
     public static final String COLUMN_MEDIAN_ID = "fp_has_median_medianid";
@@ -319,25 +309,16 @@ public class Database extends SQLiteOpenHelper {
 //
 //        for (int i = 0; i < map.length; i++) {
 //            final String macAddress = map[i].getMacAddressStr();
-//            final double median = map[i].getMedian();
-////            Log.d(TAG, "MEDIAN IN LOOP "+median);
+////            SELECT fingerprint.floor, fingerprint.x, fingerprint.y, beacon.macAddress, median.medianid, MIN(ABS(median.median+78)) as deviation FROM fp_has_median JOIN fingerprint ON fp_has_median.fp_has_median_fingerprintid = fingerprint.fingerprintid
+////             JOIN median ON fp_has_median.fp_has_median_medianid = median.medianid JOIN beacon ON median.median_beaconid = beacon.beaconid
+////            WHERE beacon.macAddress = "78:A5:04:07:AE:96" AND median.orientation="back" GROUP by median.medianid HAVING deviation<=5 ORDER BY deviation ASC LIMIT 10
 //
-//            String queryOrientation = "";
-//            if (map[i].getOrientation().equals(Orientation.back))
-//                queryOrientation = "( " + TABLE_FINGERPRINT + "." + COLUMN_BACK + " = " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + BEACON_MEDIAN_TO_ANCHOR_ID + " ) ";
-//            else if (map[i].getOrientation().equals(Orientation.front))
-//                queryOrientation = "( " + TABLE_FINGERPRINT + "." + COLUMN_FRONT + " = " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + BEACON_MEDIAN_TO_ANCHOR_ID + " ) ";
-//
-//            String query = "SELECT " + TABLE_FINGERPRINT + "." + COLUMN_FLOOR + "," + TABLE_FINGERPRINT + "." + COLUMN_X + ", " + TABLE_FINGERPRINT + "." + COLUMN_Y + "," + TABLE_MEDIAN + "." + MEDIANS_COLUMN_ID + ", " + calcManhattenDB_Cmd(median) + " AS " + LOCAL_COLUMN_DEVIATION + " " +
-//                    " FROM '" + TABLE_MEDIAN + "' JOIN '" + TABLE_FINGERPRINT + "' JOIN '" + TABLE_BEACON_MEDIAN_TO_ANCHOR + "' WHERE macAddress = '" + macAddress + "' AND " +
-//                    " ( " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_1 + " = " + TABLE_MEDIAN + "." + MEDIANS_COLUMN_ID + " " +
-//                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_2 + " = " + TABLE_MEDIAN + "." + MEDIANS_COLUMN_ID + "  " +
-//                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_3 + " = " + TABLE_MEDIAN + "." + MEDIANS_COLUMN_ID + "  " +
-//                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_4 + " = " + TABLE_MEDIAN + "." + MEDIANS_COLUMN_ID + "  " +
-//                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_5 + " = " + TABLE_MEDIAN + "." + MEDIANS_COLUMN_ID + "  " +
-//                    "   OR " + TABLE_BEACON_MEDIAN_TO_ANCHOR + "." + COLUMN_BEACON_6 + " = " + TABLE_MEDIAN + "." + MEDIANS_COLUMN_ID + "  " +
-//                    "  ) AND " + queryOrientation +
-//                    " GROUP BY " + COLUMN_MEDIAN_VALUE + " HAVING deviation <=" + threshold + " ORDER BY " + LOCAL_COLUMN_DEVIATION + " ASC LIMIT " + maxResults + ";";
+//            String query = "SELECT " + TABLE_FINGERPRINT + "." + COLUMN_FLOOR + "," + TABLE_FINGERPRINT + "." + COLUMN_X + ", " + TABLE_FINGERPRINT + "." + COLUMN_Y + "," +
+//                    TABLE_BEACON + "." + COLUMN_MAC_ADDRESS + ", " + TABLE_MEDIAN + "."+MEDIAN_COLUMN_ID+","+" MIN(ABS("+MEDIAN_COLUMN_ID+"-"+map[i].getMedian()+")) "+" AS " + LOCAL_COLUMN_DEVIATION + " " +
+//                    " FROM '" + TABLE_FP_HAS_MEDIAN + "' JOIN '" + TABLE_FINGERPRINT + "' ON "+COLUMN_FINGERPRINT_ID+"="+FINGERPRINT_COLUMN_ID+" JOIN '" +
+//                    TABLE_MEDIAN + "' ON "+COLUMN_MEDIAN_ID+"="+MEDIAN_COLUMN_ID+ " JOIN '"+TABLE_BEACON+"' ON "+COLUMN_BEACON_ID+"="+BEACON_COLUMN_ID +
+//                    " WHERE "+COLUMN_MAC_ADDRESS+" = '" + macAddress + "' AND "+ COLUMN_ORIENTATION + " = '" + map[i].getOrientation().toString()+"'"+
+//                    " GROUP BY " + MEDIAN_COLUMN_ID + " HAVING "+LOCAL_COLUMN_DEVIATION+" <=" + threshold + " ORDER BY " + LOCAL_COLUMN_DEVIATION + " ASC LIMIT " + maxResults + ";";
 //
 //            // IMPORTANT - NOTE:
 //            // IT MAKES SENSE TO SET UP THE LIMIT TO 5 WHEN MULTIPLE ANCHORS ARE SET IN THE RADIO MAP

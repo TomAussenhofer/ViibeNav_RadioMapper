@@ -57,9 +57,9 @@ public class Measurement {
             dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
+                    cleanBeacons();
                     RadioMap.getRadioMap().deleteLastAnchor();
                     main.getApplicationUI().updateLayer1();
-                    cleanBeacons();
                     cleanInfo();
                 }
             });
@@ -116,7 +116,7 @@ public class Measurement {
                     dialog.setArguments(b);
                     dialog.show(main.getFragmentManager(), "dialog");
                     cleanBeacons();
-                } else {
+                } else if(!firstMeasure){
                     Log.d(TAG, "Second measurement");
                     Fingerprint a = RadioMap.getLastAnchor();
 

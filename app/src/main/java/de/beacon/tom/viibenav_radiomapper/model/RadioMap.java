@@ -55,6 +55,7 @@ public class RadioMap {
     }
 
     public void deleteLastAnchor(){
+        if(data.size()!= 0)
         data.remove(data.size()-1);
     }
 
