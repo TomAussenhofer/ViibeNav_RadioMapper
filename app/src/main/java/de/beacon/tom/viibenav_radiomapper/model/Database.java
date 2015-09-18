@@ -47,7 +47,7 @@ public class Database extends SQLiteOpenHelper {
 //    public static final String COLUMN_BEACON_6 = "beacon6";
 
     public static final String TABLE_FP_HAS_MEDIAN = "fp_has_median";
-    public static final String FP_HAS_MEDIAN_COLUMN_ID = "fp_has_median_id";
+    public static final String FP_HAS_MEDIAN_COLUMN_ID = "fp_has_medianid";
     public static final String COLUMN_MEDIAN_ID = "fp_has_median_medianid";
     public static final String COLUMN_FINGERPRINT_ID = "fp_has_median_fingerprintid";
 
@@ -68,7 +68,7 @@ public class Database extends SQLiteOpenHelper {
 
     // INFO TABLE
     public static final String TABLE_INFO = "info";
-    public static final String INFO_COLUMN_ID = "id";
+    public static final String INFO_COLUMN_ID = "infoid";
     public static final String COLUMN_PERSON_NAME = "personname";
     public static final String COLUMN_ROOM_NAME = "roomname";
     public static final String COLUMN_ENVIRONMENT = "environment";

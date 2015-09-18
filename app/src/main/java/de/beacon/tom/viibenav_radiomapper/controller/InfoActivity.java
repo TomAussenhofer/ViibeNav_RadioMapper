@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.ListView;
 
@@ -75,14 +74,6 @@ public class InfoActivity extends ViibeActivity {
         beaconSignals.removeCallbacksAndMessages(null);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch(keyCode){
-            case KeyEvent.KEYCODE_BACK:
-                onBackPressed();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
     @Override
     protected void onResume() {

@@ -37,16 +37,12 @@ public class ViibeActivity extends Activity {
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-    }
-
-    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if(moveTaskToBack(false) == false) {
                 initAnotherActivity = true;
                 Log.d(TAG, "moveToBack Failed - not root");
+                onBackPressed();
             } else {
                 Log.d(TAG, "MOVE TASK TO BACK");
             }
