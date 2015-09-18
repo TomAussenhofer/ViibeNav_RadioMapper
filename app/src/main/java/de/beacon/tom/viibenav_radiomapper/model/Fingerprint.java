@@ -15,31 +15,31 @@ public class Fingerprint {
      * contains an array of MacAddresses mapped to medians
      * 90 degrees - 270 degrees
      */
-    private BeaconToOrient front;
+    private BeacToOrient front;
 
     /**
      * contains an array of MacAddresses mapped to medians
      * 0-90 degrees and 270-360 degrees
      */
-    private BeaconToOrient back;
+    private BeacToOrient back;
 
     public Fingerprint(Coordinate coordinate) {
         this.coordinate = coordinate;
     }
 
-//    public void setBeaconToOrientation(HashMap<CharBuffer, OnyxBeacon> input){
+//    public void setBeacToOrientation(HashMap<CharBuffer, OnyxBeacon> input){
 //        if(UserOrientation.getOrientationFromDegree(orientation).equals(Orientation.front))
 //            setFront(BeaconsToOrient.getBeaconsArrToOrient(input, UserOrientation.getOrientationFromSensorHelper()));
 //        else if(UserOrientation.getOrientationFromSensorHelper().equals(Orientation.back))
 //            setBack(BeaconsToOrient.getBeaconsArrToOrient(input,UserOrientation.getOrientationFromSensorHelper()));
 //    }
 
-    public void setBeaconToOrientation(ArrayList<OnyxBeacon> input, Orientation currentOrientation){
+    public void setBeacToOrientation(ArrayList<OnyxBeacon> input, Orientation currentOrientation){
         Log.d("Measurement", "Orientation when setting: "+currentOrientation);
         if(currentOrientation.equals(Orientation.front))
-            front = new BeaconToOrient(input, currentOrientation);
+            front = new BeacToOrient(input, currentOrientation);
         else if(currentOrientation.equals(Orientation.back))
-            back = new BeaconToOrient(input, currentOrientation);
+            back = new BeacToOrient(input, currentOrientation);
     }
 
     public boolean isFrontAndBackSet(){
@@ -52,11 +52,11 @@ public class Fingerprint {
         return coordinate;
     }
 
-    public BeaconToOrient getFront() {
+    public BeacToOrient getFront() {
         return front;
     }
 
-    public BeaconToOrient getBack() {
+    public BeacToOrient getBack() {
         return back;
     }
 

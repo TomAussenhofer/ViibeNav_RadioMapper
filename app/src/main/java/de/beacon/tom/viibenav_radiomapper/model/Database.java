@@ -194,7 +194,7 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
-    private ArrayList<Integer> getInsertedMedianIds(SQLiteDatabase db, BeaconToOrient input) {
+    private ArrayList<Integer> getInsertedMedianIds(SQLiteDatabase db, BeacToOrient input) {
         ArrayList<Integer> res = new ArrayList<>();
         ArrayList<Integer> beaconIds = new ArrayList<>();
         OnyxBeacon[] beaconArr = input.getBeaconArray();

@@ -99,7 +99,7 @@ public class Measurement {
 
                 if(firstMeasure) {
                     Fingerprint fingerprint = new Fingerprint(RadioMap.getRadioMap().getCoordinate());
-                    fingerprint.setBeaconToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
+                    fingerprint.setBeacToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
                     fingerprint.setInfo(main.getApplicationUI().getInfo());
 
                     RadioMap.getRadioMap().add(fingerprint);
@@ -120,7 +120,7 @@ public class Measurement {
                     Log.d(TAG, "Second measurement");
                     Fingerprint a = RadioMap.getLastAnchor();
 
-                    a.setBeaconToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
+                    a.setBeacToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
                     if(a.isFrontAndBackSet())
                         Database.getDB().addFingerprint(a);
 
