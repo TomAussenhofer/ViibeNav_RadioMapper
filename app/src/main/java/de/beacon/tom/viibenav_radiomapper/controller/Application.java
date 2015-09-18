@@ -176,12 +176,10 @@ public class Application{
 
     public void onSensorChangedOperation(SensorEvent event){sh.onSensorChangedOperation(event);}
 
-    public void onResume(MainActivity main){
-        sh.onResumeOperation(main);
+    public void onResume(){
         updateLayer1();
+        updateLayer2();
     }
-
-    public void onPauseOperation(MainActivity n){sh.onPauseOperation(n);}
 
     public void updateLayer1(){
         totalAnchor.setText("" + RadioMap.size());
@@ -232,6 +230,7 @@ public class Application{
     }
 
     public void clickInfo(View view){
+        main.leaveToNext = true;
         Intent intent = new Intent(main, InfoActivity.class);
         main.startActivityForResult(intent, 0);
     }

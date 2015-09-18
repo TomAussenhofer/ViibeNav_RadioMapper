@@ -1,6 +1,5 @@
 package de.beacon.tom.viibenav_radiomapper.controller;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -20,13 +19,12 @@ import android.widget.TextView;
 import java.util.concurrent.ScheduledExecutorService;
 
 import de.beacon.tom.viibenav_radiomapper.R;
-import de.beacon.tom.viibenav_radiomapper.model.Connector;
 import de.beacon.tom.viibenav_radiomapper.model.Database;
 import de.beacon.tom.viibenav_radiomapper.model.Person;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
-import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListFingerprint_has_MedianAdapter;
-import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListFingerprintAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListBeaconAdapter;
+import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListFingerprintAdapter;
+import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListFingerprint_has_MedianAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListInfoAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListMedianAdapter;
 import de.beacon.tom.viibenav_radiomapper.model.dbmodels.FingerprintView;
@@ -39,7 +37,7 @@ import de.beacon.tom.viibenav_radiomapper.model.dbmodels.OnyxBeaconView;
 /**
  * Created by TomTheBomb on 21.07.2015.
  */
-public class TestAreaActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class TestAreaActivity extends ViibeActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "TestAreaActivity";
 
@@ -294,10 +292,6 @@ public class TestAreaActivity extends Activity implements AdapterView.OnItemSele
     @Override
     protected void onResume() {
         super.onResume();
-
-        if(Connector.getConnector().WiFiEnabled())
-            Connector.getConnector().disableWiFi();
-
     }
 
     public boolean isLoopTest() {

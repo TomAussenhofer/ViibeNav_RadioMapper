@@ -24,6 +24,7 @@ import java.util.List;
 public class BluetoothScan {
     public static final String TAG = "BluetoothScan";
 
+    private Activity act;
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothLeScanner mBluetoothLeScanner;
 
@@ -32,16 +33,12 @@ public class BluetoothScan {
     private BroadcastReceiver mReceiver;
     private ScanSettings settings;
     private boolean scanStarted;
+    private boolean killBluetooth;
 
     private BluetoothScan(Activity act) {
+        this.act = act;
         advert = new Advertisement(act.getApplicationContext());
-        scanStarted = false;
 
-        BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
-        this.mBluetoothAdapter = manager.getAdapter();
-        this.mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
-
-        turnOnBluetooth();
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -52,32 +49,29 @@ public class BluetoothScan {
                             BluetoothAdapter.ERROR);
                     switch (state) {
                         case BluetoothAdapter.STATE_OFF:
-                            turnOnBluetooth();
                             Log.d(TAG, "Bt OFF.");
-//                            setButtonText("Bluetooth off");
+                            turnOnBluetooth();
                             break;
                         case BluetoothAdapter.STATE_TURNING_OFF:
-                            turnOnBluetooth();
                             Log.d(TAG, "Bt turning OFF.");
-//                            setButtonText("Turning Bluetooth off...");
+                            turnOnBluetooth();
                             break;
                         case BluetoothAdapter.STATE_ON:
                             Log.d(TAG, "Bt ON.");
-                            startScan();
+                            if(!killBluetooth)
+                                startScan();
+                            else
+                                killBluetooth();
                             break;
                         case BluetoothAdapter.STATE_TURNING_ON:
                             Log.d(TAG, "Bt turning ON.");
-//                            setButtonText("Turning Bluetooth on...");
+                            if(killBluetooth)
+                                killBluetooth();
                             break;
                     }
                 }
             }
         };
-
-
-        // Register for broadcasts on BluetoothAdapter state change
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        act.registerReceiver(mReceiver, filter);
     }
 
     public static BluetoothScan getBtScan(Activity act){
@@ -86,6 +80,24 @@ public class BluetoothScan {
                 singleton = new BluetoothScan(act);
             return singleton;
         }
+    }
+
+    private void init(){
+        scanStarted = false;
+        killBluetooth = false;
+
+        BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
+        this.mBluetoothAdapter = manager.getAdapter();
+        this.mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+
+        turnOnBluetooth();
+        // Register for broadcasts on BluetoothAdapter state change
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        act.registerReceiver(mReceiver, filter);
+    }
+
+    public void onResumeOperation(){
+        init();
     }
 
     private void startScan(){
@@ -170,28 +182,46 @@ public class BluetoothScan {
             @Override
             public void run() {
                 if (scanStarted) {
-                    mBluetoothLeScanner.startScan(null, settings, mScanCallback);
-                    scanStarted = false;
+                    if(mBluetoothLeScanner != null && mBluetoothAdapter.isEnabled()) {
+                        mBluetoothLeScanner.startScan(null, settings, mScanCallback);
+                        scanStarted = false;
+                    }
                 } else {
-                    mBluetoothLeScanner.stopScan(mScanCallback);
-                    scanStarted = true;
+                    if(!killBluetooth && mBluetoothLeScanner != null) {
+                        mBluetoothLeScanner.stopScan(mScanCallback);
+                        scanStarted = true;
+                    }
                 }
-                new Handler().postDelayed(this, 400);
+
+                if (!killBluetooth)
+                    new Handler().postDelayed(this, 400);
+                else
+                    killBluetooth();
             }
         }, 0);
     }
 
-    private boolean isSetup(){
-        Log.d(TAG, "BTAdapter null " + (mBluetoothAdapter == null));
-        Log.d(TAG,"BTAdapter enabled "+(mBluetoothAdapter.isEnabled()));
-        Log.d(TAG,"BTScanner scanner "+(mBluetoothLeScanner == null));
-
-        if(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled() && mBluetoothLeScanner != null)
-            return true;
-        return false;
-    }
-
     public BluetoothAdapter getmBluetoothAdapter() {
         return mBluetoothAdapter;
+    }
+
+    private void killBluetooth(){
+        scanStarted = false;
+        try {
+            if(mBluetoothLeScanner != null)
+                mBluetoothLeScanner.stopScan(mScanCallback);
+            act.unregisterReceiver(mReceiver);
+        } catch(IllegalArgumentException | IllegalStateException e){
+            Log.e(TAG,e.toString());
+        }
+        mBluetoothAdapter.disable();
+    }
+
+    public void disableBt(){
+        killBluetooth = true;
+    }
+
+    public void setKillBluetooth(boolean killBluetooth) {
+        this.killBluetooth = killBluetooth;
     }
 }

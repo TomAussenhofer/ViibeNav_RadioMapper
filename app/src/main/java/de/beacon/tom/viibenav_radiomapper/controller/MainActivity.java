@@ -1,12 +1,10 @@
 package de.beacon.tom.viibenav_radiomapper.controller;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,19 +14,24 @@ import android.widget.Toast;
 
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.BluetoothScan;
-import de.beacon.tom.viibenav_radiomapper.model.Connector;
 import de.beacon.tom.viibenav_radiomapper.model.Database;
 import de.beacon.tom.viibenav_radiomapper.model.ExportImportDB;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
 import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
+import de.beacon.tom.viibenav_radiomapper.model.WiFiConnector;
 import de.beacon.tom.viibenav_radiomapper.model.fragment.SettingsDialog;
 
 
-public class MainActivity extends Activity implements SensorEventListener {
+public class MainActivity extends ViibeActivity implements SensorEventListener {
+
+    public static final String TAG = "MainActivity";
 
     private Application applicationUI;
     private BluetoothScan btScan;
     private ExportImportDB exportImport;
+    private SensorHelper sh;
+
+    boolean leaveToNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,22 +39,20 @@ public class MainActivity extends Activity implements SensorEventListener {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
-        init();
     }
 
     private void init(){
         btScan = BluetoothScan.getBtScan(this);
+        btScan.onResumeOperation();
+
         applicationUI = new Application(this);
         exportImport = new ExportImportDB(this);
         RadioMap.getRadioMap();
         Database.createDB(this, null, null, 1);
-        Connector.createConnector((WifiManager) getSystemService(this.WIFI_SERVICE));
+        WiFiConnector.getConnector(this);
 
-        SensorHelper sh = SensorHelper.getSensorHelper(this);
+        sh = SensorHelper.getSensorHelper(this);
 
-        // Turn Off WiFi signals on activity start as it mitigates position estimation
-        if(Connector.getConnector().WiFiEnabled())
-            Connector.getConnector().disableWiFi();
     }
 
     @Override
@@ -131,7 +132,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onResume() {
         super.onResume();
 
-        applicationUI.onResume(this);
+
         /*
          * Check for Bluetooth LE Support.  In production, our manifest entry will keep this
          * from installing on these devices, but this will allow test devices or other
@@ -142,61 +143,30 @@ public class MainActivity extends Activity implements SensorEventListener {
             finish();
             return;
         }
+
+        init();
+        SensorHelper.getSensorHelper(this).onResumeOperation(this);
+
     }
-
-
 
     @Override
     protected void onPause() {
         super.onPause();
-        applicationUI.onPauseOperation(this);
+        SensorHelper.getSensorHelper(this).onPauseOperation(this);
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-//        onBackPressed();
+    public void onHide() {
+        super.onHide();
     }
-
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        switch(keyCode){
-//            case KeyEvent.KEYCODE_BACK:
-//                onBackPressed();
-//                break;
-//            case KeyEvent.KEYCODE_MOVE_HOME:
-//                onBackPressed();
-//                break;
-//            case KeyEvent.KEYCODE_HOME:
-//                onBackPressed();
-//                break;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
 
     private void cleanUp(){
         // When application is paused turn on WiFi again
-        if(!Connector.getConnector().WiFiEnabled())
-            Connector.getConnector().enableWiFi();
-        btScan.getmBluetoothAdapter().disable();
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(!Connector.getConnector().WiFiEnabled())
-            Connector.getConnector().enableWiFi();
-
-//        unregisterReceiver(mReceiver);
-//        bluetoothScan.getmBluetoothAdapter().disable();
     }
 
     public Application getApplicationUI() {
         return applicationUI;
     }
-    public BluetoothScan getBluetoothScan() {
-        return btScan;
-    }
-
 
 }

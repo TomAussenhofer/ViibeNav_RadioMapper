@@ -1,35 +1,36 @@
 package de.beacon.tom.viibenav_radiomapper.model;
 
+import android.app.Activity;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 /**
  * Created by TomTheBomb on 01.08.2015.
  */
-public class Connector {
+public class WiFiConnector {
 
+    public static final String TAG = "WiFiConnector";
     private WifiManager wifi;
 
-    private static Connector singleton;
+    private static WiFiConnector singleton;
 
-    private Connector(WifiManager wifi) {
+    private WiFiConnector(WifiManager wifi) {
         this.wifi = wifi;
     }
 
-    public static Connector createConnector(WifiManager wifi){
+    public static WiFiConnector getConnector(Activity a){
         // Avoid possible errors with multiple threads accessing this method -> synchronized
-        synchronized(Connector.class) {
+        synchronized(WiFiConnector.class) {
             if (singleton == null) {
-                singleton = new Connector(wifi);
+                WifiManager wifi = (WifiManager) a.getSystemService(a.WIFI_SERVICE);
+                singleton = new WiFiConnector(wifi);
             }
         }
         return singleton;
     }
 
-    public static Connector getConnector(){
-        return singleton;
-    }
-
     public void enableWiFi(){
+        Log.d(TAG, "Enable WiFi");
         wifi.setWifiEnabled(true);
     }
 
