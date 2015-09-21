@@ -35,6 +35,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".controller.SettingsActivity"
+            android:label="Beacons in area"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="de.beacon.tom.radiomapper.controller.SettingsActivity" />
+
+                <category android:name="android.intent.category.PREFERENCE" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".controller.TestAreaActivity"
             android:label="TestArea"
             android:screenOrientation="portrait" >

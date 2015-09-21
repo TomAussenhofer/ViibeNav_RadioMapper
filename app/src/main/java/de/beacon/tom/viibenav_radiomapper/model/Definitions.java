@@ -10,7 +10,9 @@ public class Definitions {
      */
     public static  int ON_THE_FLY_AMT_THRESHOLD = 6;
 
-    public static  int MEASUREMENT_AMT_THRESHOLD = 5;
+    public static  int MEASUREMENT_AMT_THRESHOLD = 10;
+
+    public static  int MAX_BEACONS_FOR_MEASURE = 7;
 
     public static  float FSPL_ELEMENT = 2.5f;
 

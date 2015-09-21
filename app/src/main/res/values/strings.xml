@@ -10,4 +10,8 @@
     <string name="environment">Umgebung</string>
     <string name="set">Einstellen</string>
     <string name="category">Kategorie</string>
+    <string name="amtRSSIsForMeasure">Anzahl RSSIs für Messung</string>
+    <string name="amtRSSIsForMeasureDefault">10</string>
+    <string name="maxBeaconsForMeasure">Max. Beacons pro Fingerprint</string>
+    <string name="maxBeaconsForMeasureDefault">7</string>
 </resources>

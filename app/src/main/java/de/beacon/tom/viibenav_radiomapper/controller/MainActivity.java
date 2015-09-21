@@ -1,11 +1,13 @@
 package de.beacon.tom.viibenav_radiomapper.controller;
 
-import android.app.DialogFragment;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,11 +17,11 @@ import android.widget.Toast;
 import de.beacon.tom.viibenav_radiomapper.R;
 import de.beacon.tom.viibenav_radiomapper.model.BluetoothScan;
 import de.beacon.tom.viibenav_radiomapper.model.Database;
+import de.beacon.tom.viibenav_radiomapper.model.Definitions;
 import de.beacon.tom.viibenav_radiomapper.model.ExportImportDB;
 import de.beacon.tom.viibenav_radiomapper.model.RadioMap;
 import de.beacon.tom.viibenav_radiomapper.model.SensorHelper;
 import de.beacon.tom.viibenav_radiomapper.model.WiFiConnector;
-import de.beacon.tom.viibenav_radiomapper.model.fragment.SettingsDialog;
 
 
 public class MainActivity extends ViibeActivity implements SensorEventListener {
@@ -39,6 +41,12 @@ public class MainActivity extends ViibeActivity implements SensorEventListener {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Definitions.MEASUREMENT_AMT_THRESHOLD = Integer.parseInt(preferences.getString(SettingsActivity.MEASUREMENT_AMT_THRESHOLD, "10"));
+        Definitions.MAX_BEACONS_FOR_MEASURE = Integer.parseInt(preferences.getString(SettingsActivity.MAX_BEACONS_FOR_MEASURE, "7"));
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
     }
 
     private void init(){
@@ -52,7 +60,6 @@ public class MainActivity extends ViibeActivity implements SensorEventListener {
         WiFiConnector.getConnector(this);
 
         sh = SensorHelper.getSensorHelper(this);
-
     }
 
     @Override
@@ -120,8 +127,10 @@ public class MainActivity extends ViibeActivity implements SensorEventListener {
         //noinspection SimplifiableIfStatement
         switch(id){
             case R.id.action_settings:
-                DialogFragment dialogFrag = new SettingsDialog();
-                dialogFrag.show(getFragmentManager(), "MySettingsDialogFg");
+//                DialogFragment dialogFrag = new SettingsDialog();
+//                dialogFrag.show(getFragmentManager(), "MySettingsDialogFg");
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, 1);
                 break;
         }
 

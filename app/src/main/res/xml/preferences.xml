@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="pref_amtRSSIsForMeasure"
+        android:title="@string/amtRSSIsForMeasure"
+        android:dialogTitle="@string/amtRSSIsForMeasure"
+        android:inputType="number"
+        android:maxLines="1"
+        android:defaultValue="@string/amtRSSIsForMeasureDefault"
+        android:summary="%s"/>
+
+    <EditTextPreference
+        android:key="pref_maxBeaconsForMeasure"
+        android:title="@string/maxBeaconsForMeasure"
+        android:dialogTitle="@string/maxBeaconsForMeasure"
+        android:inputType="number"
+        android:maxLines="1"
+        android:defaultValue="@string/maxBeaconsForMeasureDefault"
+        android:summary="%s"/>
+
+</PreferenceScreen>
