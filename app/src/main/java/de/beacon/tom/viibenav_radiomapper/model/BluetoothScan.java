@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
@@ -13,8 +14,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -76,6 +79,7 @@ public class BluetoothScan {
                 }
             }
         };
+        init();
     }
 
     public static BluetoothScan getBtScan(Activity act){
@@ -111,11 +115,15 @@ public class BluetoothScan {
 //        // does not work
 //         filters.add(beaconFilter);
 //        filters.add(filter2);
+        UUIDFilter uuidFilter = new UUIDFilter();
+        ArrayList<ScanFilter> filters = new ArrayList<>();
+        filters.add(uuidFilter.getScanFilterFromUUIDs("20CAE8A0-A9CF-11E3-A5E2-0800200C9A66"));
+//        filters = null;
 
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
         settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
 //        Log.d(TAG,"Bluetooth enabled: "+mBluetoothAdapter.isEnabled() + " Try to start scanning...");
-        scanLeDevice();
+        scanLeDevice(filters);
 
     }
 
@@ -177,24 +185,22 @@ public class BluetoothScan {
             startScan();
     }
 
-    private void scanLeDevice() {
-        new Handler().postDelayed(new Runnable() {
+    private void scanLeDevice(final ArrayList<ScanFilter> filter) {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (scanStarted) {
-                        mBluetoothLeScanner.startScan(null, settings, mScanCallback);
-                        scanStarted = false;
+                    mBluetoothLeScanner.startScan(filter, settings, mScanCallback);
+                    scanStarted = false;
                 } else {
-                    if(!killBluetooth) {
-                        mBluetoothLeScanner.stopScan(mScanCallback);
-                        scanStarted = true;
-                    }
+//                    if(!killBluetooth) {
+                    mBluetoothLeScanner.stopScan(mScanCallback);
+                    scanStarted = true;
+//                    } else {
+//                        scanStarted = false;
+//                    }
                 }
-
-                if (!killBluetooth)
-                    new Handler().postDelayed(this, 400);
-                else
-                    killBluetooth();
+                new Handler(Looper.getMainLooper()).postDelayed(this, 400);
             }
         }, 0);
     }
@@ -219,7 +225,33 @@ public class BluetoothScan {
         killBluetooth = true;
     }
 
-    public void setKillBluetooth(boolean killBluetooth) {
-        this.killBluetooth = killBluetooth;
+
+    private class UUIDFilter {
+        private ScanFilter getScanFilterFromUUIDs(String uuid){
+            // Empty data
+            byte[] manData = new byte[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+            // Data Mask
+            byte[] mask = new byte[]{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0};
+
+            // Copy UUID into data array and remove all "-"
+            System.arraycopy(hexStringToByteArray(uuid.replace("-", "")), 0, manData, 2, 16);
+
+            // Add data array to filters
+            ScanFilter filter = new ScanFilter.Builder().setManufacturerData(76, manData, mask).build();
+            return filter;
+        }
+
+        public byte[] hexStringToByteArray(String s) {
+            int len = s.length();
+            byte[] data = new byte[len / 2];
+            for (int i = 0; i < len; i += 2) {
+                data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                        + Character.digit(s.charAt(i+1), 16));
+            }
+            return data;
+        }
+
     }
+
 }

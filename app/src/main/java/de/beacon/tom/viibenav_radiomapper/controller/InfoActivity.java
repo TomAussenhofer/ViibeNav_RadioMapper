@@ -2,7 +2,7 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
+import android.os.Looper;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ListView;
@@ -23,8 +23,7 @@ public class InfoActivity extends ViibeActivity {
     CustomListAdapter listAdapter;
     ListView beaconListView;
     private boolean shutdown;
-    private Handler beaconSignals;
-    private Handler followUpHandler;
+    private Handler infoHandler;
 
 
     @Override
@@ -42,32 +41,31 @@ public class InfoActivity extends ViibeActivity {
 
     public void init(){
         shutdown = false;
-        beaconSignals = new Handler();
-        beaconSignals.postDelayed(new Runnable() {
+
+        infoHandler = new Handler(Looper.getMainLooper());
+        infoHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (!shutdown) {
                     infoHandler.sendEmptyMessage(0);
+                    listAdapter.clear();
+                    listAdapter.addAll(OnyxBeacon.getBeaconMapAsList());
+                    listAdapter.notifyDataSetChanged();
+
                     new Handler().postDelayed(this, 1000);
                     Log.d(TAG, "INSIDE HANDLER");
                 }
             }
-        }, 0);
+        },0);
+
     }
 
-    Handler infoHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            listAdapter.clear();
-            listAdapter.addAll(OnyxBeacon.getBeaconMapAsList());
-            listAdapter.notifyDataSetChanged();
-        }
-    };
+
 
     @Override
     protected void onPause() {
         shutdown = true;
-        beaconSignals.removeCallbacksAndMessages(null);
+        infoHandler.removeCallbacksAndMessages(null);
         super.onPause();
     }
 
@@ -75,7 +73,8 @@ public class InfoActivity extends ViibeActivity {
     protected void onResume() {
         super.onResume();
         init();
-        BluetoothScan.getBtScan(this).onResumeOperation();
+        if(getFromAnotherActivity())
+            BluetoothScan.getBtScan(this).onResumeOperation();
         Log.d(TAG, "RESUMING IN INFO");
     }
 

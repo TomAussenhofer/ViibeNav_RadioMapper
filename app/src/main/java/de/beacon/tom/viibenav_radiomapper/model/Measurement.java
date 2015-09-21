@@ -46,7 +46,6 @@ public class Measurement {
 
     public class AsyncMeasure extends AsyncTask<ArrayList<OnyxBeacon>, Integer, String> {
 
-        SecondMeasureDialog secondMeasureDialog;
         ArrayList<OnyxBeacon> beacons;
         ProgressDialog dialog;
 
@@ -104,7 +103,7 @@ public class Measurement {
                     fingerprint.setBeacToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
                     fingerprint.setInfo(main.getApplicationUI().getInfo());
 
-                    RadioMap.getRadioMap().add(fingerprint);
+                    RadioMap.add(fingerprint);
 
                     Boolean frontMeasuredFirst = false;
                     if(fingerprint.getFront() != null)
@@ -123,7 +122,7 @@ public class Measurement {
                     secondMeasureDialog.setArguments(b);
                     secondMeasureDialog.show(main.getFragmentManager(), "dialog");
                     cleanBeacons();
-                } else if(!firstMeasure){
+                } else {
                     Log.d(TAG, "Second measurement");
                     Fingerprint a = RadioMap.getLastAnchor();
 
@@ -140,8 +139,9 @@ public class Measurement {
         }
 
         private void cleanBeacons(){
-            for(OnyxBeacon b : this.beacons)
-                b.resetMedianMeasurement();
+            if(beacons != null)
+                for(OnyxBeacon b : this.beacons)
+                    b.resetMedianMeasurement();
         }
 
         private void cleanInfo(){

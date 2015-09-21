@@ -86,4 +86,8 @@ public class ViibeActivity extends Activity {
         if(BluetoothScan.getBtScan(this).getmBluetoothAdapter().isEnabled())
             BluetoothScan.getBtScan(this).disableBt();
     }
+
+    protected boolean getFromAnotherActivity(){
+        return initAnotherActivity;
+    }
 }

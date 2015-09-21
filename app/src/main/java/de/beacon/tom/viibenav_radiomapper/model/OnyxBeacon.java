@@ -91,15 +91,16 @@ public class OnyxBeacon {
             throw new NullPointerException("Passed Key is invalid or not set.");
         if(!beaconMap.containsKey(key))
             throw new IllegalArgumentException("Passed key can not be found in beaconMap.");
-        else{
+
             OnyxBeacon temp = getBeaconInMap(key);
             temp.setRssi(rssi);
+            if(temp.getMinor()== 65080)
+                Log.d(TAG, "BEACON UPDATED " + temp.getRssi() + " time: "+Util.timeDiff_MillisToNow(temp.getLastSignalMeasured()));
             temp.setLastSignalMeasured(timeSignalMeasured);
-            if(temp.getMacAddressStr().equals("20:C3:8F:D5:63:BF"))
-                Log.d(TAG,"BEACON UPDATED "+temp.getRssi());
+
             beaconMap.put(key, temp);
-        }
     }
+
 
     public void checkState(){
         if(measurementStarted)

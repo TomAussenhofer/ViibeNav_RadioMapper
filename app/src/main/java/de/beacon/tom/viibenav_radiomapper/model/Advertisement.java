@@ -5,8 +5,6 @@ import android.util.Log;
 
 import java.nio.CharBuffer;
 
-import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
-import de.beacon.tom.viibenav_radiomapper.model.Util;
 import de.beacon.tom.viibenav_radiomapper.model.beaconFilter.MinorFilter;
 
 
@@ -107,6 +105,7 @@ public class Advertisement {
                 } else {
                     OnyxBeacon.updateBeaconRSSIinMap(macAddress, rssi, System.currentTimeMillis());
                 }
+                Log.d(TAG,"UUID "+uuid);
                 //need to return this beacon which is listed in HashMap!
                 return OnyxBeacon.getBeaconInMap(macAddress);
             }
