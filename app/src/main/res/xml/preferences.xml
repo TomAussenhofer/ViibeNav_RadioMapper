@@ -11,12 +11,12 @@
         android:summary="%s"/>
 
     <EditTextPreference
-        android:key="pref_maxBeaconsForMeasure"
-        android:title="@string/maxBeaconsForMeasure"
-        android:dialogTitle="@string/maxBeaconsForMeasure"
+        android:key="pref_minBeaconsForMeasure"
+        android:title="@string/minBeaconsForMeasure"
+        android:dialogTitle="@string/minBeaconsForMeasure"
         android:inputType="number"
         android:maxLines="1"
-        android:defaultValue="@string/maxBeaconsForMeasureDefault"
+        android:defaultValue="@string/minBeaconsForMeasureDefault"
         android:summary="%s"/>
 
 </PreferenceScreen>

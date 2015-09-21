@@ -16,7 +16,7 @@ import de.beacon.tom.viibenav_radiomapper.model.Definitions;
 public class SettingsActivity extends Activity{
 
     public static final String MEASUREMENT_AMT_THRESHOLD = "pref_amtRSSIsForMeasure";
-    public static final String MAX_BEACONS_FOR_MEASURE = "pref_amtRSSIsForMeasure";
+    public static final String MIN_BEACONS_FOR_MEASURE = "pref_amtRSSIsForMeasure";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class SettingsActivity extends Activity{
             final EditTextPreference amt_for_Measure = (EditTextPreference) findPreference("pref_amtRSSIsForMeasure");
             amt_for_Measure.setSummary(amt_for_Measure.getText());
 
-            final EditTextPreference max_Beacons_for_Measure = (EditTextPreference) findPreference("pref_maxBeaconsForMeasure");
+            final EditTextPreference max_Beacons_for_Measure = (EditTextPreference) findPreference("pref_minBeaconsForMeasure");
             max_Beacons_for_Measure.setSummary(max_Beacons_for_Measure.getText());
         }
 
@@ -54,8 +54,8 @@ public class SettingsActivity extends Activity{
                     Definitions.MEASUREMENT_AMT_THRESHOLD = Integer.parseInt(sharedPreferences.getString(SettingsActivity.MEASUREMENT_AMT_THRESHOLD, "10"));
                 }
 
-                if(etp.equals(findPreference("pref_amtRSSIsForMeasure"))) {
-                    Definitions.MAX_BEACONS_FOR_MEASURE = Integer.parseInt(sharedPreferences.getString(SettingsActivity.MAX_BEACONS_FOR_MEASURE, "7"));
+                if(etp.equals(findPreference("pref_minBeaconsForMeasure"))) {
+                    Definitions.MIN_BEACONS_FOR_MEASURE = Integer.parseInt(sharedPreferences.getString(SettingsActivity.MIN_BEACONS_FOR_MEASURE, "7"));
                 }
             }
         }

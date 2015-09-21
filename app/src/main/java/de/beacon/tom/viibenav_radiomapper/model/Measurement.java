@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -111,7 +112,12 @@ public class Measurement {
                     else if (fingerprint.getBack() != null)
                         frontMeasuredFirst = false;
 
-                    secondMeasureDialog = new SecondMeasureDialog();
+                    if(beacons.size()<Definitions.MIN_BEACONS_FOR_MEASURE)
+                        Toast.makeText(main,"Zu wenig beacons! beacons: "+Definitions.MIN_BEACONS_FOR_MEASURE, Toast.LENGTH_SHORT).show();
+
+
+
+                    SecondMeasureDialog secondMeasureDialog = new SecondMeasureDialog();
                     Bundle b = new Bundle();
                     b.putBoolean("frontMeasuredFirst",frontMeasuredFirst);
                     secondMeasureDialog.setArguments(b);
@@ -130,7 +136,6 @@ public class Measurement {
 
                     cleanInfo();
                     cleanBeacons();
-                    secondMeasureDialog.dismiss();
                 }
         }
 

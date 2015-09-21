@@ -43,7 +43,7 @@ public class MainActivity extends ViibeActivity implements SensorEventListener {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Definitions.MEASUREMENT_AMT_THRESHOLD = Integer.parseInt(preferences.getString(SettingsActivity.MEASUREMENT_AMT_THRESHOLD, "10"));
-        Definitions.MAX_BEACONS_FOR_MEASURE = Integer.parseInt(preferences.getString(SettingsActivity.MAX_BEACONS_FOR_MEASURE, "7"));
+        Definitions.MIN_BEACONS_FOR_MEASURE = Integer.parseInt(preferences.getString(SettingsActivity.MIN_BEACONS_FOR_MEASURE, "2"));
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
