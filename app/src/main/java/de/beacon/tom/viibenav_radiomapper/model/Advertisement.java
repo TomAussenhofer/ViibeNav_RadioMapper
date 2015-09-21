@@ -5,8 +5,6 @@ import android.util.Log;
 
 import java.nio.CharBuffer;
 
-import de.beacon.tom.viibenav_radiomapper.model.beaconFilter.MinorFilter;
-
 
 /**
  * Created by TomTheBomb on 23.06.2015.
@@ -97,7 +95,7 @@ public class Advertisement {
 
 
             // ADDITIONAL FILTER TO BE DELETED LATER ON!!!!
-            if(MinorFilter.inFilter(minor)) {
+//            if(MinorFilter.inFilter(minor)) {
                 //creates new OnyxBeacon
                 if (!OnyxBeacon.inBeaconMap(macAddress)) {
                     OnyxBeacon newBeacon = new OnyxBeacon(macAddress, uuid, major, minor, rssi, txPower , System.currentTimeMillis());
@@ -105,10 +103,9 @@ public class Advertisement {
                 } else {
                     OnyxBeacon.updateBeaconRSSIinMap(macAddress, rssi, System.currentTimeMillis());
                 }
-                Log.d(TAG,"UUID "+uuid);
                 //need to return this beacon which is listed in HashMap!
                 return OnyxBeacon.getBeaconInMap(macAddress);
-            }
+//            }
 
         }
         return null;
