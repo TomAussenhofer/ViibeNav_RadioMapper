@@ -45,6 +45,7 @@ public class Measurement {
 
     public class AsyncMeasure extends AsyncTask<ArrayList<OnyxBeacon>, Integer, String> {
 
+        SecondMeasureDialog secondMeasureDialog;
         ArrayList<OnyxBeacon> beacons;
         ProgressDialog dialog;
 
@@ -110,11 +111,11 @@ public class Measurement {
                     else if (fingerprint.getBack() != null)
                         frontMeasuredFirst = false;
 
-                    SecondMeasureDialog dialog = new SecondMeasureDialog();
+                    secondMeasureDialog = new SecondMeasureDialog();
                     Bundle b = new Bundle();
                     b.putBoolean("frontMeasuredFirst",frontMeasuredFirst);
-                    dialog.setArguments(b);
-                    dialog.show(main.getFragmentManager(), "dialog");
+                    secondMeasureDialog.setArguments(b);
+                    secondMeasureDialog.show(main.getFragmentManager(), "dialog");
                     cleanBeacons();
                 } else if(!firstMeasure){
                     Log.d(TAG, "Second measurement");
@@ -129,6 +130,7 @@ public class Measurement {
 
                     cleanInfo();
                     cleanBeacons();
+                    secondMeasureDialog.dismiss();
                 }
         }
 
