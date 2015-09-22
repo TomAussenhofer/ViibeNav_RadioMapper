@@ -54,7 +54,7 @@ public class Advertisement {
         return false;
     }
 
-    public OnyxBeacon extractAD(final String deviceAddress, final int rssi, final byte[] scanRecord){
+    public void extractAD(final String deviceAddress, final int rssi, final byte[] scanRecord){
         int startByte = 2;
         boolean patternFound = false;
         while (startByte <= 5) {
@@ -67,7 +67,7 @@ public class Advertisement {
         }
 
         if(!patternFound)
-            return null;
+            return;
 
         if (patternFound) {
             //Convert to hex String
@@ -104,11 +104,8 @@ public class Advertisement {
                     OnyxBeacon.updateBeaconRSSIinMap(macAddress, rssi, System.currentTimeMillis());
                 }
                 //need to return this beacon which is listed in HashMap!
-                return OnyxBeacon.getBeaconInMap(macAddress);
-//            }
-
+                OnyxBeacon.getBeaconInMap(macAddress).checkState();
         }
-        return null;
     }
 
     /**

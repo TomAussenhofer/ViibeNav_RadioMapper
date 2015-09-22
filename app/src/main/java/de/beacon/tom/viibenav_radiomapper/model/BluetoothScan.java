@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -142,16 +143,26 @@ public class BluetoothScan {
              * Create a new beacon from the list of obtains AD structures
              * and pass it up to the main thread if it is not already listed in OnyxBeacon.onyxBeaconHashmap
              */
-            OnyxBeacon beacon = advert.extractAD(result.getDevice().getAddress(), result.getRssi(), result.getScanRecord().getBytes());
+//            OnyxBeacon beacon = advert.extractAD(result.getDevice().getAddress(), result.getRssi(), result.getScanRecord().getBytes());
+//
+//            if(beacon != null)
+//                beacon.checkState();
 
-            if(beacon != null)
-                beacon.checkState();
-
-//            Message msg = Message.obtain();
-//            msg.obj = beacon;
-//            mHandler.sendMessage(msg);
+            Message msg = Message.obtain();
+            msg.obj = result;
+            scanHandler.sendMessage(msg);
         }
     };
+
+    private Handler scanHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            ScanResult result = (ScanResult) msg.obj;
+            advert.extractAD(result.getDevice().getAddress(), result.getRssi(), result.getScanRecord().getBytes());
+        }
+    };
+
+
 
     public void turnOnBluetooth(){
         Log.d(TAG, "method turn on bt");
