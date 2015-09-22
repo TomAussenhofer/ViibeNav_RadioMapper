@@ -71,26 +71,19 @@ public class Measurement {
         protected String doInBackground(ArrayList<OnyxBeacon>... params) {
             ArrayList<OnyxBeacon> beacons = params[0];
             this.beacons = (ArrayList<OnyxBeacon>)beacons.clone();
-            int counter = 0;
             while(isMeasuring()) {
                 Iterator<OnyxBeacon> it = beacons.iterator();
                 while (it.hasNext()) {
                     OnyxBeacon tmp = it.next();
+                    if(!Util.hasSufficientSendingFreq(tmp.getLastSignalMeasured())){
+                        Toast.makeText(main,"Der Beacon hat zu lange zum senden gebraucht.",Toast.LENGTH_LONG);
+//                        tmp.resetMedianMeasurement();
+                    }
+
                     if (tmp.isMeasurementDone()) {
                         publishProgress(1);
                         it.remove();
                     }
-
-                    if(System.currentTimeMillis()-tmp.getLastSignalMeasured()>5000){
-                        Toast.makeText(main,"Der Beacon hat zu lange zum senden gebraucht.",Toast.LENGTH_LONG);
-                        it.remove();
-                        this.beacons.remove(counter);
-                    }
-
-                    if(counter!=beacons.size()-1)
-                        counter++;
-                    else
-                        counter=0;
                 }
                 // break out if list is empty = all calcs are done
                 if(beacons.isEmpty())

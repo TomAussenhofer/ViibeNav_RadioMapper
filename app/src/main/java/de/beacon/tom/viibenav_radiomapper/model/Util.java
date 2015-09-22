@@ -100,9 +100,10 @@ public class Util {
 
     public static ArrayList<OnyxBeacon> filterBeaconWithBadMedian(ArrayList<OnyxBeacon> beacons){
         ArrayList<OnyxBeacon> res = new ArrayList<>();
-        for(OnyxBeacon tmp : beacons)
-            if(tmp.getMedianRSSI()<=Definitions.SIGNAL_TOO_BAD_THRESHOLD)
-                res.add(tmp);
+        for(OnyxBeacon tmp : beacons) {
+//            if(tmp.getMedianRSSI()<=Definitions.SIGNAL_TOO_BAD_THRESHOLD)
+            res.add(tmp.clone());
+        }
         return res;
     }
 
