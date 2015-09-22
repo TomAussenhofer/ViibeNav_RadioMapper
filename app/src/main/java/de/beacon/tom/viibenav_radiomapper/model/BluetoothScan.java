@@ -4,7 +4,6 @@ package de.beacon.tom.viibenav_radiomapper.model;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
@@ -14,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -28,16 +28,17 @@ public class BluetoothScan {
 
     private Activity act;
     private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothLeScanner mBluetoothLeScanner;
-
     private static BluetoothScan singleton;
     private Advertisement advert;
-    private BroadcastReceiver mReceiver;
     private ScanSettings settings;
     final ArrayList<ScanFilter> filters;
 
     private boolean scanStarted;
     private boolean killBluetooth;
+
+
+    private BroadcastReceiver mReceiver;
+    private BroadcastReceiver leScanReceiver;
 
     private BluetoothScan(Activity act) {
         this.act = act;
@@ -45,44 +46,15 @@ public class BluetoothScan {
 
         BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
         this.mBluetoothAdapter = manager.getAdapter();
-        this.mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
         UUIDFilter uuidFilter = new UUIDFilter();
 
         filters = new ArrayList<>();
         filters.add(uuidFilter.getScanFilterFromUUIDs("20CAE8A0-A9CF-11E3-A5E2-0800200C9A66"));
         filters.add(uuidFilter.getScanFilterFromUUIDs("B9407F30-F5F8-466E-AFF9-25556B57FE6D"));
 
-        mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
         settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
 
-        mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                final String action = intent.getAction();
 
-                if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                    final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                            BluetoothAdapter.ERROR);
-                    switch (state) {
-                        case BluetoothAdapter.STATE_OFF:
-                            Log.d(TAG, "Bt OFF.");
-                            turnOnBluetooth();
-                            break;
-                        case BluetoothAdapter.STATE_TURNING_OFF:
-                            Log.d(TAG, "Bt turning OFF.");
-                            turnOnBluetooth();
-                            break;
-                        case BluetoothAdapter.STATE_ON:
-                            Log.d(TAG, "Bt ON.");
-                            scanLeDevice(filters);
-                            break;
-                        case BluetoothAdapter.STATE_TURNING_ON:
-                            Log.d(TAG, "Bt turning ON.");
-                            break;
-                    }
-                }
-            }
-        };
         init();
     }
 
@@ -98,13 +70,48 @@ public class BluetoothScan {
         scanStarted = false;
         killBluetooth = false;
 
-        if(mBluetoothAdapter.isEnabled())
-            scanLeDevice(filters);
+        if(!mBluetoothAdapter.isEnabled()) {
+            mReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    final String action = intent.getAction();
 
-        turnOnBluetooth();
-        // Register for broadcasts on BluetoothAdapter state change
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        act.registerReceiver(mReceiver, filter);
+                    if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                        final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                                BluetoothAdapter.ERROR);
+                        switch (state) {
+                            case BluetoothAdapter.STATE_OFF:
+                                Log.d(TAG, "Bt OFF.");
+                                turnOnBluetooth();
+                                break;
+                            case BluetoothAdapter.STATE_TURNING_OFF:
+                                Log.d(TAG, "Bt turning OFF.");
+                                turnOnBluetooth();
+                                break;
+                            case BluetoothAdapter.STATE_ON:
+                                Log.d(TAG, "Bt ON.");
+                                mBluetoothAdapter.getBluetoothLeScanner();
+                                scanLeDevice(filters);
+                                break;
+                            case BluetoothAdapter.STATE_TURNING_ON:
+                                Log.d(TAG, "Bt turning ON.");
+                                break;
+                        }
+                    }
+                }
+            };
+            // Register for broadcasts on BluetoothAdapter state change
+            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+//            act.registerReceiver(mReceiver,filter);
+            LocalBroadcastManager.getInstance(act.getApplicationContext()).registerReceiver(mReceiver, filter);
+        } else {
+
+            scanLeDevice(filters);
+//            // Register for broadcasts on BluetoothAdapter state change
+//            Intent intent = new Intent("measuring boolean changed");
+//            intent.putExtra("startedMeasuring", isMeasuring());
+//            LocalBroadcastManager.getInstance(activity).sendBroadcast(intent);
+        }
     }
 
     private ScanCallback mScanCallback = new ScanCallback() {
@@ -156,29 +163,26 @@ public class BluetoothScan {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!killBluetooth) {
-                    if (scanStarted) {
-                        mBluetoothLeScanner.startScan(filter, settings, mScanCallback);
-                        scanStarted = false;
-                    } else {
-                        mBluetoothLeScanner.stopScan(mScanCallback);
-                        scanStarted = true;
-                    }
-                    new Handler().postDelayed(this, 400);
-                }
+//                if (!killBluetooth) {
+//                    if (scanStarted) {
+//                        mBluetoothAdapter.getBluetoothLeScanner().startScan(filter, settings, mScanCallback);
+//                        scanStarted = false;
+//                    } else {
+//                        mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+//                        scanStarted = true;
+//                    }
+//                    new Handler().postDelayed(this, 400);
+//                }
+                mBluetoothAdapter.getBluetoothLeScanner().startScan(filter, settings, mScanCallback);
             }
         }, 0);
-    }
-
-    public BluetoothAdapter getmBluetoothAdapter() {
-        return mBluetoothAdapter;
     }
 
     private void killBluetooth(){
         scanStarted = false;
         try {
-            if(mBluetoothLeScanner != null)
-                mBluetoothLeScanner.stopScan(mScanCallback);
+            if(mBluetoothAdapter.getBluetoothLeScanner() != null)
+                mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
             act.unregisterReceiver(mReceiver);
         } catch(IllegalArgumentException | IllegalStateException e){
             Log.e(TAG,e.toString());
@@ -190,7 +194,6 @@ public class BluetoothScan {
         killBluetooth = true;
         killBluetooth();
     }
-
 
     private class UUIDFilter {
         private ScanFilter getScanFilterFromUUIDs(String uuid){

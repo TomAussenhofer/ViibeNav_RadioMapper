@@ -2,7 +2,6 @@ package de.beacon.tom.viibenav_radiomapper.controller;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ListView;
@@ -41,7 +40,7 @@ public class InfoActivity extends ViibeActivity {
     public void init(){
         shutdown = false;
 
-        infoHandler = new Handler(Looper.getMainLooper());
+        infoHandler = new Handler();
         infoHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
