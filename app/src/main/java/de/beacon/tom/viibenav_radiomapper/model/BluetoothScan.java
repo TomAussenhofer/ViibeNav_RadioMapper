@@ -65,15 +65,10 @@ public class BluetoothScan {
                             break;
                         case BluetoothAdapter.STATE_ON:
                             Log.d(TAG, "Bt ON.");
-                            if(!killBluetooth)
-                                startScan();
-                            else
-                                killBluetooth();
+                            startScan();
                             break;
                         case BluetoothAdapter.STATE_TURNING_ON:
                             Log.d(TAG, "Bt turning ON.");
-                            if(killBluetooth)
-                                killBluetooth();
                             break;
                     }
                 }
@@ -167,40 +162,25 @@ public class BluetoothScan {
     };
 
     public void turnOnBluetooth(){
-        /*
-         * We need to enforce that Bluetooth is first enabled, and take the
-         * user to settings to enable it if they have not done so.
-         */
-//        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-//            //Bluetooth is disabled
-////            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-////            startActivity(enableBtIntent);
-//            mBluetoothAdapter.enable();
-//        }
-
         Log.d(TAG, "method turn on bt");
         if(!mBluetoothAdapter.isEnabled())
             mBluetoothAdapter.enable();
-        else
-            startScan();
     }
 
     private void scanLeDevice(final ArrayList<ScanFilter> filter) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (scanStarted) {
-                    mBluetoothLeScanner.startScan(filter, settings, mScanCallback);
-                    scanStarted = false;
-                } else {
-//                    if(!killBluetooth) {
-                    mBluetoothLeScanner.stopScan(mScanCallback);
-                    scanStarted = true;
-//                    } else {
-//                        scanStarted = false;
-//                    }
+                if(!killBluetooth) {
+                    if (scanStarted) {
+                        mBluetoothLeScanner.startScan(filter, settings, mScanCallback);
+                        scanStarted = false;
+                    } else {
+                        mBluetoothLeScanner.stopScan(mScanCallback);
+                        scanStarted = true;
+                    }
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 400);
                 }
-                new Handler(Looper.getMainLooper()).postDelayed(this, 400);
             }
         }, 0);
     }
@@ -223,6 +203,7 @@ public class BluetoothScan {
 
     public void disableBt(){
         killBluetooth = true;
+        killBluetooth();
     }
 
 
