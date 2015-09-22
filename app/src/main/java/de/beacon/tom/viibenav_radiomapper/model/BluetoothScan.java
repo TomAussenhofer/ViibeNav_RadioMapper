@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -101,9 +100,9 @@ public class BluetoothScan {
                 }
             };
             // Register for broadcasts on BluetoothAdapter state change
-            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-//            act.registerReceiver(mReceiver,filter);
-            LocalBroadcastManager.getInstance(act.getApplicationContext()).registerReceiver(mReceiver, filter);
+            IntentFilter filter = new IntentFilter(mBluetoothAdapter.ACTION_STATE_CHANGED);
+            act.registerReceiver(mReceiver,filter);
+//            LocalBroadcastManager.getInstance(act.getApplicationContext()).registerReceiver(mReceiver, filter);
             turnOnBluetooth();
         } else {
             scanLeDevice(filters);
