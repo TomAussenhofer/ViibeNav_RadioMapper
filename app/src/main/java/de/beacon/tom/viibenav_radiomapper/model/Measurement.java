@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -78,8 +77,6 @@ public class Measurement {
                 while (it.hasNext()) {
                     OnyxBeacon tmp = it.next();
                     if(!Util.hasSufficientSendingFreq(tmp.getLastSignalMeasured())){
-                        Looper.prepare();
-                        Toast.makeText(main, "Der Beacon hat zu lange zum senden gebraucht.", Toast.LENGTH_LONG);
 //                        tmp.resetMedianMeasurement();
                     }
 
