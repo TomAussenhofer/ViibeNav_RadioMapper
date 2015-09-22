@@ -71,13 +71,26 @@ public class Measurement {
         protected String doInBackground(ArrayList<OnyxBeacon>... params) {
             ArrayList<OnyxBeacon> beacons = params[0];
             this.beacons = (ArrayList<OnyxBeacon>)beacons.clone();
+            int counter = 0;
             while(isMeasuring()) {
                 Iterator<OnyxBeacon> it = beacons.iterator();
                 while (it.hasNext()) {
-                    if (it.next().isMeasurementDone()) {
+                    OnyxBeacon tmp = it.next();
+                    if (tmp.isMeasurementDone()) {
                         publishProgress(1);
                         it.remove();
                     }
+
+                    if(System.currentTimeMillis()-tmp.getLastSignalMeasured()>5000){
+                        Toast.makeText(main,"Der Beacon hat zu lange zum senden gebraucht.",Toast.LENGTH_LONG);
+                        it.remove();
+                        this.beacons.remove(counter);
+                    }
+
+                    if(counter!=beacons.size()-1)
+                        counter++;
+                    else
+                        counter=0;
                 }
                 // break out if list is empty = all calcs are done
                 if(beacons.isEmpty())
@@ -100,7 +113,7 @@ public class Measurement {
 
                 if(firstMeasure) {
                     Fingerprint fingerprint = new Fingerprint(RadioMap.getRadioMap().getCoordinate());
-                    fingerprint.setBeacToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
+                    fingerprint.setBeacToOrientation(Util.filterBeaconWithBadMedian(beacons), sh.getOrientationFromDegree());
                     fingerprint.setInfo(main.getApplicationUI().getInfo());
 
                     RadioMap.add(fingerprint);
@@ -114,8 +127,6 @@ public class Measurement {
                     if(beacons.size()<Definitions.MIN_BEACONS_FOR_MEASURE)
                         Toast.makeText(main,"Zu wenig beacons! beacons: "+Definitions.MIN_BEACONS_FOR_MEASURE, Toast.LENGTH_SHORT).show();
 
-
-
                     SecondMeasureDialog secondMeasureDialog = new SecondMeasureDialog();
                     Bundle b = new Bundle();
                     b.putBoolean("frontMeasuredFirst",frontMeasuredFirst);
@@ -126,7 +137,7 @@ public class Measurement {
                     Log.d(TAG, "Second measurement");
                     Fingerprint a = RadioMap.getLastAnchor();
 
-                    a.setBeacToOrientation(Util.cloneBeacons(beacons), sh.getOrientationFromDegree());
+                    a.setBeacToOrientation(Util.filterBeaconWithBadMedian(beacons), sh.getOrientationFromDegree());
                     if(a.isFrontAndBackSet())
                         Database.getDB().addFingerprint(a);
 

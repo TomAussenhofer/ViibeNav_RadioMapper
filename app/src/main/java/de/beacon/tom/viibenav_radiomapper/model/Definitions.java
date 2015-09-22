@@ -30,7 +30,7 @@ public class Definitions {
      * The Signal strength at which measuring makes no sense, as signal strength is
      * unreliably bad.
      */
-    public static final int SIGNAL_TOO_BAD_THRESHOLD = -90;
+    public static final int SIGNAL_TOO_BAD_THRESHOLD = -82;
 
 
 
