@@ -70,7 +70,6 @@ public class BluetoothScan {
     private void init(){
         scanStarted = false;
         killBluetooth = false;
-
         if(!mBluetoothAdapter.isEnabled()) {
             mReceiver = new BroadcastReceiver() {
                 @Override
@@ -105,8 +104,8 @@ public class BluetoothScan {
             IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
 //            act.registerReceiver(mReceiver,filter);
             LocalBroadcastManager.getInstance(act.getApplicationContext()).registerReceiver(mReceiver, filter);
+            turnOnBluetooth();
         } else {
-
             scanLeDevice(filters);
 //            // Register for broadcasts on BluetoothAdapter state change
 //            Intent intent = new Intent("measuring boolean changed");
