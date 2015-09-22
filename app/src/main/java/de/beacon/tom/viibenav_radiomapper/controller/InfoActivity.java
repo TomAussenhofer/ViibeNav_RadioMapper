@@ -21,7 +21,7 @@ public class InfoActivity extends ViibeActivity {
     CustomListAdapter listAdapter;
     ListView beaconListView;
     private boolean shutdown;
-    private Handler infoHandler;
+    private static Handler infoHandler;
 
 
     @Override

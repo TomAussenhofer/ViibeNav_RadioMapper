@@ -163,17 +163,16 @@ public class BluetoothScan {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                if (!killBluetooth) {
-//                    if (scanStarted) {
-//                        mBluetoothAdapter.getBluetoothLeScanner().startScan(filter, settings, mScanCallback);
-//                        scanStarted = false;
-//                    } else {
-//                        mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
-//                        scanStarted = true;
-//                    }
-//                    new Handler().postDelayed(this, 400);
-//                }
-                mBluetoothAdapter.getBluetoothLeScanner().startScan(filter, settings, mScanCallback);
+                if (!killBluetooth) {
+                    if (scanStarted) {
+                        mBluetoothAdapter.getBluetoothLeScanner().startScan(filter, settings, mScanCallback);
+                        scanStarted = false;
+                    } else {
+                        mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
+                        scanStarted = true;
+                    }
+                    new Handler().postDelayed(this, 1100);
+                }
             }
         }, 0);
     }
