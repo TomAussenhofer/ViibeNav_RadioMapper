@@ -113,7 +113,7 @@ public class BluetoothScan {
         UUIDFilter uuidFilter = new UUIDFilter();
         ArrayList<ScanFilter> filters = new ArrayList<>();
         filters.add(uuidFilter.getScanFilterFromUUIDs("20CAE8A0-A9CF-11E3-A5E2-0800200C9A66"));
-//        filters = null;
+        filters.add(uuidFilter.getScanFilterFromUUIDs("B9407F30-F5F8-466E-AFF9-25556B57FE6D"));
 
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
         settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
