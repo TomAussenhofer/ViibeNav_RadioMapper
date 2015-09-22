@@ -39,8 +39,8 @@ public class SettingsActivity extends Activity{
             final EditTextPreference amt_for_Measure = (EditTextPreference) findPreference("pref_amtRSSIsForMeasure");
             amt_for_Measure.setSummary(amt_for_Measure.getText());
 
-            final EditTextPreference max_Beacons_for_Measure = (EditTextPreference) findPreference("pref_minBeaconsForMeasure");
-            max_Beacons_for_Measure.setSummary(max_Beacons_for_Measure.getText());
+            final EditTextPreference min_Beacons_for_Measure = (EditTextPreference) findPreference("pref_minBeaconsForMeasure");
+            min_Beacons_for_Measure.setSummary(min_Beacons_for_Measure.getText());
         }
 
         @Override
@@ -55,7 +55,7 @@ public class SettingsActivity extends Activity{
                 }
 
                 if(etp.equals(findPreference("pref_minBeaconsForMeasure"))) {
-                    Definitions.MIN_BEACONS_FOR_MEASURE = Integer.parseInt(sharedPreferences.getString(SettingsActivity.MIN_BEACONS_FOR_MEASURE, "7"));
+                    Definitions.MIN_BEACONS_FOR_MEASURE = Integer.parseInt(sharedPreferences.getString(SettingsActivity.MIN_BEACONS_FOR_MEASURE, "2"));
                 }
             }
         }
