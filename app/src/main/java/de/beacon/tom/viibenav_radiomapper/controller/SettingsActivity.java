@@ -16,7 +16,7 @@ import de.beacon.tom.viibenav_radiomapper.model.Definitions;
 public class SettingsActivity extends Activity{
 
     public static final String MEASUREMENT_AMT_THRESHOLD = "pref_amtRSSIsForMeasure";
-    public static final String MIN_BEACONS_FOR_MEASURE = "pref_amtRSSIsForMeasure";
+    public static final String MIN_BEACONS_FOR_MEASURE = "pref_minBeaconsForMeasure";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
