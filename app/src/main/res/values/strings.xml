@@ -13,5 +13,5 @@
     <string name="amtRSSIsForMeasure">Anzahl RSSIs für Messung</string>
     <string name="amtRSSIsForMeasureDefault">10</string>
     <string name="minBeaconsForMeasure">Min. Beacons pro Fingerprint</string>
-    <string name="minBeaconsForMeasureDefault">7</string>
+    <string name="minBeaconsForMeasureDefault">2</string>
 </resources>
