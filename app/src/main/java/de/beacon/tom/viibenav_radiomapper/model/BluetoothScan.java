@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -35,6 +34,8 @@ public class BluetoothScan {
     private Advertisement advert;
     private BroadcastReceiver mReceiver;
     private ScanSettings settings;
+    final ArrayList<ScanFilter> filters;
+
     private boolean scanStarted;
     private boolean killBluetooth;
 
@@ -45,6 +46,14 @@ public class BluetoothScan {
         BluetoothManager manager = (BluetoothManager) act.getSystemService(act.BLUETOOTH_SERVICE);
         this.mBluetoothAdapter = manager.getAdapter();
         this.mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        UUIDFilter uuidFilter = new UUIDFilter();
+
+        filters = new ArrayList<>();
+        filters.add(uuidFilter.getScanFilterFromUUIDs("20CAE8A0-A9CF-11E3-A5E2-0800200C9A66"));
+        filters.add(uuidFilter.getScanFilterFromUUIDs("B9407F30-F5F8-466E-AFF9-25556B57FE6D"));
+
+        mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
 
         mReceiver = new BroadcastReceiver() {
             @Override
@@ -65,7 +74,7 @@ public class BluetoothScan {
                             break;
                         case BluetoothAdapter.STATE_ON:
                             Log.d(TAG, "Bt ON.");
-                            startScan();
+                            scanLeDevice(filters);
                             break;
                         case BluetoothAdapter.STATE_TURNING_ON:
                             Log.d(TAG, "Bt turning ON.");
@@ -89,37 +98,13 @@ public class BluetoothScan {
         scanStarted = false;
         killBluetooth = false;
 
+        if(mBluetoothAdapter.isEnabled())
+            scanLeDevice(filters);
+
         turnOnBluetooth();
         // Register for broadcasts on BluetoothAdapter state change
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         act.registerReceiver(mReceiver, filter);
-    }
-
-    public void onResumeOperation(){
-        init();
-    }
-
-    private void startScan(){
-//        Log.d(TAG, " method startScan");
-        // Scan for devices advertising the thermometer
-        // does not work
-//        ScanFilter beaconFilter = new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(Advertisement.filterUUID)).build();
-//        // works
-//        ScanFilter filter2 = new ScanFilter.Builder().setDeviceAddress(tagMAC).build();
-//        ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
-//        // does not work
-//         filters.add(beaconFilter);
-//        filters.add(filter2);
-        UUIDFilter uuidFilter = new UUIDFilter();
-        ArrayList<ScanFilter> filters = new ArrayList<>();
-        filters.add(uuidFilter.getScanFilterFromUUIDs("20CAE8A0-A9CF-11E3-A5E2-0800200C9A66"));
-        filters.add(uuidFilter.getScanFilterFromUUIDs("B9407F30-F5F8-466E-AFF9-25556B57FE6D"));
-
-        mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
-        settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
-//        Log.d(TAG,"Bluetooth enabled: "+mBluetoothAdapter.isEnabled() + " Try to start scanning...");
-        scanLeDevice(filters);
-
     }
 
     private ScanCallback mScanCallback = new ScanCallback() {
@@ -168,7 +153,7 @@ public class BluetoothScan {
     }
 
     private void scanLeDevice(final ArrayList<ScanFilter> filter) {
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if(!killBluetooth) {
@@ -179,7 +164,7 @@ public class BluetoothScan {
                         mBluetoothLeScanner.stopScan(mScanCallback);
                         scanStarted = true;
                     }
-                    new Handler(Looper.getMainLooper()).postDelayed(this, 400);
+                    new Handler().postDelayed(this, 400);
                 }
             }
         }, 0);

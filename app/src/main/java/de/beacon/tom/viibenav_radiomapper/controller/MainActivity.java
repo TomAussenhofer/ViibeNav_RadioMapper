@@ -51,8 +51,6 @@ public class MainActivity extends ViibeActivity implements SensorEventListener {
 
     private void init(){
         btScan = BluetoothScan.getBtScan(this);
-        if(getFromAnotherActivity())
-            btScan.onResumeOperation();
 
         applicationUI = new Application(this);
         exportImport = new ExportImportDB(this);

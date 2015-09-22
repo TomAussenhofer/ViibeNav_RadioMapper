@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import android.widget.ListView;
 
 import de.beacon.tom.viibenav_radiomapper.R;
-import de.beacon.tom.viibenav_radiomapper.model.BluetoothScan;
 import de.beacon.tom.viibenav_radiomapper.model.OnyxBeacon;
 import de.beacon.tom.viibenav_radiomapper.model.adapter.CustomListAdapter;
 
@@ -73,8 +72,6 @@ public class InfoActivity extends ViibeActivity {
     protected void onResume() {
         super.onResume();
         init();
-        if(getFromAnotherActivity())
-            BluetoothScan.getBtScan(this).onResumeOperation();
         Log.d(TAG, "RESUMING IN INFO");
     }
 

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 
-import de.beacon.tom.viibenav_radiomapper.model.BluetoothScan;
 import de.beacon.tom.viibenav_radiomapper.model.WiFiConnector;
 
 /**
@@ -83,8 +82,8 @@ public class ViibeActivity extends Activity {
         Log.d(TAG, "onHide Activity");
         if(!WiFiConnector.getConnector(this).WiFiEnabled())
             WiFiConnector.getConnector(this).enableWiFi();
-        if(BluetoothScan.getBtScan(this).getmBluetoothAdapter().isEnabled())
-            BluetoothScan.getBtScan(this).disableBt();
+//        if(BluetoothScan.getBtScan(this).getmBluetoothAdapter().isEnabled())
+//            BluetoothScan.getBtScan(this).disableBt();
     }
 
     protected boolean getFromAnotherActivity(){
